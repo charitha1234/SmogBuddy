@@ -1,10 +1,12 @@
 export const color={
-    primaryWhite:"#F4F4F4",
+    primaryWhite:"white",
     primaryBlue:"#3995F5",
     primaryGreen:"#77BD72",
     primaryBlack:"black" ,
-    lightblue:"#A3F8FF",
-    lightgreen:"#DEFFC9"
+    lightBlue:"#A3F8FF",
+    lightGreen:"#DEFFC9",
+    buttonUpper:'#5773F0',
+    buttonLower:'#74BCF7',
     
   
   }
