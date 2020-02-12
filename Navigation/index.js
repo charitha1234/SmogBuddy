@@ -9,6 +9,7 @@ import RegisterScreen1 from '../Screens/registrationScreen1';
 import RegisterScreen2 from '../Screens/registrationScreen2';
 import Login from '../Screens/login';
 import Splash from '../Screens/splash';
+import User from '../Screens/userScreen';
 
 const Stack = createStackNavigator();
 function NewUser() {
@@ -31,6 +32,7 @@ function WelcomeScreen() {
                 <Stack.Screen name="Splash" component={Splash}/>
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="NewUser" component={NewUser}/>
+                <Stack.Screen name="User" component={User}/>
             </Stack.Navigator>
         </NavigationContainer>
     );

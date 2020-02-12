@@ -11,11 +11,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 function GradientButton(props) {
 
     return (
-        <View>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.buttonUpper, color.buttonLower]} style={styles.container}>
                 <Ionicons name='ios-play' size={20} color={color.primaryWhite} />
             </LinearGradient>
-        </View>
     );
 
 }
