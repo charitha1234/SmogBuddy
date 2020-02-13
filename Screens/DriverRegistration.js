@@ -2,22 +2,20 @@ import React from "react";
 import { 
     View,
     Text,
-    StyleSheet,
-    Button
+    StyleSheet
 } from "react-native";
 
-function RegistrationScreen1({ navigation }){
+function DriverRegistration(props){
 
 return(
     <View style={styles.container}>
-        <Text>RegistrationScreen1</Text>
-        <Button title="Go to Register Screen 2" onPress={() => navigation.navigate('RegisterScreen2')}/>
+        <Text>RegistrationScreen2</Text>
     </View>
     );
 
 }
 
-export default RegistrationScreen1;
+export default DriverRegistration;
 
 const styles = StyleSheet.create({
     container: {

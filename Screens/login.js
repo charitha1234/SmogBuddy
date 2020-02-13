@@ -3,19 +3,15 @@ import {
     View,
     Text,
     StyleSheet,
-    Button,
     TouchableOpacity,
     SafeAreaView,
 } from "react-native";
-import { Container, Header, Content, Item, Input, Icon, Form } from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../Assets/color';
 import Logo from '../Assets/logo';
 import GradientButton from '../Components/gradientButton';
 import TextBox from '../Components/textBox';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 function Login({ navigation }) {
-
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
@@ -23,17 +19,15 @@ function Login({ navigation }) {
                     <Text style={styles.watermarkText}>SMOGBUDDY</Text>
                     <Logo style={styles.Logo} />
                 </View>
-                <View style={{ flex: 0.6, justifyContent: 'flex-end' }}>
                     <View style={styles.LoginForm}>
-                        <TextBox title="USERNAME" icon="md-person"/>
+                        <View style={{flex:1 ,marginTop:30,marginBottom:-30}}><TextBox title="USERNAME" icon="md-person"/></View>
                         <View style={styles.middleLine}/>
-                        <TextBox title="PASSWORD" icon="md-key"/>
+                        <View  style={{flex:1}}><TextBox title="PASSWORD" icon="md-key"/></View>
                         <View style={styles.button}>
-                            <TouchableOpacity onPress={()=>{navigation.navigate('User')}}>
+                            <TouchableOpacity onPress={()=>{navigation.navigate('Home')}}>
                                 <GradientButton />
                             </TouchableOpacity>
                         </View>
-                    </View>
                 </View>
                 <View style={{ flex: 0.4 }}>
                     <TouchableOpacity onPress={() => { navigation.navigate('NewUser') }} style={{ position: 'absolute', bottom: "5%" }}><Text style={styles.bottomText}>NEW ACCOUNT</Text></TouchableOpacity>
@@ -92,10 +86,10 @@ const styles = StyleSheet.create({
 
     },
     LoginForm: {
-        flex:1,
+        flex:0.6,
         alignSelf: 'center',
         alignItems: 'stretch',
-        justifyContent:'space-evenly',
+        justifyContent:'space-between',
         backgroundColor: 'white',
         width: 300,
         height: 150,

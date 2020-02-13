@@ -5,17 +5,17 @@ import {
     StyleSheet
 } from "react-native";
 
-function RegistrationScreen2(props){
+function Home({navigation},props){
 
 return(
     <View style={styles.container}>
-        <Text>RegistrationScreen2</Text>
+        <Text>Home</Text>
     </View>
     );
 
 }
 
-export default RegistrationScreen2;
+export default Home;
 
 const styles = StyleSheet.create({
     container: {

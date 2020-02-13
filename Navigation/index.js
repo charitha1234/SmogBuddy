@@ -5,19 +5,19 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 
 import InterfaceSelection from '../Screens/interfaceSelection';
-import RegisterScreen1 from '../Screens/registrationScreen1';
-import RegisterScreen2 from '../Screens/registrationScreen2';
+import UserRegistration from '../Screens/UserRegistration';
+import DriverRegistration from '../Screens/DriverRegistration';
 import Login from '../Screens/login';
 import Splash from '../Screens/splash';
-import User from '../Screens/userScreen';
+import Home from '../Screens/HomeScreen';
 
 const Stack = createStackNavigator();
 function NewUser() {
     return (
         <Stack.Navigator name="Registration" initialRouteName="InterfaceSelection" screenOptions={{animationEnabled:false, headerShown: false }}>
             <Stack.Screen name="InterfaceSelection" component={InterfaceSelection} />
-            <Stack.Screen name="RegisterScreen1" component={RegisterScreen1} />
-            <Stack.Screen name="RegisterScreen2" component={RegisterScreen2} />
+            <Stack.Screen name="UserRegistration" component={UserRegistration} />
+            <Stack.Screen name="DriverRegistration" component={DriverRegistration} />
         </Stack.Navigator>
 
     );
@@ -32,7 +32,7 @@ function WelcomeScreen() {
                 <Stack.Screen name="Splash" component={Splash}/>
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="NewUser" component={NewUser}/>
-                <Stack.Screen name="User" component={User}/>
+                <Stack.Screen name="Home" component={Home}/>
             </Stack.Navigator>
         </NavigationContainer>
     );
