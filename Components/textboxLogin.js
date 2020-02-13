@@ -6,7 +6,6 @@ import {
 } from "react-native";
 import { Label, Item, Input } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {color} from '../Assets/color';
 function TextBox(props){
 
 return(
@@ -15,7 +14,7 @@ return(
             <Label  style={styles.title} >{props.title}</Label>
             <Input secureTextEntry={props.title=="PASSWORD"? true :false}/>
         </Item>
-        <TouchableOpacity style={{marginBottom:10}}><Ionicons style={styles.icon} name={props.icon} size={props.size? props.size : 25}/>< Ionicons style={styles.icon1} name={props.icon2} size={15} /></TouchableOpacity>
+       <View style={styles.icon}><Ionicons  name={props.icon} size={props.size? props.size : 25}/></View>
     </View>
     );
 
@@ -44,15 +43,10 @@ const styles = StyleSheet.create({
         fontSize:15,
     },
     icon:{
-        color:'#ac47ff',
+        flex:1,
+        marginTop:10,
         marginLeft:-70,
-        zIndex:-1,
+        opacity:0.5,
     },
-    icon1:{
-        color:color.buttonLower,
-        marginTop:-20,
-        marginLeft:-35,
-        zIndex:1,
-    }
 
 });

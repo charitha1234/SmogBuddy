@@ -10,7 +10,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../Assets/color';
 import Logo from '../Assets/logo';
 import GradientButton from '../Components/gradientButton';
-import TextBox from '../Components/textBox';
+import TextBox from '../Components/textboxLogin';
 function Login({ navigation }) {
     return (
         <SafeAreaView style={{ flex: 1 }}>

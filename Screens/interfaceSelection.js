@@ -27,7 +27,7 @@ function InterfaceSelection({ navigation }) {
                     <View style={styles.sections}>
                         <Text style={styles.smallText}>WHO AM I?</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={styles.smallText}>Customer (Vehicle Owner)</Text>
+                            <Text style={styles.smallText}>Customer(Vehicle Owner)</Text>
                             <TouchableOpacity onPress={()=>{driver? setDriver(false) & setUser(true) : setUser(true) }}>
                                 <RadioButton selected={user} />
                             </TouchableOpacity>
