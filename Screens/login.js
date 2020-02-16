@@ -24,7 +24,7 @@ function Login({ navigation }) {
                         <View style={styles.middleLine}/>
                         <View  style={{flex:1}}><TextBox title="PASSWORD" icon="md-key"/></View>
                         <View style={styles.button}>
-                            <TouchableOpacity onPress={()=>{navigation.navigate('Home')}}>
+                            <TouchableOpacity onPress={()=>{navigation.navigate('MenuScreens')}}>
                                 <GradientButton />
                             </TouchableOpacity>
                         </View>

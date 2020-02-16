@@ -32,7 +32,7 @@ function UserRegistration({ navigation }) {
                 </View>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between' ,marginBottom: -20,marginRight: -20}}>
                     <Text style={styles.subText}>1/2</Text>
-                    <TouchableOpacity onPress={()=>{navigation.navigate("Home")}}><GradientButton style={styles.button} /></TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{navigation.navigate("Notification")}}><GradientButton style={styles.button} /></TouchableOpacity>
                 </View>
             </View>
             <View />
