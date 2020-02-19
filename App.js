@@ -6,11 +6,16 @@
  * @flow
  */
 
-import React from "react";
+import React, { Component } from "react";
 import 'react-native-gesture-handler';
 import Appcontainer from './Navigation';
-function App(){
-    return <Appcontainer/>
-      
+
+
+class  App extends Component {
+    com
+    render() {
+        return <Appcontainer/>
+    }
 }
+
 export default App;
