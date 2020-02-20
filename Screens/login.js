@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import {
     View,
     Text,
@@ -11,7 +11,18 @@ import { color } from '../Assets/color';
 import Logo from '../Assets/logo';
 import GradientButton from '../Components/gradientButton';
 import TextBox from '../Components/textboxLogin';
+import firebase from 'react-native-firebase';
+
+function authentication(username,password,navigation){
+    firebase.auth().signInWithEmailAndPassword(username,password)
+    .then(()=>navigation.navigate('MenuScreens'))
+    .catch((e)=>alert(e))
+}
+
 function Login({ navigation }) {
+    const [username, setusername] = useState("");
+    const [password, setpassword] = useState("");
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
@@ -20,17 +31,21 @@ function Login({ navigation }) {
                     <Logo style={styles.Logo} />
                 </View>
                     <View style={styles.LoginForm}>
-                        <View style={{flex:1 ,marginTop:30,marginBottom:-30}}><TextBox title="USERNAME" icon="md-person"/></View>
+                        <View style={{flex:1 ,marginTop:30,marginBottom:-30}}><TextBox onChangeText={text=>{
+                            setusername(text);
+                        }} title="USERNAME" icon="md-person"/></View>
                         <View style={styles.middleLine}/>
-                        <View  style={{flex:1}}><TextBox title="PASSWORD" icon="md-key"/></View>
+                        <View  style={{flex:1}}><TextBox onChangeText={text=>{
+                            setpassword(text);
+                        }} title="PASSWORD" icon="md-key"/></View>
                         <View style={styles.button}>
-                            <TouchableOpacity onPress={()=>{navigation.navigate('MenuScreens')}}>
+                            <TouchableOpacity onPress={()=>{authentication(username,password,navigation)}}>
                                 <GradientButton />
                             </TouchableOpacity>
                         </View>
                 </View>
                 <View style={{ flex: 0.4 }}>
-                    <TouchableOpacity onPress={() => { navigation.navigate('NewUser') }} style={{ position: 'absolute', bottom: "5%" }}><Text style={styles.bottomText}>NEW ACCOUNT</Text></TouchableOpacity>
+                    <TouchableOpacity onPress={() => {navigation.navigate("NewUser")}} style={{ position: 'absolute', bottom: "5%" }}><Text style={styles.bottomText}>NEW ACCOUNT</Text></TouchableOpacity>
                 </View>
             </LinearGradient>
         </SafeAreaView>

@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import {
     View,
     Text,
@@ -9,8 +9,16 @@ import { color } from '../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../Components/textBox';
 import GradientButton from '../Components/longButton';
-function UserRegistration({ navigation }) {
+import firebase from 'react-native-firebase';
+function newUser(username,password,navigation){
+    firebase.auth().createUserWithEmailAndPassword(username,password)
+    .then(()=>navigation.navigate("Notification"))
+    .catch((e)=>alert(e))
 
+}
+function UserRegistration({ navigation }) {
+const [username, setusername] = useState("");
+const [password, setpassword] = useState("");
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
 
@@ -26,13 +34,13 @@ function UserRegistration({ navigation }) {
                     <TextBox title="STATE" underline={true} />
                     <TextBox title="ZIP CODE" underline={true} />
                     <TextBox title="PHONE NO" underline={true} />
-                    <TextBox title="EMAIL" underline={true} />
-                    <TextBox title="PASSWORD" underline={true} />
+                    <TextBox title="EMAIL" underline={true} onChangeText={text=>setusername(text)} disabled={false} />
+                    <TextBox title="PASSWORD" underline={true} onChangeText={text=>setpassword(text)}  disabled={false}/>
 
                 </View>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between' ,marginBottom: -20,marginRight: -20}}>
                     <Text style={styles.subText}>1/2</Text>
-                    <TouchableOpacity onPress={()=>{navigation.navigate("Notification")}}><GradientButton style={styles.button} /></TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{newUser(username,password,navigation)}}><GradientButton style={styles.button} /></TouchableOpacity>
                 </View>
             </View>
             <View />

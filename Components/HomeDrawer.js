@@ -6,6 +6,7 @@ import {
     TouchableOpacity
 } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import firebase from 'react-native-firebase';
 function HomeDrawer({navigation},props){
 
 return(
@@ -15,7 +16,10 @@ return(
         <TouchableOpacity onPress={()=>navigation.navigate("DriverProfile")} style={styles.content}><Ionicons name="md-car" size={30}/><Text style={styles.contentText}>YOUR DRIVER</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("DriverTrack")} style={styles.content}><Ionicons name="md-navigate" size={30}/><Text style={styles.contentText}>TRACK CAR</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("ContactUs")} style={styles.content}><Ionicons name="md-contacts" size={30}/><Text style={styles.contentText}>CONTACT US</Text></TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("Login")} style={styles.logout}><Text style={styles.logoutText}>LOGOUT</Text></TouchableOpacity>
+        <TouchableOpacity onPress={()=>{
+            firebase.auth().signOut();
+            navigation.navigate("Login");}}
+             style={styles.logout}><Text style={styles.logoutText}>LOGOUT</Text></TouchableOpacity>
     </View>
     );
 

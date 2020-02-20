@@ -12,7 +12,7 @@ return(
     <View style={styles.container}>
         <Item style={props.underline? null:{borderColor:'transparent'} } floatingLabel >
             <Label  style={styles.title} >{props.title}</Label>
-            <Input secureTextEntry={props.title=="PASSWORD"? true :false}/>
+            <Input onChangeText={props.onChangeText} secureTextEntry={props.title=="PASSWORD"? true :false}/>
         </Item>
        <View style={styles.icon}><Ionicons  name={props.icon} size={props.size? props.size : 25}/></View>
     </View>

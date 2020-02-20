@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "414626078341",
+    "firebase_url": "https://smog-buddy-dev.firebaseio.com",
+    "project_id": "smog-buddy-dev",
+    "storage_bucket": "smog-buddy-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:414626078341:android:5f56a89e46f62b4a6093ec",
+        "android_client_info": {
+          "package_name": "com.smogbuddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "414626078341-4h5of5ns3nlmfkiu7oscv5btputqnaca.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJgdX_rsDev1gBRIrffdEAMlm-V7DOS4M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "414626078341-4h5of5ns3nlmfkiu7oscv5btputqnaca.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

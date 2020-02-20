@@ -11,9 +11,9 @@ function TextBox(props){
 
 return(
     <View style={styles.container}>
-        <Item style={props.underline? null:{borderColor:'transparent'} } floatingLabel >
+        <Item style={props.underline? null:{borderColor:'transparent'} } floatingLabel  >
             <Label  style={styles.title} >{props.title}</Label>
-            <Input secureTextEntry={props.title=="PASSWORD"? true :false}/>
+            <Input secureTextEntry={props.title=="PASSWORD"? true :false} value={props.defaultValue}  onChangeText={props.onChangeText}/>
         </Item>
         <TouchableOpacity style={{marginBottom:10}}><Ionicons style={styles.icon} name={props.icon} size={props.size? props.size : 25}/>< Ionicons style={styles.icon1} name={props.icon2} size={15} /></TouchableOpacity>
     </View>

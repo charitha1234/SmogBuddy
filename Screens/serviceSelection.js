@@ -21,10 +21,10 @@ function Service(props) {
             <View style={styles.imageContainer}>
             </View>
             <View style={styles.serviceTextContainer}>
-    <Text style={styles.serviceNameText}>{props.serviceName}</Text>
+                <Text style={styles.serviceNameText}>{props.serviceName}</Text>
                 <Text style={styles.serviceNameText}>{props.serviceYear}</Text>
             </View>
-            <CheckBox onChange ={props.onChange} value={props.Checked}/>
+            <CheckBox onChange={props.onChange} value={props.Checked} />
         </View>
 
     );
@@ -32,18 +32,18 @@ function Service(props) {
 
 
 class ServiceSelection extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
             check: {},
-            checkAll:false
+            checkAll: false
         }
     }
-    CheckAll=()=>{
-        this.setState({checkAll:!this.state.checkAll})
+    CheckAll = () => {
+        this.setState({ checkAll: !this.state.checkAll })
     }
     checkBox_Test = (id) => {
-        const checkCopy = {...this.state.check}
+        const checkCopy = { ...this.state.check }
         if (checkCopy[id]) checkCopy[id] = false;
         else checkCopy[id] = true;
         this.setState({ check: checkCopy });
@@ -51,17 +51,17 @@ class ServiceSelection extends Component {
     render() {
         return (
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-            <SafeAreaView style={styles.container}>
-                <View style={styles.headerContainer}><Text style={styles.headerText}>SELECT SERVICES</Text></View>
-                <View style={styles.serviceListContainer}>
-                <View style={styles.serviceContainer}><Text style={styles.selectAllText}>SELECT ALL</Text><CheckBox value={this.state.checkAll} onChange={this.CheckAll}/></View>
-                <FlatList data={ServiceList} renderItem={({item})=>(<Service serviceName={item.serviceName} serviceYear={item.yearRange} Checked={this.state.check[item.serviceID]} onChange={()=>this.checkBox_Test(item.serviceID)} />)} keyExtractor={item => item.serviceID}/>
+                <SafeAreaView style={styles.container}>
+                    <View style={styles.headerContainer}><Text style={styles.headerText}>SELECT SERVICES</Text></View>
+                    <View style={styles.serviceListContainer}>
+                        <View style={styles.serviceContainer}><Text style={styles.selectAllText}>SELECT ALL</Text><CheckBox value={this.state.checkAll} onChange={this.CheckAll} /></View>
+                        <FlatList data={ServiceList} renderItem={({ item }) => (<Service serviceName={item.serviceName} serviceYear={item.yearRange} Checked={this.state.check[item.serviceID]} onChange={() => this.checkBox_Test(item.serviceID)} />)} keyExtractor={item => item.serviceID} />
 
-                </View>
-                <View style={styles.buttonContainer}><GradientButton style={styles.button} title="NEXT" /></View>
+                    </View>
+                    <TouchableOpacity onPress={()=>this.props.navigation.navigate("ScanDMV")} style={styles.buttonContainer}><GradientButton style={styles.button} title="NEXT" /></TouchableOpacity>
 
-            </SafeAreaView>
-        </LinearGradient>
+                </SafeAreaView>
+            </LinearGradient>
         );
     }
 }
@@ -75,54 +75,54 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     headerContainer: {
-        flex:0.5,
-        justifyContent:'center',
-        alignItems:'center'
+        flex: 0.5,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     headerText: {
         fontFamily: 'Montserrat-Bold',
         fontSize: 30,
-        letterSpacing:2,
+        letterSpacing: 2,
     },
     selectAllText: {
         fontFamily: 'Montserrat-Medium',
         fontSize: 15,
-        opacity:0.8
+        opacity: 0.8
     },
     serviceListContainer: {
-        flex:2,
-        alignItems:'stretch'
+        flex: 2,
+        alignItems: 'stretch'
 
     },
     serviceContainer: {
-        flexDirection:'row',
-        justifyContent:'space-between',
-        alignItems:'center',
-        margin:10,
-        marginHorizontal:30,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        margin: 10,
+        marginHorizontal: 30,
 
     },
-    imageContainer:{
-        width:75,
-        height:75,
-        backgroundColor:'black'
+    imageContainer: {
+        width: 75,
+        height: 75,
+        backgroundColor: 'black'
 
     },
-    serviceNameText:{
+    serviceNameText: {
         fontFamily: 'Montserrat-Medium',
         fontSize: 15,
-        opacity:0.8
+        opacity: 0.8
 
 
     },
 
-    buttonContainer:{
-        margin:10,
-        alignItems:'flex-end',
-        
+    buttonContainer: {
+        margin: 10,
+        alignItems: 'flex-end',
+
 
     },
-    button:{
+    button: {
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
