@@ -8,9 +8,9 @@ import {
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import { RNCamera } from 'react-native-camera';
-import TextBox from '../Components/textBox';
-import { color } from '../Assets/color';
-import GradientButton from '../Components/CustomButton';
+import TextBox from '../../Components/textBox';
+import { color } from '../../Assets/color';
+import GradientButton from '../../Components/CustomButton';
 import firebase from 'react-native-firebase';
 
 const uuidv1 = require('uuid/v1');
@@ -20,7 +20,7 @@ class OdometerRead extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            picture: true,
+            picture: false,
             uId: "charitha",
             imgPath: "",
             imgURL: "",

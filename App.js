@@ -10,7 +10,8 @@ import React, { Component } from "react";
 import 'react-native-gesture-handler';
 import Appcontainer from './Navigation';
 import firebase from 'react-native-firebase';
-import {AsyncStorage,Alert} from 'react-native'
+import {Alert} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class  App extends Component {
 
@@ -80,7 +81,6 @@ class  App extends Component {
       if (!fcmToken) {
           fcmToken = await firebase.messaging().getToken();
           if (fcmToken) {
-            await User.setFCMTocken(fcmToken);
             await AsyncStorage.setItem('fcmToken', fcmToken);
           }
       }

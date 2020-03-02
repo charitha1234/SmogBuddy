@@ -5,20 +5,53 @@ import {
     StyleSheet,
     TouchableOpacity, ScrollView
 } from "react-native";
-import { color } from '../Assets/color';
+import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
-import TextBox from '../Components/textBox';
-import GradientButton from '../Components/longButton';
+import TextBox from '../../Components/textBox';
+import GradientButton from '../../Components/longButton';
 import firebase from 'react-native-firebase';
-function newUser(username,password,navigation){
+function newUser(username,password,firstName,address,state,zipCode,phoneNo,navigation){
     firebase.auth().createUserWithEmailAndPassword(username,password)
-    .then(()=>navigation.navigate("Notification"))
+    .then((res)=>{
+        fetch('https://smogbuddy-dev.herokuapp.com/user/' ,{
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: res.user.uid,
+          firstName:firstName,
+          lastName:"",
+          address:address,
+          state:state,
+          zipCode:zipCode,
+          phoneNumber:phoneNo,
+          email:username,
+          role:"USER"
+        }),
+      })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        navigation.navigate("Notification");
+        console.log(responseJson);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+})
     .catch((e)=>alert(e))
 
 }
 function UserRegistration({ navigation }) {
 const [username, setusername] = useState("");
 const [password, setpassword] = useState("");
+const [firstName, setfirstName] = useState("");
+const [address, setaddress] = useState("");
+const [state, setstate] = useState("");
+const [zipcode, setzipcode] = useState("");
+const [phoneNo, setphoneNo] = useState("");
+
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
 
@@ -29,18 +62,18 @@ const [password, setpassword] = useState("");
             </View>
             <View style={styles.selection}>
                 <View style={styles.insideArea}>
-                    <TextBox title="NAME" underline={true} icon="md-contact" icon2="md-add-circle" size={50}/>
-                    <TextBox title="ADDRESS" underline={true} />
-                    <TextBox title="STATE" underline={true} />
-                    <TextBox title="ZIP CODE" underline={true} />
-                    <TextBox title="PHONE NO" underline={true} />
+                    <TextBox title="NAME" underline={true} icon="md-contact" icon2="md-add-circle" size={50} onChangeText={text=>setfirstName(text)}/>
+                    <TextBox title="ADDRESS" underline={true} onChangeText={text=>setaddress(text)}/>
+                    <TextBox title="STATE" underline={true} onChangeText={text=>setstate(text)}/>
+                    <TextBox title="ZIP CODE" underline={true} onChangeText={text=>setzipcode(text)}/>
+                    <TextBox title="PHONE NO" underline={true} onChangeText={text=>setphoneNo(text)}/>
                     <TextBox title="EMAIL" underline={true} onChangeText={text=>setusername(text)} disabled={false} />
                     <TextBox title="PASSWORD" underline={true} onChangeText={text=>setpassword(text)}  disabled={false}/>
 
                 </View>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between' ,marginBottom: -20,marginRight: -20}}>
                     <Text style={styles.subText}>1/2</Text>
-                    <TouchableOpacity onPress={()=>{newUser(username,password,navigation)}}><GradientButton style={styles.button} /></TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{newUser(username,password,firstName,address,state,zipcode,phoneNo,navigation)}}><GradientButton style={styles.button} /></TouchableOpacity>
                 </View>
             </View>
             <View />

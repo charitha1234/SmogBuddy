@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     SafeAreaView,
 } from "react-native";
+import AsyncStorage from '@react-native-community/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../Assets/color';
 import Logo from '../Assets/logo';
@@ -13,10 +14,37 @@ import GradientButton from '../Components/gradientButton';
 import TextBox from '../Components/textboxLogin';
 import firebase from 'react-native-firebase';
 
-function authentication(username,password,navigation){
-    firebase.auth().signInWithEmailAndPassword(username,password)
-    .then(()=>navigation.navigate('MenuScreens'))
-    .catch((e)=>alert(e))
+async function authentication(username, password, navigation) {
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    firebase.auth().signInWithEmailAndPassword(username, password)
+        .then((res) => {
+            fetch('https://smogbuddy-dev.herokuapp.com/user/' + res.user.uid)
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    fetch('https://smogbuddy-dev.herokuapp.com/user/fcm/' + res.user.uid, {
+                        method: 'PUT',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            fcm: fcmToken
+                        }),
+                    }).then((res) => console.log(res))
+                        .catch((e) => alert(e));
+                    if (responseJson.role == 'CUSTOMER') navigation.navigate('UserMenuScreens');
+                    else if (responseJson.role == 'DRIVER') navigation.navigate('DriverMenuScreens');
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+
+
+
+        })
+        .catch((e) => alert(e));
+
+
 }
 
 function Login({ navigation }) {
@@ -24,31 +52,33 @@ function Login({ navigation }) {
     const [password, setpassword] = useState("");
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
+        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
+            <SafeAreaView style={styles.container}>
+
                 <View style={{ flex: 1 }}>
                     <Text style={styles.watermarkText}>SMOGBUDDY</Text>
                     <Logo style={styles.Logo} />
                 </View>
-                    <View style={styles.LoginForm}>
-                        <View style={{flex:1 ,marginTop:30,marginBottom:-30}}><TextBox onChangeText={text=>{
-                            setusername(text);
-                        }} title="USERNAME" icon="md-person"/></View>
-                        <View style={styles.middleLine}/>
-                        <View  style={{flex:1}}><TextBox onChangeText={text=>{
-                            setpassword(text);
-                        }} title="PASSWORD" icon="md-key"/></View>
-                        <View style={styles.button}>
-                            <TouchableOpacity onPress={()=>{authentication(username,password,navigation)}}>
-                                <GradientButton />
-                            </TouchableOpacity>
-                        </View>
+                <View style={styles.LoginForm}>
+                    <View style={{ flex: 1, marginTop: 30, marginBottom: -30 }}><TextBox onChangeText={text => {
+                        setusername(text);
+                    }} title="USERNAME" icon="md-person" /></View>
+                    <View style={styles.middleLine} />
+                    <View style={{ flex: 1 }}><TextBox onChangeText={text => {
+                        setpassword(text);
+                    }} title="PASSWORD" icon="md-key" /></View>
+                    <View style={styles.button}>
+                        <TouchableOpacity onPress={() => { authentication(username, password, navigation) }}>
+                            <GradientButton />
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 <View style={{ flex: 0.4 }}>
-                    <TouchableOpacity onPress={() => {navigation.navigate("NewUser")}} style={{ position: 'absolute', bottom: "5%" }}><Text style={styles.bottomText}>NEW ACCOUNT</Text></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { navigation.navigate("NewUser") }} style={{ position: 'absolute', bottom: "5%" }}><Text style={styles.bottomText}>NEW ACCOUNT</Text></TouchableOpacity>
                 </View>
-            </LinearGradient>
-        </SafeAreaView>
+            </SafeAreaView>
+        </LinearGradient>
+
 
 
     );
@@ -60,7 +90,6 @@ export default Login;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'stretch',
         justifyContent: "center",
     },
     Logo: {
@@ -101,10 +130,10 @@ const styles = StyleSheet.create({
 
     },
     LoginForm: {
-        flex:0.6,
+        flex: 0.8,
         alignSelf: 'center',
         alignItems: 'stretch',
-        justifyContent:'space-between',
+        justifyContent: 'space-between',
         backgroundColor: 'white',
         width: 300,
         height: 150,
@@ -118,12 +147,12 @@ const styles = StyleSheet.create({
         elevation: 8,
 
     },
-    middleLine:{
-        flex:1,
+    middleLine: {
+        flex: 1,
         borderBottomColor: 'black',
-         borderBottomWidth: 0.5, 
-         marginHorizontal:20,
-         marginVertical:20,
-         opacity:0.5 
-        }
+        borderBottomWidth: 0.5,
+        marginHorizontal: 20,
+        marginVertical: 20,
+        opacity: 0.5
+    }
 });
