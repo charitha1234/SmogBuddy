@@ -5,11 +5,11 @@ import {
     StyleSheet,
     TouchableOpacity
 } from "react-native";
-import Header from '../Components/Headerbar';
+import Header from '../../Components/HeaderbarUser';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
-import { color } from '../Assets/color';
-import GradientButton from '../Components/CustomButton';
+import { color } from '../../Assets/color';
+import GradientButton from '../../Components/CustomButton';
 function Home({ navigation }, props) {
 
     return (

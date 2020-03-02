@@ -9,7 +9,8 @@ import firebase from 'react-native-firebase';
 function Splash({navigation}){
     useEffect(()=>{
         firebase.auth().onAuthStateChanged(user => {
-            navigation.navigate(user ? 'MenuScreens' : 'Login')
+            console.log(user)
+            navigation.navigate(user ? 'UserMenuScreens' : 'Login')
           })
     });
 return(

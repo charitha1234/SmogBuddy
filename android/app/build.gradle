@@ -120,6 +120,7 @@ def enableHermes = project.ext.react.get("enableHermes", false);
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
+    
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -191,6 +192,7 @@ dependencies {
     implementation 'me.leolin:ShortcutBadger:1.1.21@aar'
     implementation "com.google.firebase:firebase-messaging:20.1.0"
     implementation "com.google.firebase:firebase-storage:17.0.0"
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation project(':react-native-camera')
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";

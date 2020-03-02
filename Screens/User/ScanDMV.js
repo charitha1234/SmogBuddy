@@ -4,28 +4,32 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    Button
+    ActivityIndicator
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import { RNCamera } from 'react-native-camera';
-import TextBox from '../Components/textBox';
-import { color } from '../Assets/color';
-import GradientButton from '../Components/CustomButton';
+import TextBox from '../../Components/textBox';
+import { color } from '../../Assets/color';
+import GradientButton from '../../Components/CustomButton';
+import firebase from 'react-native-firebase';
 class ScanDMV extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
+            uId: firebase.auth().currentUser.uid,
             loading: false,
             before80: false,
-            successfull: true,
+            successfull: false,
             flashMode: RNCamera.Constants.FlashMode.auto,
         };
     }
-
     onBarCodeRead(scanResult) {
-        this.setState({ successfull: true });
+
         if (scanResult.data != null) {
+            this.setState({
+                successfull: true,
+                loading: true
+            });
             let before80 = false;
             let i = scanResult.data.length;
             while (i--) {
@@ -44,13 +48,26 @@ class ScanDMV extends Component {
             else {
                 let vin = scanResult.data.substr(2, 17);
                 let plate = scanResult.data.substr(20, 7);
-                console.log(vin);
-                console.log(plate);
+                fetch('https://smogbuddy-dev.herokuapp.com/vehicle/' + this.state.uId + '?plateNumber=' + plate + '&vin=' + vin)
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        console.log(responseJson),
+                            this.setState({
+                                loading: false,
+                                year: responseJson.year.toString(),
+                                make: responseJson.manufacturer
+
+                            });
+
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
             }
 
         }
     }
-   
+
     render() {
 
         return (
@@ -72,13 +89,20 @@ class ScanDMV extends Component {
                     :
                     <View style={styles.container}>
                         <Text style={styles.headerText}>Vehicle Details</Text>
-                        <View style={styles.formContainer}>
-                            <TextBox title="YEAR" underline={true} disable={true} defaultValue="2003" />
-                            <TextBox title="MAKE" underline={true} disable={true} defaultValue="TOYOTA" />
-                            <TextBox title="MODEL" underline={true} disable={true} defaultValue="AQUA" />
-                            <TextBox title="ENGINE SIZE" underline={true} disable={true} defaultValue="2L" />
-                        </View>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate("OdometerRead")} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
+                        {!this.state.loading ?
+
+                            <View style={styles.formContainer}>
+                                <TextBox title="YEAR" underline={true} disable={true} defaultValue={this.state.year} />
+                                <TextBox title="MAKE" underline={true} disable={true} defaultValue={this.state.make} />
+                                <TextBox title="MODEL" underline={true} disable={true} defaultValue={this.state.model} />
+                                <TextBox title="ENGINE SIZE" underline={true} disable={true} defaultValue={this.state.engine} />
+                            </View>
+                            :
+                            <View style={styles.formContainer}>
+                                <ActivityIndicator size="large" color="black" />
+                            </View>
+                        }
+                        <TouchableOpacity onPress={() =>{!this.state.loading? this.props.navigation.navigate("OdometerRead"):null}} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
                     </View>
                 }
 

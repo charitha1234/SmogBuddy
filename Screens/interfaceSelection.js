@@ -13,7 +13,7 @@ function InterfaceSelection({ navigation }) {
     const [user,setUser]=useState(false);
 
     useEffect(()=>{
-       driver? navigation.navigate("DriverRegistration") :null;
+       driver? navigation.navigate("DriverRegistration_1") :null;
        user? navigation.navigate("UserRegistration"):null;
     });
     return (

@@ -24,7 +24,7 @@ function NotificationScreen({ navigation }, props) {
                     <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}><Text style={styles.NotificationText}>Push notifications</Text><Switch onValueChange={(value) => setPushState(value)} value={pushState} trackColor={{ true: "black" }} thumbColor="white" /></View>
                     <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}><Text style={styles.NotificationText}>Email Notifications</Text><Switch onValueChange={(value) => setEmailState(value)} value={emailState} trackColor={{ true: "black" }} thumbColor="white" /></View>
                 </View>
-                <TouchableOpacity onPress={() => navigation.navigate("MenuScreens")} style={styles.nextButton}><Text>NEXT</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("UserMenuScreens")} style={styles.nextButton}><Text>NEXT</Text></TouchableOpacity>
             </SafeAreaView>
         </LinearGradient>
     );

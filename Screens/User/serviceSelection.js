@@ -8,12 +8,11 @@ import {
     FlatList,
 
 } from "react-native";
-import ServiceList from '../data/serviceList';
 import CheckBox from '@react-native-community/checkbox';
 import LinearGradient from 'react-native-linear-gradient';
-import { color } from '../Assets/color';
+import { color } from '../../Assets/color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import GradientButton from '../Components/CustomButton';
+import GradientButton from '../../Components/CustomButton';
 
 function Service(props) {
     return (
@@ -36,17 +35,25 @@ class ServiceSelection extends Component {
         super(props)
         this.state = {
             check: {},
+            serviceList:null,
             checkAll: false
         }
+
     }
     CheckAll = () => {
         this.setState({ checkAll: !this.state.checkAll })
     }
     checkBox_Test = (id) => {
+        
         const checkCopy = { ...this.state.check }
         if (checkCopy[id]) checkCopy[id] = false;
         else checkCopy[id] = true;
         this.setState({ check: checkCopy });
+    }
+    componentDidMount(){
+        fetch('https://smogbuddy-dev.herokuapp.com/service')
+        .then((res)=>res.json())
+        .then((resJson)=>this.setState({serviceList:resJson}))
     }
     render() {
         return (
@@ -55,7 +62,7 @@ class ServiceSelection extends Component {
                     <View style={styles.headerContainer}><Text style={styles.headerText}>SELECT SERVICES</Text></View>
                     <View style={styles.serviceListContainer}>
                         <View style={styles.serviceContainer}><Text style={styles.selectAllText}>SELECT ALL</Text><CheckBox value={this.state.checkAll} onChange={this.CheckAll} /></View>
-                        <FlatList data={ServiceList} renderItem={({ item }) => (<Service serviceName={item.serviceName} serviceYear={item.yearRange} Checked={this.state.check[item.serviceID]} onChange={() => this.checkBox_Test(item.serviceID)} />)} keyExtractor={item => item.serviceID} />
+                        <FlatList data={this.state.serviceList} renderItem={({ item }) => (<Service serviceName={item.serviceName} serviceYear={item.yearRange} Checked={this.state.check[item.serviceID]} onChange={() => this.checkBox_Test(item.serviceID)} />)} keyExtractor={item => item.serviceID} />
 
                     </View>
                     <TouchableOpacity onPress={()=>this.props.navigation.navigate("ScanDMV")} style={styles.buttonContainer}><GradientButton style={styles.button} title="NEXT" /></TouchableOpacity>
