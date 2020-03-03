@@ -13,6 +13,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../../Assets/color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import GradientButton from '../../Components/CustomButton';
+import firebase from 'react-native-firebase';
 
 function Service(props) {
     return (
@@ -36,24 +37,55 @@ class ServiceSelection extends Component {
         this.state = {
             check: {},
             serviceList:null,
-            checkAll: false
+            checkAll: false,
+            uid:null
         }
 
     }
+    handleRequest=()=>{
+        console.log("ServiceLISt",this.state.check)
+        fetch('https://smogbuddy-dev.herokuapp.com/user/request' ,{
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: this.state.uid,
+          serviceList:this.state.check,
+        }),
+      })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.props.navigation.navigate("ScanDMV")
+        console.log(responseJson);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    }
     CheckAll = () => {
-        this.setState({ checkAll: !this.state.checkAll })
+        this.setState({ checkAll:!this.state.checkAll })
     }
     checkBox_Test = (id) => {
-        
         const checkCopy = { ...this.state.check }
-        if (checkCopy[id]) checkCopy[id] = false;
-        else checkCopy[id] = true;
+        if (checkCopy[id]) {
+            checkCopy[id] = false;
+        }
+        else{
+            checkCopy[id] = true;
+        }
         this.setState({ check: checkCopy });
     }
     componentDidMount(){
+        const user=firebase.auth().currentUser;
+        this.setState({uid:user});
         fetch('https://smogbuddy-dev.herokuapp.com/service')
         .then((res)=>res.json())
-        .then((resJson)=>this.setState({serviceList:resJson}))
+        .then((resJson)=>{
+            this.setState({serviceList:resJson});
+        }
+            )
     }
     render() {
         return (
@@ -65,7 +97,7 @@ class ServiceSelection extends Component {
                         <FlatList data={this.state.serviceList} renderItem={({ item }) => (<Service serviceName={item.serviceName} serviceYear={item.yearRange} Checked={this.state.check[item.serviceID]} onChange={() => this.checkBox_Test(item.serviceID)} />)} keyExtractor={item => item.serviceID} />
 
                     </View>
-                    <TouchableOpacity onPress={()=>this.props.navigation.navigate("ScanDMV")} style={styles.buttonContainer}><GradientButton style={styles.button} title="NEXT" /></TouchableOpacity>
+                    <TouchableOpacity onPress={this.handleRequest.bind(this)} style={styles.buttonContainer}><GradientButton style={styles.button} title="NEXT" /></TouchableOpacity>
 
                 </SafeAreaView>
             </LinearGradient>

@@ -7,6 +7,7 @@ export const color={
     lightGreen:"#DEFFC9",
     buttonUpper:'#5773F0',
     buttonLower:'#74BCF7',
+    gray:'#bfbfbf',
     
   
   }

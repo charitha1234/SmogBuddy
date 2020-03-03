@@ -3,6 +3,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
@@ -13,6 +14,7 @@ import androidx.multidex.MultiDexApplication;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.storage.RNFirebaseStoragePackage; 
+import io.invertase.firebase.database.RNFirebaseDatabasePackage;
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 
@@ -33,6 +35,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
           packages.add(new RNFirebaseStoragePackage());
           packages.add(new RNFirebaseNotificationsPackage());
           packages.add(new RNFirebaseMessagingPackage());
+          packages.add(new RNFirebaseDatabasePackage());
           return packages;
         }
 
@@ -52,6 +55,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this); // Remove this line if you don't want Flipper enabled
+    BackgroundTaskPackage.useContext(this);
   }
 
   /**

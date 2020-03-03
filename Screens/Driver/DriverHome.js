@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     View,
     Text,
@@ -10,7 +10,31 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
+import firebase from 'react-native-firebase';
+
+async function notification() {
+
+    const notificationOpen = await firebase.notifications().getInitialNotification();
+    if (notificationOpen) {
+        return notificationOpen.notification['data'];
+    }
+}
+
 function Home({ navigation }, props) {
+    useEffect(() => {
+        notification().then(data => {
+            if (data.status == 'ASSIGN_CUSTOMER') {
+
+                navigation.navigate("DriverRequest", { userUid: data.userUid, userPickupLocation: data.userPickupLocation });
+            }
+        })
+    });
+
+    firebase.notifications().onNotification((notification) => {
+        if (notification.data.status == 'ASSIGN_CUSTOMER') {
+            navigation.navigate("DriverRequest", { userUid: notification.data.userUid, userPickupLocation: notification.data.userPickupLocation });
+        }
+    });
 
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
@@ -80,12 +104,12 @@ const styles = StyleSheet.create({
     },
     processContent: {
         flex: 1,
-        margin:20,
+        margin: 20,
     },
     titleText: {
         fontFamily: 'Montserrat-SemiBold',
         fontSize: 15,
         letterSpacing: 3,
-        opacity:0.6
+        opacity: 0.6
     }
 });

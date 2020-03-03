@@ -7,8 +7,6 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import InterfaceSelection from '../Screens/interfaceSelection';
 import UserRegistration from '../Screens/User/UserRegistration';
-import DriverRegistration_1 from '../Screens/Driver/DriverRegistration_1';
-import DriverRegistration_2 from '../Screens/Driver/DriverRegistration_2';
 import Login from '../Screens/login';
 import Splash from '../Screens/splash';
 import Home from '../Screens/User/HomeScreen';
@@ -26,6 +24,8 @@ import Searching from "../Screens/User/Searching";
 import DriverHomeScreen from '../Screens/Driver/DriverHome';
 import DriverDriverProfile from '../Screens/Driver/DriverProfile';
 import DriverVehicleProfile from '../Screens/Driver/VehicleProfile';
+import DriverRequest from '../Screens/Driver/DriverRequest';
+import DriverNavigation from '../Screens/Driver/DriverNavigation';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -35,10 +35,7 @@ const Drawer = createDrawerNavigator();
 function NewUser() {
     return (
         <Stack.Navigator name="Registration" initialRouteName="InterfaceSelection" screenOptions={{ animationEnabled: false, headerShown: false }}>
-            <Stack.Screen name="InterfaceSelection" component={InterfaceSelection} />
             <Stack.Screen name="UserRegistration" component={UserRegistration} />
-            <Stack.Screen name="DriverRegistration_1" component={DriverRegistration_1} />
-            <Stack.Screen name="DriverRegistration_2" component={DriverRegistration_2}/>
             <Stack.Screen name="Notification" component={Notification} />
         </Stack.Navigator>
 
@@ -100,6 +97,8 @@ function WelcomeScreen() {
                 <Stack.Screen name="NewUser" component={NewUser} />
                 <Stack.Screen name="UserMenuScreens" component={UserMenuScreens} />
                 <Stack.Screen name="DriverMenuScreens" component={DriverMenuScreens}/>
+                <Stack.Screen name="DriverRequest" component={DriverRequest}/>
+                <Stack.Screen name="DriverNavigation" component={DriverNavigation}/>
             </Stack.Navigator>
         </NavigationContainer>
     );

@@ -32,6 +32,7 @@ async function authentication(username, password, navigation) {
                         }),
                     }).then((res) => console.log(res))
                         .catch((e) => alert(e));
+                        console.log('responceJson',responseJson)
                     if (responseJson.role == 'CUSTOMER') navigation.navigate('UserMenuScreens');
                     else if (responseJson.role == 'DRIVER') navigation.navigate('DriverMenuScreens');
                 })

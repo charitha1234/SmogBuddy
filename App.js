@@ -30,14 +30,14 @@ class  App extends Component {
       * */
       this.notificationListener = firebase.notifications().onNotification((notification) => {
           const { title, body } = notification;
-          this.showAlert(title, body);
+          // this.showAlert(title, body);
       });
       /*
       * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
       * */
       this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
           const { title, body } = notificationOpen.notification;
-          this.showAlert(title, body);
+          // this.showAlert(title, body);
       });
     
       /*
@@ -46,7 +46,6 @@ class  App extends Component {
       const notificationOpen = await firebase.notifications().getInitialNotification();
       if (notificationOpen) {
           const { title, body } = notificationOpen.notification;
-          this.showAlert(title, body);
       }
       /*
       * Triggered for data only payload in foreground

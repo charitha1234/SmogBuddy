@@ -28,7 +28,7 @@ function newUser(username,password,firstName,address,state,zipCode,phoneNo,navig
           zipCode:zipCode,
           phoneNumber:phoneNo,
           email:username,
-          role:"USER"
+          role:"CUSTOMER"
         }),
       })
       .then((response) => response.json())
