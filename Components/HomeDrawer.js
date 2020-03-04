@@ -18,7 +18,7 @@ return(
         <TouchableOpacity onPress={()=>navigation.navigate("ContactUs")} style={styles.content}><Ionicons name="md-contacts" size={30}/><Text style={styles.contentText}>CONTACT US</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>{
             firebase.auth().signOut();
-            navigation.navigate("Login");}}
+            props.navigation.navigate("Login");}}
              style={styles.logout}><Text style={styles.logoutText}>LOGOUT</Text></TouchableOpacity>
     </View>
     );

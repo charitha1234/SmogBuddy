@@ -15,6 +15,8 @@ function Splash({ navigation }) {
             if (!user) {
                 navigation.navigate('Login')
             }
+            else{
+
             fetch('https://smogbuddy-dev.herokuapp.com/user/' + user.uid)
                 .then((response) => response.json())
                 .then((responseJson) => {
@@ -24,6 +26,7 @@ function Splash({ navigation }) {
                 .catch((error) => {
                     console.error(error);
                 });
+            }
         })
     });
     return (
