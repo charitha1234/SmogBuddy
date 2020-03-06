@@ -6,6 +6,7 @@ import {
     TouchableOpacity
 } from "react-native";
 var Spinner = require('react-native-spinkit');
+import Geolocation from '@react-native-community/geolocation';
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../../Assets/color';
 import firebase from 'react-native-firebase';
@@ -15,12 +16,40 @@ class Searching extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            placed: true
+            placed: false,
+
         }
 
     }
 
     componentDidMount() {
+        const user = firebase.auth().currentUser;
+        Geolocation.getCurrentPosition(info => {
+            fetch('https://smogbuddy-dev.herokuapp.com/user/request', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    uid: user.uid,
+                    serviceList: this.props.route.params.serviceList,
+                    pickupLocation: { lat: info.coords.latitude, lng: info.coords.longitude },
+                    images: [{ imagePath: "aaaa", imageUrl: "bbb", isOdoMeter: true }]
+
+                }),
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    this.setState({
+                        placed: true,
+                        totalServiceTime: responseJson.totalServiceTime,
+                        totalCost: responseJson.totalCost,
+
+                    });
+                });
+        });
 
     }
 
@@ -40,8 +69,8 @@ class Searching extends Component {
                         :
                         <View style={styles.messageContainer}>
                             <View style={styles.TextContainer}>
-                                <Text style={styles.bodyText}>Your Request Is Placed. We Will Notify You In A Moment</Text>
-                                <TouchableOpacity onPress={()=>this.props.navigation.navigate("UserHomeScreen")} style={styles.button}><GradientButton title="GO TO HOME"/></TouchableOpacity>
+                                <Text style={styles.bodyText}>Your Request Is Placed. totalServiceTime is {this.state.totalServiceTime} and totalcost is {this.state.totalCost}. We Will Notify You In A Moment</Text>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("UserHomeScreen")} style={styles.button}><GradientButton title="GO TO HOME" /></TouchableOpacity>
                             </View>
                         </View>
                 }
@@ -59,7 +88,7 @@ const styles = StyleSheet.create({
     headerText: {
         fontFamily: 'Montserrat-Bold',
         fontSize: 30,
-        textAlign:'center',
+        textAlign: 'center',
         letterSpacing: 2,
 
     },
@@ -81,7 +110,7 @@ const styles = StyleSheet.create({
     spinner: {
         flex: 0.5,
     },
-    messageContainer:{
+    messageContainer: {
         alignSelf: 'center',
         backgroundColor: 'white',
         width: 300,
@@ -96,12 +125,12 @@ const styles = StyleSheet.create({
         elevation: 8,
 
     },
-    TextContainer:{
+    TextContainer: {
         flex: 1,
         justifyContent: 'space-evenly',
-        margin:10,
+        margin: 10,
     },
-    button:{
+    button: {
         alignSelf: 'center',
         margin: 30,
         shadowColor: "#000",

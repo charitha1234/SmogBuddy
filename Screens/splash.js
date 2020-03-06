@@ -15,17 +15,16 @@ function Splash({ navigation }) {
             if (!user) {
                 navigation.navigate('Login')
             }
-            else{
-
-            fetch('https://smogbuddy-dev.herokuapp.com/user/' + user.uid)
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    if (responseJson.role == 'CUSTOMER') navigation.navigate('UserMenuScreens');
-                    else if (responseJson.role == 'DRIVER') navigation.navigate('DriverMenuScreens');
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+            else {
+                fetch('https://smogbuddy-dev.herokuapp.com/user/' + user.uid)
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        if (responseJson.role == 'CUSTOMER') navigation.navigate('UserMenuScreens');
+                        else if (responseJson.role == 'DRIVER') navigation.navigate('DriverMenuScreens');
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
             }
         })
     });

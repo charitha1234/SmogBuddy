@@ -15,35 +15,19 @@ import firebase from 'react-native-firebase';
 
 const uuidv1 = require('uuid/v1');
 
+
 class OdometerRead extends Component {
     constructor(props) {
         super(props);
         this.state = {
             picture: false,
-            uid:null,
+            uId: "charitha",
             imgPath: "",
             imgURL: "",
             loading: false,
         }
     }
-    formatDate() {
-        let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-      
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-      
-        return [year, month, day].join('-');
-      }
     takePicture = async () => {
-        const user =firebase.auth().currentUser;
-        this.setState({uid:user.uid});
         if (this.camera) {
             const options = { quality: 0.5, base64: true };
             const data = await this.camera.takePictureAsync(options);
@@ -51,7 +35,7 @@ class OdometerRead extends Component {
             this.setState({ picture: data.uri });
             firebase
                 .storage()
-                .ref(this.formatDate()+'/'+user.uid + '/' + uuidv1() + '.jpeg')
+                .ref(this.state.uId + '/' + uuidv1() + '.jpeg')
                 .putFile(data.uri)
                 .then((res) => {
                     this.setState({ imgURL: res.downloadURL });
@@ -98,7 +82,7 @@ class OdometerRead extends Component {
                                     <TextBox title="METER READING" underline={true}/>
                                     <TextBox title="FUEL" underline={true}/>
                                 </View>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("VideoCapture",{serviceList:this.props.route.params.serviceList,imageURL:this.state.imgURL,imgPath:this.state.imgPath})} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("VideoCapture",{serviceList:this.props.route.params.serviceList})} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
                             </View>
 
                 }

@@ -22,9 +22,9 @@ class ScanDMV extends Component {
             successfull: false,
             flashMode: RNCamera.Constants.FlashMode.auto,
         };
+
     }
     onBarCodeRead(scanResult) {
-
         if (scanResult.data != null) {
             this.setState({
                 successfull: true,
@@ -55,7 +55,11 @@ class ScanDMV extends Component {
                             this.setState({
                                 loading: false,
                                 year: responseJson.year.toString(),
-                                make: responseJson.manufacturer
+                                make: responseJson.make,
+                                model:responseJson.model,
+                                engine:responseJson.enginCapacity,
+                            
+
 
                             });
 
@@ -102,7 +106,7 @@ class ScanDMV extends Component {
                                 <ActivityIndicator size="large" color="black" />
                             </View>
                         }
-                        <TouchableOpacity onPress={() =>{!this.state.loading? this.props.navigation.navigate("OdometerRead"):null}} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
+                        <TouchableOpacity onPress={() =>{!this.state.loading? this.props.navigation.navigate("OdometerRead",{serviceList:this.props.route.params.serviceList}):null}} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
                     </View>
                 }
 

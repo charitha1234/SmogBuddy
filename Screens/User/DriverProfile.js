@@ -1,22 +1,39 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    ActivityIndicator
 } from "react-native";
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import firebase from 'react-native-firebase';
 function Profile({ navigation }) {
     const [driverAssigned, setdriverAssigned] = useState(false)
-
+    const [loading, setloading] = useState(true)
+    useEffect(() => {
+        const user=firebase.auth().currentUser;
+        fetch('https://smogbuddy-dev.herokuapp.com/user/assign/driver/'+user.uid)
+        .then((res)=>res.json())
+        .then((responseJson)=>{
+            if(responseJson.assignDriver)setdriverAssigned(true);
+            if(!responseJson.assignDriver)setdriverAssigned(false);
+            setloading(false)
+        })
+        .catch((e)=>alert(e))
+    })
     return (
 
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
             <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>PROFILE</Text><View /></View>
-            {driverAssigned ?
+            {
+            loading?
+            <View style={{flex:1,justifyContent:'center'}}><ActivityIndicator size={40} color={color.primaryBlack}/></View>
+            :
+            driverAssigned ?
                 <View style={styles.container}>
                     <View style={styles.formContainer}>
                         <TextBox title="FIRST NAME" defaultValue="charitha" disabled={true} />

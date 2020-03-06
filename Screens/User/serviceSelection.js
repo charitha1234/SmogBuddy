@@ -38,31 +38,18 @@ class ServiceSelection extends Component {
             check: {},
             serviceList:null,
             checkAll: false,
-            uid:null
+            uid:null,
+            selectedList:[]
         }
 
     }
     handleRequest=()=>{
-        console.log("ServiceLISt",this.state.check)
-        fetch('https://smogbuddy-dev.herokuapp.com/user/request' ,{
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          uid: this.state.uid,
-          serviceList:this.state.check,
-        }),
-      })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.props.navigation.navigate("ScanDMV")
-        console.log(responseJson);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+        this.setState({selectedList:[]});
+        for (const sId in this.state.check) {
+            if(this.state.check[sId]) this.state.selectedList.push({serviceID:sId})
+        } 
+        console.log("ServiceLISt",this.state.selectedList)
+        this.props.navigation.navigate("ScanDMV",{serviceList:this.state.selectedList})
     }
     CheckAll = () => {
         this.setState({ checkAll:!this.state.checkAll })
@@ -74,6 +61,7 @@ class ServiceSelection extends Component {
         }
         else{
             checkCopy[id] = true;
+            
         }
         this.setState({ check: checkCopy });
     }

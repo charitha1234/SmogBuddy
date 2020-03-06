@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import firebase from 'react-native-firebase';
 
 
 import InterfaceSelection from '../Screens/interfaceSelection';
@@ -51,8 +52,8 @@ function RequestProcess() {
             <Stack.Screen name="ScanDMV" component={ScanDMV} />
             <Stack.Screen name="OdometerRead" component={OdometerRead} />
             <Stack.Screen name="VideoCapture" component={VideoCapture} />
-            <Stack.Screen name="Searching" component={Searching}/>
-            <Stack.Screen name="Tracking" component={DriverProfile}/>
+            <Stack.Screen name="Searching" component={Searching} />
+            <Stack.Screen name="Tracking" component={DriverProfile} />
         </Stack.Navigator>
 
     );
@@ -60,12 +61,12 @@ function RequestProcess() {
 
 function UserHomeScreen() {
     return (
-        <Drawer.Navigator initialRouteName="Home" screenOptions={{ animationEnabled: false, headerShown: false}} drawerContent={props => <HomeDrawerContent {...props} />}>
-            <Drawer.Screen name="Home" component={Home} options={{gestureEnabled:false}}/>
-            <Drawer.Screen name="Profile" component={Profile} options={{gestureEnabled:false}} />
-            <Drawer.Screen name="ContactUs" component={ContactUs} options={{gestureEnabled:false}} />
-            <Drawer.Screen name="DriverTrack" component={DriverTrack} options={{gestureEnabled:false}} />
-            <Drawer.Screen name="DriverProfile" component={DriverProfile} options={{gestureEnabled:false}} />
+        <Drawer.Navigator initialRouteName="Home" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <HomeDrawerContent {...props} />}>
+            <Drawer.Screen name="Home" component={Home} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="Profile" component={Profile} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="ContactUs" component={ContactUs} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="DriverTrack" component={DriverTrack} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="DriverProfile" component={DriverProfile} options={{ gestureEnabled: false }} />
         </Drawer.Navigator>
     );
 }
@@ -89,6 +90,22 @@ function DriverMenuScreens() {
 }
 
 function WelcomeScreen() {
+    const [LoggedIn, setLoggedIn] = useState(false)
+    const [appOpened, setappOpened] = useState(false)
+    useEffect(() => {
+
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user) {
+                setLoggedIn(false);
+                setappOpened(true);
+            }
+            else {
+                setLoggedIn(true);
+                setappOpened(true);
+            }
+
+        });
+    });
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Splash" screenOptions={{ animationEnabled: false, headerShown: false }}>
@@ -96,9 +113,9 @@ function WelcomeScreen() {
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="NewUser" component={NewUser} />
                 <Stack.Screen name="UserMenuScreens" component={UserMenuScreens} />
-                <Stack.Screen name="DriverMenuScreens" component={DriverMenuScreens}/>
-                <Stack.Screen name="DriverRequest" component={DriverRequest}/>
-                <Stack.Screen name="DriverNavigation" component={DriverNavigation}/>
+                <Stack.Screen name="DriverMenuScreens" component={DriverMenuScreens} />
+                <Stack.Screen name="DriverRequest" component={DriverRequest} />
+                <Stack.Screen name="DriverNavigation" component={DriverNavigation} />
             </Stack.Navigator>
         </NavigationContainer>
     );

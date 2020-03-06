@@ -10,6 +10,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
+async function notification() {
+
+    const notificationOpen = await firebase.notifications().getInitialNotification();
+    if (notificationOpen) {
+        return notificationOpen.notification['data'];
+    }
+}
 function Home({ navigation }, props) {
 
     return (
