@@ -35,7 +35,7 @@ class Searching extends Component {
                     uid: user.uid,
                     serviceList: this.props.route.params.serviceList,
                     pickupLocation: { lat: info.coords.latitude, lng: info.coords.longitude },
-                    images: [{ imagePath: "aaaa", imageUrl: "bbb", isOdoMeter: true }]
+                    images: this.props.route.params.images
 
                 }),
             })

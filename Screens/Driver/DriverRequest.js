@@ -5,14 +5,46 @@ import {
     StyleSheet,
     TouchableOpacity,
     Linking, ActivityIndicator,
+    ScrollView,
+    Alert
 } from "react-native";
 import { color } from '../../Assets/color';
 import Geolocation from '@react-native-community/geolocation';
 import MapViewDirections from 'react-native-maps-directions';
 import LinearGradient from 'react-native-linear-gradient';
-import Header from '../../Components/HeaderbarUser';
+import Header from '../../Components/HederBarNavigation';
 import MapView, { Marker } from 'react-native-maps';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import BottomSheet from 'reanimated-bottom-sheet'
 import firebase from 'react-native-firebase';
+import StepIndicator from 'react-native-step-indicator';
+
+const labels = ["Order Placed", "Driver Is On The Way", "PickedUp The Car", "Arrived To The Service Center", "Completed Service", "Driver Is On The Way", "Driver Arrived", "Finished"];
+const customStyles = {
+    stepIndicatorSize: 30,
+    currentStepIndicatorSize: 40,
+    separatorStrokeWidth: 2,
+    currentStepStrokeWidth: 3,
+    stepStrokeCurrentColor: color.primaryBlue,
+    stepStrokeWidth: 3,
+    stepStrokeFinishedColor: color.primaryBlue,
+    stepStrokeUnFinishedColor: '#aaaaaa',
+    separatorFinishedColor: color.primaryBlue,
+    separatorUnFinishedColor: '#aaaaaa',
+    stepIndicatorFinishedColor: color.primaryBlue,
+    stepIndicatorUnFinishedColor: '#ffffff',
+    stepIndicatorCurrentColor: '#ffffff',
+    stepIndicatorLabelFontSize: 13,
+    currentStepIndicatorLabelFontSize: 13,
+    stepIndicatorLabelCurrentColor: color.primaryBlue,
+    stepIndicatorLabelFinishedColor: '#ffffff',
+    stepIndicatorLabelUnFinishedColor: '#aaaaaa',
+    labelColor: color.primaryBlack,
+    labelSize: 13,
+    labelAlign: 'flex-start',
+    currentStepLabelColor: color.primaryBlue,
+    labelFontFamily: 'Montserrat-Light'
+}
 Geolocation.setRNConfiguration({ authorizationLevel: 'always' });
 function feedback(navigation, request, uid, userPickupLocation, distance, duration) {
     fetch('https://smogbuddy-dev.herokuapp.com/driver/confirmation', {
@@ -40,22 +72,25 @@ function feedback(navigation, request, uid, userPickupLocation, distance, durati
         });
 }
 
-function navigationStart(userId){
+
+
+function navigationStart(userId) {
     const user = firebase.auth().currentUser;
     fetch('https://smogbuddy-dev.herokuapp.com/driver/start',
-    {method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            userUid: userId,
-            driverUid:user.uid
+        {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userUid: userId,
+                driverUid: user.uid
 
 
-        }),
-    })
-    .then((response) => response.json())
+            }),
+        })
+        .then((response) => response.json())
         .then((responseJson) => {
             console.log("RESPONEJSON>>>", responseJson);
 
@@ -75,6 +110,44 @@ function turnOnMaps(lat, lng) {
     }).catch(err => console.error('An error occurred', err));
 }
 
+function RenderContent(props) {
+    const [currentStage, setcurrentStage] = useState(0)
+    return (
+        <View style={styles.detailsContainer}>
+            <Ionicons name="ios-remove" size={50} style={styles.bottomsheetMoreIcon} />
+
+            <View style={styles.timeContainer}>
+                <Text style={styles.timeText}>{props.arrivalTime}</Text>
+                <Text style={styles.label}>Arrival Time</Text>
+            </View>
+            <View style={styles.contactContainer}>
+                <StepIndicator
+                    stepCount={8}
+                    direction="vertical"
+                    customStyles={customStyles}
+                    currentPosition={currentStage}
+                    labels={labels}
+                />
+                <TouchableOpacity style={styles.completeButton} onPress={() =>
+                    Alert.alert(
+                        'Are You Sure',
+                        '',
+                        [
+                            {
+                                text: 'No',
+                                onPress: () => setcurrentStage(currentStage),
+                                style: 'cancel',
+                            },
+                            { text: 'Yes', onPress: () => setcurrentStage(currentStage+1) },
+                        ],
+                        { cancelable: false },
+                    )}><Text style={styles.completeButtonText}>NEXT STEP</Text></TouchableOpacity>
+            </View>
+        </View>
+    );
+}
+
+
 function DriverRequest({ navigation, route }) {
     const { userUid, userPickupLocation } = route.params;
 
@@ -93,12 +166,13 @@ function DriverRequest({ navigation, route }) {
     useEffect(() => {
         var hours = Math.floor(duration / 60);
         var minutes = Math.floor(duration % 60);
-        setarrivalTime((new Date().getHours() + hours).toString() + ":" + (new Date().getMinutes() + minutes).toString());
+        if (minutes / 10 >= 1) setarrivalTime((hours).toString() + " h 0" + (minutes).toString() + " min");
+        else setarrivalTime((hours).toString() + " h 0" + (minutes).toString() + " min");
         Geolocation.watchPosition(info => {
             setlat(info.coords.latitude);
             setlng(info.coords.longitude);
         }, e => console.log(e), { distanceFilter: 0 });
-        firebase.database().ref('location/' + uid).update({
+        firebase.database().ref('location/' + userUid).update({
             lat,
             lng,
         });
@@ -106,11 +180,11 @@ function DriverRequest({ navigation, route }) {
 
     return (
         <View style={styles.container}>
-            <Header lat={lat} lng={lng} title="SMOGBUDDY" navigation={navigation} />
-            {!started?
-            <View style={styles.DetailsContainer}><Text style={styles.headerText}>USER REQUEST</Text></View>
-            :
-            null
+            <Header lat={lat} lng={lng} title="SMOGBUDDY" navigation={navigation} onPressRightIcon={() => turnOnMaps(location.lat, location.lng)} />
+            {!started ?
+                <View style={styles.DetailsContainer}><Text style={styles.headerText}>USER REQUEST</Text></View>
+                :
+                null
             }
             <MapView
                 showsUserLocation={true}
@@ -139,13 +213,13 @@ function DriverRequest({ navigation, route }) {
 
             </MapView>
             {started ?
-                <View style={styles.detailsContainer}>
-                    <View style={styles.timeContainer}>
-                        <Text>Arrival Time</Text>
-                        <Text style={styles.timeText}>{arrivalTime}</Text>
-                    </View>
-                    <View style={styles.contactContainer}></View>
-                </View>
+                <BottomSheet
+                    borderRadius={40}
+                    snapPoints={[500, 250]}
+                    enabledBottomClamp={true}
+                    initialSnap={1}
+                    renderContent={() => <RenderContent arrivalTime={arrivalTime} />}
+                />
                 :
                 <View style={styles.ButtonContainer}>
                     {
@@ -164,7 +238,7 @@ function DriverRequest({ navigation, route }) {
                                 :
                                 <TouchableOpacity style={styles.Button} onPress={() => {
                                     setstarted(true);
-                                    navigationStart(userUid,);
+                                    navigationStart(userUid);
                                     //turnOnMaps(location.lat,location.lng)
                                 }}><Text style={styles.ButtonText}>START</Text></TouchableOpacity>
 
@@ -188,6 +262,17 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Bold',
         fontSize: 25,
         letterSpacing: 2,
+    },
+    label: {
+        marginHorizontal: 10,
+        fontFamily: 'Montserrat-Light',
+        fontSize: 15,
+    },
+    scrollContainer: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        height: '50%'
     },
     DetailsContainer: {
         position: 'absolute',
@@ -217,21 +302,16 @@ const styles = StyleSheet.create({
     },
     timeContainer: {
         flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-        borderBottomWidth: 0.5,
-        borderColor: color.gray,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
         marginHorizontal: 10,
     },
     detailsContainer: {
-        position: 'absolute',
         alignSelf: 'center',
-        bottom: 10,
-        height: 200,
-        width: '90%',
-        borderRadius: 50,
+        height: 800,
+        width: '100%',
         shadowColor: "#000",
+        borderRadius: 30,
         shadowOffset: {
             width: 0,
             height: 6,
@@ -242,12 +322,53 @@ const styles = StyleSheet.create({
         backgroundColor: color.primaryWhite
     },
     timeText: {
+        margin: 10,
+        color: color.primaryBlue,
         fontSize: 30
+
     },
     contactContainer: {
-        flex: 1,
+        flex: 5,
         marginHorizontal: 10
 
     },
+    swipHeaderContainer: {
+        backgroundColor: color.primaryWhite,
+        height: 200,
+        width: '90%',
+    },
+    bottomsheetMoreIcon: {
+        color: color.primaryBlack,
+        alignSelf: 'center'
+
+    },
+    StepIndicator: {
+        height: 500,
+        width: '100%'
+    },
+    completeButton: {
+        backgroundColor: color.primaryBlue,
+        width: 200,
+        height: 50,
+        borderRadius: 25,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+        marginBottom: 100,
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: .2,
+        shadowRadius: 8.30,
+        elevation: 3,
+    },
+    completeButtonText: {
+        color: color.primaryWhite,
+        fontFamily: 'Montserrat-Regular',
+        fontSize: 15,
+        letterSpacing: 2,
+    }
 
 });

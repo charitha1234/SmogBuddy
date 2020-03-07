@@ -32,10 +32,7 @@ async function authentication(username, password, navigation) {
                         body: JSON.stringify({
                             fcm: fcmToken
                         }),
-                    }).then((res) => {
-                        if (responseJson.role == 'CUSTOMER') navigation.navigate('UserMenuScreens');
-                        else if (responseJson.role == 'DRIVER') navigation.navigate('DriverMenuScreens');
-                    })
+                    }).then((res) => {})
                         .catch((e) => alert(e));
 
                 })

@@ -13,7 +13,7 @@ import Splash from '../Screens/splash';
 import Home from '../Screens/User/HomeScreen';
 import Notification from '../Screens/notificationScreen';
 import HomeDrawerContent from '../Components/HomeDrawer';
-import OdometerRead from '../Screens/User/odometerRead';
+import OdometerRead from '../Screens/User/takeImages';
 import VideoCapture from '../Screens/User/VideoCapture';
 import Profile from '../Screens/User/Profile';
 import ContactUs from '../Screens/User/contactUs';
@@ -83,6 +83,7 @@ function DriverMenuScreens() {
     return (
         <Stack.Navigator initialRouteName="HomeScreen" screenOptions={{ animationEnabled: false, headerShown: false }}>
             <Stack.Screen name="DriverHomeScreen" component={DriverHomeScreen} />
+            <Stack.Screen name="DriverRequest" component={DriverRequest} />
             <Stack.Screen name="DriverDriverProfile" component={DriverDriverProfile} />
             <Stack.Screen name="DriverVehicleProfile" component={DriverVehicleProfile} />
         </Stack.Navigator>
@@ -92,6 +93,7 @@ function DriverMenuScreens() {
 function WelcomeScreen() {
     const [LoggedIn, setLoggedIn] = useState(false)
     const [appOpened, setappOpened] = useState(false)
+    const [role, setrole] = useState(null)
     useEffect(() => {
 
         firebase.auth().onAuthStateChanged(user => {
@@ -100,8 +102,15 @@ function WelcomeScreen() {
                 setappOpened(true);
             }
             else {
-                setLoggedIn(true);
-                setappOpened(true);
+                fetch('https://smogbuddy-dev.herokuapp.com/user/' + user.uid)
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        setrole(responseJson.role);
+                        setLoggedIn(true);
+                        setappOpened(true);
+                    })
+                    .catch((e) => alert(e));
+
             }
 
         });
@@ -109,13 +118,29 @@ function WelcomeScreen() {
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Splash" screenOptions={{ animationEnabled: false, headerShown: false }}>
-                <Stack.Screen name="Splash" component={Splash} />
-                <Stack.Screen name="Login" component={Login} />
-                <Stack.Screen name="NewUser" component={NewUser} />
-                <Stack.Screen name="UserMenuScreens" component={UserMenuScreens} />
-                <Stack.Screen name="DriverMenuScreens" component={DriverMenuScreens} />
-                <Stack.Screen name="DriverRequest" component={DriverRequest} />
-                <Stack.Screen name="DriverNavigation" component={DriverNavigation} />
+                {
+                    !appOpened ?
+                        <Stack.Screen name="Splash" component={Splash} />
+                        :
+                        null
+                }
+                {
+                    !LoggedIn ? (
+                        <>
+                            <Stack.Screen name="Login" component={Login} />
+                            <Stack.Screen name="NewUser" component={NewUser} />
+                        </>
+                    ) :
+                        role == 'CUSTOMER' ? (
+                            <Stack.Screen name="UserMenuScreens" component={UserMenuScreens} />
+                        )
+                            :
+                            role == 'DRIVER' ? (
+                                <Stack.Screen name="DriverMenuScreens" component={DriverMenuScreens} />
+                            )
+                                :
+                                null
+                }
             </Stack.Navigator>
         </NavigationContainer>
     );

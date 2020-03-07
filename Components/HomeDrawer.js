@@ -17,8 +17,7 @@ return(
         <TouchableOpacity onPress={()=>navigation.navigate("DriverTrack")} style={styles.content}><Ionicons name="md-navigate" size={30}/><Text style={styles.contentText}>TRACK CAR</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("ContactUs")} style={styles.content}><Ionicons name="md-contacts" size={30}/><Text style={styles.contentText}>CONTACT US</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>{
-            firebase.auth().signOut();
-            props.navigation.navigate("Login");}}
+            firebase.auth().signOut();}}
              style={styles.logout}><Text style={styles.logoutText}>LOGOUT</Text></TouchableOpacity>
     </View>
     );

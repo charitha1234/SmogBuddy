@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
 import {
     View,
     Text,
@@ -9,6 +9,7 @@ import Header from '../../Components/HeaderbarUser';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../../Assets/color';
+import firebase from 'react-native-firebase';
 import GradientButton from '../../Components/CustomButton';
 async function notification() {
 
@@ -18,6 +19,19 @@ async function notification() {
     }
 }
 function Home({ navigation }, props) {
+    useEffect(() => {
+        notification().then(data => {
+            if (data.status == 'ASSIGN_CUSTOMER') {
+
+            }
+        })
+    });
+
+    firebase.notifications().onNotification((notification) => {
+        if (notification.data.status == 'ASSIGN_CUSTOMER') {
+            
+        }
+    });
 
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
@@ -26,7 +40,6 @@ function Home({ navigation }, props) {
                 <View style={styles.process}>
                     <View style={styles.processContent}>
                         <Text style={styles.titleText}>SMOG CHECK REQUEST</Text>
-
                     </View>
                     <TouchableOpacity onPress={() => navigation.navigate("RequestProcess")} style={styles.button}><GradientButton title="REQUEST" /></TouchableOpacity>
                 </View>
