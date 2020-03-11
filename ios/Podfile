@@ -34,7 +34,15 @@ target 'SmogBuddy' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+# Required by RNFirebase
+pod 'Firebase/Core'
+pod 'Firebase/Auth'
+pod 'Firebase/Analytics'
+pod 'Firebase/Messaging'
+pod 'Crashlytics'
+pod 'Firebase/Storage'
 
+pod 'Firebase/Database'
 
   target 'SmogBuddyTests' do
     inherit! :search_paths
