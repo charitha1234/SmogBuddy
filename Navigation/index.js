@@ -7,11 +7,11 @@ import firebase from 'react-native-firebase';
 
 
 import InterfaceSelection from '../Screens/interfaceSelection';
-import UserRegistration from '../Screens/User/UserRegistration';
+import UserRegistration_1 from '../Screens/User/UserRegistration_1';
+import UserRegistration_2 from '../Screens/User/UserRegistration_2';
 import Login from '../Screens/login';
 import Splash from '../Screens/splash';
 import Home from '../Screens/User/HomeScreen';
-import Notification from '../Screens/notificationScreen';
 import HomeDrawerContent from '../Components/HomeDrawer';
 import OdometerRead from '../Screens/User/takeImages';
 import VideoCapture from '../Screens/User/VideoCapture';
@@ -28,6 +28,7 @@ import DriverVehicleProfile from '../Screens/Driver/VehicleProfile';
 import DriverRequest from '../Screens/Driver/DriverRequest';
 import DriverOdometer from '../Screens/Driver/DriverOdometer';
 import DriverNavigation from '../Screens/Driver/DriverNavigation';
+import SmogTests from '../Screens/Technician/SmogTests';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -36,9 +37,9 @@ const Drawer = createDrawerNavigator();
 
 function NewUser() {
     return (
-        <Stack.Navigator name="Registration" initialRouteName="InterfaceSelection" screenOptions={{ animationEnabled: false, headerShown: false }}>
-            <Stack.Screen name="UserRegistration" component={UserRegistration} />
-            <Stack.Screen name="Notification" component={Notification} />
+        <Stack.Navigator name="Registration" initialRouteName="UserRegistration_1" screenOptions={{ animationEnabled: false, headerShown: false }}>
+            <Stack.Screen name="UserRegistration_1" component={UserRegistration_1} />
+            <Stack.Screen name="UserRegistration_2" component={UserRegistration_2}/>
         </Stack.Navigator>
 
     );
@@ -54,7 +55,6 @@ function RequestProcess() {
             <Stack.Screen name="OdometerRead" component={OdometerRead} />
             <Stack.Screen name="VideoCapture" component={VideoCapture} />
             <Stack.Screen name="Searching" component={Searching} />
-            <Stack.Screen name="Tracking" component={DriverProfile} />
         </Stack.Navigator>
 
     );
@@ -92,6 +92,14 @@ function DriverMenuScreens() {
     );
 }
 
+function TechnicianScreens(){
+    return(
+        <Stack.Navigator initialRouteName="SmogTests" screenOptions={{ animationEnabled: false, headerShown: false }}>
+            <Stack.Screen name="SmogTests" component ={SmogTests}/>
+        </Stack.Navigator>
+    )
+}
+
 function WelcomeScreen() {
     const [LoggedIn, setLoggedIn] = useState(false)
     const [appOpened, setappOpened] = useState(false)
@@ -104,14 +112,18 @@ function WelcomeScreen() {
                 setappOpened(true);
             }
             else {
+                console.log(user)
                 fetch('https://smogbuddy-dev.herokuapp.com/user/' + user.uid)
                     .then((response) => response.json())
                     .then((responseJson) => {
+                        console.log("RESPONSEJSONNAVIGATION",responseJson)
                         setrole(responseJson.role);
                         setLoggedIn(true);
                         setappOpened(true);
                     })
-                    .catch((e) => alert(e));
+                    .catch((e) =>{
+                        setappOpened(true);
+                    });
 
             }
 
@@ -141,7 +153,10 @@ function WelcomeScreen() {
                                 <Stack.Screen name="DriverMenuScreens" component={DriverMenuScreens} />
                             )
                                 :
-                                null
+                                role == 'TECHNICIAN'?(
+                                    <Stack.Screen name="TechnicianScreens" component={TechnicianScreens}/>
+                                )
+                                :null
                 }
             </Stack.Navigator>
         </NavigationContainer>
