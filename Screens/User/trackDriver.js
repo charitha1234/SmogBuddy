@@ -11,9 +11,61 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import firebase from 'react-native-firebase';
+import BottomSheet from 'reanimated-bottom-sheet'
 import Geolocation from '@react-native-community/geolocation';
+import StepIndicator from 'react-native-step-indicator';
 import MapViewDirections from 'react-native-maps-directions';
 Geolocation.setRNConfiguration({ authorizationLevel: 'always' });
+const labels = ["Driver Is On The Way", "Driver Arrived","PickedUp The Car", "Arrived To The Service Center", "Completed Service", "Driver Is On The Way", "Driver Arrived", "Finished"];
+const buttonLabels=["IM ON THE WAY","I've ARRIVED","CAR IS PICKED UP","ARRIVED TO THE STATION","SERVICE COMPLETED","IM ON THE WAY","I've ARRIVED","FINISHED"]
+const customStyles = {
+    stepIndicatorSize: 30,
+    currentStepIndicatorSize: 40,
+    separatorStrokeWidth: 2,
+    currentStepStrokeWidth: 3,
+    stepStrokeCurrentColor: color.primaryBlue,
+    stepStrokeWidth: 3,
+    stepStrokeFinishedColor: color.primaryBlue,
+    stepStrokeUnFinishedColor: '#aaaaaa',
+    separatorFinishedColor: color.primaryBlue,
+    separatorUnFinishedColor: '#aaaaaa',
+    stepIndicatorFinishedColor: color.primaryBlue,
+    stepIndicatorUnFinishedColor: '#ffffff',
+    stepIndicatorCurrentColor: '#ffffff',
+    stepIndicatorLabelFontSize: 13,
+    currentStepIndicatorLabelFontSize: 13,
+    stepIndicatorLabelCurrentColor: color.primaryBlue,
+    stepIndicatorLabelFinishedColor: '#ffffff',
+    stepIndicatorLabelUnFinishedColor: '#aaaaaa',
+    labelColor: color.primaryBlack,
+    labelSize: 13,
+    labelAlign: 'flex-start',
+    currentStepLabelColor: color.primaryBlue,
+    labelFontFamily: 'Montserrat-Light'
+}
+
+function RenderContent(props) {
+    const [currentStage, setcurrentStage] = useState(0)
+    return (
+        <View style={styles.detailsContainer}>
+            <Ionicons name="ios-remove" size={50} style={styles.bottomsheetMoreIcon} />
+
+            <View style={styles.timeContainer}>
+                <Text style={styles.timeText}>{props.arrivalTime}</Text>
+                <Text style={styles.label}>Arrival Time</Text>
+            </View>
+            <View style={styles.contactContainer}>
+                <StepIndicator
+                    stepCount={8}
+                    direction="vertical"
+                    customStyles={customStyles}
+                    currentPosition={currentStage}
+                    labels={labels}
+                />
+            </View>
+        </View>
+    );
+}
 function DriverTrack({ navigation }, props) {
     const [DriverUid, setDriverUid] = useState(null)
     const [longitude, setlongitude] = useState(null)
@@ -51,15 +103,21 @@ function DriverTrack({ navigation }, props) {
 
             firebase.database().ref('location/' + DriverUid).on('value', snapshot => {
                 if (snapshot.val()) {
-                    const oldDateObj = new Date();
-                    const newDateObj = new Date(oldDateObj.getTime() + duration * 60000);
-                    var totalminutes = new Date().getHours() * 60 + new Date().getMinutes() + duration;
-                    var hours = Math.floor(totalminutes / 60);
-                    var minutes = Math.floor(totalminutes % 60);
-                    if (minutes / 10 >= 1) setarrivalTime((hours).toString() + ":" + (minutes).toString());
-                    else setarrivalTime(newDateObj);
+
+                    var hours = Math.floor(duration / 60);
+                    var minutes = Math.floor(duration % 60);
+
+                    if (minutes / 10 >= 1){
+                        if(hours==0) setarrivalTime((minutes).toString()+" min");
+                        else setarrivalTime((hours).toString() + "h " + (minutes).toString()+" min");
+                    }
+
+                    else {
+                        if(hours==0) setarrivalTime("0"+(minutes).toString()+" min");
+                        else setarrivalTime((hours).toString() + "h " + (minutes).toString()+" min");
+                    }
                     setlatitude(snapshot.val().lat),
-                        setlongitude(snapshot.val().lng)
+                    setlongitude(snapshot.val().lng)
                 }
 
             });
@@ -69,7 +127,9 @@ function DriverTrack({ navigation }, props) {
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
             <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>TRACKING</Text><View /></View>
             {loading ?
-                <ActivityIndicator style={{ flex: 1 }} size={40} color={color.primaryBlack} />
+            <View style={{ flex: 1,justifyContent:'center',alignItems:'center' }}>
+                <ActivityIndicator  size={40} color={color.primaryBlack} />
+                </View>
                 :
 
                 driverAssigned ?
@@ -100,20 +160,25 @@ function DriverTrack({ navigation }, props) {
                                                 setduration(info.duration);
                                             }}
                                         />
-                                        <Marker coordinate={{ "latitude": latitude, "longitude": longitude }} />
+                                        <Marker coordinate={{ "latitude": latitude, "longitude": longitude }}>
+                                            <Ionicons name="md-car" size={30}/>
+                                        </Marker>
+                                        <Marker coordinate={{ "latitude": customerLat, "longitude": customerLng }}>
+                                            <Ionicons name="md-man" size={30}/>
+                                        </Marker>
                                     </>
                                     :
                                     null
                             }
                         </MapView>
                         {startGiven ?
-                            <View style={styles.detailsContainer}>
-                                <View style={styles.timeContainer}>
-                                    <Text>Arrival Time</Text>
-                                    <Text style={styles.timeText}>{arrivalTime}</Text>
-                                </View>
-                                <View style={styles.contactContainer}></View>
-                            </View>
+                           <BottomSheet
+                           borderRadius={40}
+                           snapPoints={[500, 200]}
+                           enabledBottomClamp={true}
+                           initialSnap={1}
+                           renderContent={() => <RenderContent arrivalTime={arrivalTime} />}
+                       />
                             :
                             driverAssigned ?
                                 null
@@ -138,13 +203,22 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    detailsContainer: {
+    label: {
+        marginHorizontal: 10,
+        fontFamily: 'Montserrat-Light',
+        fontSize: 15,
+    },
+    scrollContainer: {
         position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        height: '50%'
+    },
+    detailsContainer: {
         alignSelf: 'center',
-        bottom: 10,
-        height: 200,
-        width: '90%',
-        borderRadius: 50,
+        height: 800,
+        marginTop:50,
+        width: '100%',
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -154,11 +228,9 @@ const styles = StyleSheet.create({
         shadowRadius: 8.30,
         elevation: 3,
         backgroundColor: color.primaryWhite
-
-
     },
     headerContainer: {
-        flex: 0.25,
+        flex: 0.15,
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -185,22 +257,20 @@ const styles = StyleSheet.create({
     },
     timeContainer: {
         flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-        borderBottomWidth: 0.5,
-        borderColor: color.gray,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
         marginHorizontal: 10,
-
-
     },
     contactContainer: {
-        flex: 1,
+        flex: 5,
         marginHorizontal: 10
 
     },
     timeText: {
+        margin: 10,
+        color: color.primaryBlue,
         fontSize: 30
+
     },
     headerText: {
         fontFamily: 'Montserrat-Bold',
@@ -215,5 +285,19 @@ const styles = StyleSheet.create({
         flex: 0.25,
         margin: 30,
 
+    },
+    swipHeaderContainer: {
+        backgroundColor: color.primaryWhite,
+        height: 200,
+        width: '90%',
+    },
+    bottomsheetMoreIcon: {
+        color: color.primaryBlack,
+        alignSelf: 'center'
+
+    },
+    StepIndicator: {
+        height: 500,
+        width: '100%'
     },
 });

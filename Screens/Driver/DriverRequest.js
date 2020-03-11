@@ -5,9 +5,11 @@ import {
     StyleSheet,
     TouchableOpacity,
     Linking, ActivityIndicator,
-    ScrollView,
+    Image,
     Alert
 } from "react-native";
+import AsyncStorage from '@react-native-community/async-storage';
+import MapTheme from '../../Assets/mapsStyle';
 import { color } from '../../Assets/color';
 import Geolocation from '@react-native-community/geolocation';
 import MapViewDirections from 'react-native-maps-directions';
@@ -19,7 +21,9 @@ import BottomSheet from 'reanimated-bottom-sheet'
 import firebase from 'react-native-firebase';
 import StepIndicator from 'react-native-step-indicator';
 
-const labels = ["Order Placed", "Driver Is On The Way", "PickedUp The Car", "Arrived To The Service Center", "Completed Service", "Driver Is On The Way", "Driver Arrived", "Finished"];
+const labels = ["Driver Is On The Way", "Driver Arrived", "PickedUp The Car", "Arrived To The Service Center", "Completed Service", "Driver Is On The Way", "Driver Arrived", "Finished"];
+const buttonLabels = ["IM ON THE WAY", "I've ARRIVED", "CAR IS PICKED UP", "ARRIVED TO THE STATION", "SERVICE COMPLETED", "IM ON THE WAY", "I've ARRIVED", "FINISHED"]
+const cases = ['DRIVER_ON_THE_WAY_TO_USER', 'DRIVER_ARRIVED', 'PICKED_UP', 'DRIVER_ARRIVED_TO_SHOP', 'SERVICE_COMPLETED', 'DRIVER_ON_THE_WAY_TO_USER_AFTER_COMPLETE', 'DRIVER_ARRIVED_AFTER_COMPLETE', 'FINISHED']
 const customStyles = {
     stepIndicatorSize: 30,
     currentStepIndicatorSize: 40,
@@ -109,16 +113,45 @@ function turnOnMaps(lat, lng) {
         }
     }).catch(err => console.error('An error occurred', err));
 }
-
+async function checkUploaded() {
+    try {
+        const value = await AsyncStorage.getItem('ODOMETER_UPLOADED')
+        if (value !== 'UPLOADED') {
+            console.log("CheckUploaded>>", value)
+            return false
+        }
+        else return true
+    } catch (e) {
+        alert(e)
+    }
+}
+async function removeUploaded() {
+    try {
+        await AsyncStorage.setItem('ODOMETER_UPLOADED', 'NOT_UPLOADED')
+    } catch (e) {
+        alert(e)
+    }
+}
 function RenderContent(props) {
     const [currentStage, setcurrentStage] = useState(0)
+    useEffect(() => {
+        const user = firebase.auth().currentUser;
+        firebase.database().ref('location/' + user.uid).update({
+            currentStage
+        });
+    });
     return (
         <View style={styles.detailsContainer}>
             <Ionicons name="ios-remove" size={50} style={styles.bottomsheetMoreIcon} />
 
             <View style={styles.timeContainer}>
-                <Text style={styles.timeText}>{props.arrivalTime}</Text>
-                <Text style={styles.label}>Arrival Time</Text>
+                <View style={{ flex: 1 }}>
+                    <Text style={styles.timeText}>{props.arrivalTime}</Text>
+                    <Text style={styles.label}>Arrival Time</Text>
+                </View>
+                <TouchableOpacity disabled={!(currentStage == 2 || currentStage == 4 || currentStage == 7)} onPress={() => props.navigation.navigate("DriverOdometer", { case: cases[currentStage], userId: props.userId })} style={styles.IconContainer}>
+                    <Ionicons name="ios-camera" size={50} />
+                </TouchableOpacity>
             </View>
             <View style={styles.contactContainer}>
                 <StepIndicator
@@ -128,20 +161,105 @@ function RenderContent(props) {
                     currentPosition={currentStage}
                     labels={labels}
                 />
-                <TouchableOpacity style={styles.completeButton} onPress={() =>
-                    Alert.alert(
-                        'Are You Sure',
-                        '',
-                        [
-                            {
-                                text: 'No',
-                                onPress: () => setcurrentStage(currentStage),
-                                style: 'cancel',
-                            },
-                            { text: 'Yes', onPress: () => setcurrentStage(currentStage+1) },
-                        ],
-                        { cancelable: false },
-                    )}><Text style={styles.completeButtonText}>NEXT STEP</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.completeButton} onPress={() => {
+                    if (currentStage == 2 || currentStage == 4 || currentStage == 7) {
+                        checkUploaded().then((val) => {
+                            if (val) {
+                                Alert.alert(
+                                    'Are You Sure',
+                                    '',
+                                    [
+                                        {
+                                            text: 'No',
+                                            onPress: () => setcurrentStage(currentStage),
+                                            style: 'cancel',
+                                        },
+                                        {
+                                            text: 'Yes', onPress: () => {
+                                                removeUploaded()
+                                                const user = firebase.auth().currentUser;
+                                                fetch('https://smogbuddy-dev.herokuapp.com/driver/status',
+                                                    {
+                                                        method: 'PUT',
+                                                        headers: {
+                                                            Accept: 'application/json',
+                                                            'Content-Type': 'application/json',
+                                                        },
+                                                        body: JSON.stringify({
+                                                            userUid: props.userId,
+                                                            driverUid: user.uid,
+                                                            status:cases[currentStage]
+
+
+                                                        }),
+                                                    })
+                                                    .then((response) => response.json())
+                                                    .then((responseJson) => {
+                                                        console.log("RESPONEJSON>>>", responseJson);
+
+                                                    })
+                                                    .catch((error) => {
+                                                        console.error(error);
+                                                    });
+                                                setcurrentStage(currentStage + 1)
+                                            }
+                                        },
+                                    ],
+                                    { cancelable: false },
+                                )
+                            }
+                            else {
+                                alert("Car Images are not Upoaded")
+                            }
+                        })
+
+                    }
+                    else {
+                        Alert.alert(
+                            'Are You Sure',
+                            '',
+                            [
+                                {
+                                    text: 'No',
+                                    onPress: () => setcurrentStage(currentStage),
+                                    style: 'cancel',
+                                },
+                                {
+                                    text: 'Yes', onPress: () => {
+                                        const user = firebase.auth().currentUser;
+                                        removeUploaded()
+                                        fetch('https://smogbuddy-dev.herokuapp.com/driver/status',
+                                                    {
+                                                        method: 'PUT',
+                                                        headers: {
+                                                            Accept: 'application/json',
+                                                            'Content-Type': 'application/json',
+                                                        },
+                                                        body: JSON.stringify({
+                                                            userUid: props.userId,
+                                                            driverUid: user.uid,
+                                                            status:cases[currentStage]
+
+
+                                                        }),
+                                                    })
+                                                    .then((response) => response.json())
+                                                    .then((responseJson) => {
+                                                        console.log("RESPONEJSON>>>", responseJson);
+
+                                                    })
+                                                    .catch((error) => {
+                                                        console.error(error);
+                                                    });
+                                        setcurrentStage(currentStage + 1)
+                                    }
+                                },
+                            ],
+                            { cancelable: false },
+
+                        )
+                    }
+                }}><Text style={styles.completeButtonText}>{buttonLabels[currentStage]}</Text></TouchableOpacity>
             </View>
         </View>
     );
@@ -164,15 +282,17 @@ function DriverRequest({ navigation, route }) {
     const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
     const destination = { latitude: location.lat, longitude: location.lng }
     useEffect(() => {
+        const user = firebase.auth().currentUser;
         var hours = Math.floor(duration / 60);
         var minutes = Math.floor(duration % 60);
-        if (minutes / 10 >= 1) setarrivalTime((hours).toString() + " h 0" + (minutes).toString() + " min");
+        if (minutes / 10 >= 1) setarrivalTime((hours).toString() + " h " + (minutes).toString() + " min");
         else setarrivalTime((hours).toString() + " h 0" + (minutes).toString() + " min");
         Geolocation.watchPosition(info => {
+
             setlat(info.coords.latitude);
             setlng(info.coords.longitude);
         }, e => console.log(e), { distanceFilter: 0 });
-        firebase.database().ref('location/' + userUid).update({
+        firebase.database().ref('location/' + user.uid).update({
             lat,
             lng,
         });
@@ -180,7 +300,7 @@ function DriverRequest({ navigation, route }) {
 
     return (
         <View style={styles.container}>
-            <Header lat={lat} lng={lng} title="SMOGBUDDY" navigation={navigation} onPressRightIcon={() => turnOnMaps(location.lat, location.lng)} />
+            <Header lat={lat} lng={lng} title="SMOGBUDDY" navigationEnabled={started} navigation={navigation} onPressRightIcon={() => turnOnMaps(location.lat, location.lng)} />
             {!started ?
                 <View style={styles.DetailsContainer}><Text style={styles.headerText}>USER REQUEST</Text></View>
                 :
@@ -200,8 +320,8 @@ function DriverRequest({ navigation, route }) {
                     origin={origin}
                     destination={destination}
                     apikey={GOOGLE_MAPS_APIKEY}
-                    strokeWidth={accepted ? 3 : 0}
-                    strokeColor={color.primaryBlack}
+                    strokeWidth={accepted ? 4 : 0}
+                    strokeColor={color.primaryBlue}
                     resetOnChange={false}
                     onReady={(info) => {
                         setloading(false);
@@ -209,7 +329,9 @@ function DriverRequest({ navigation, route }) {
                         setduration(info.duration);
                     }}
                 />
-                <Marker coordinate={{ "longitude": location.lng, "latitude": location.lat }} />
+                <Marker coordinate={{ "longitude": location.lng, "latitude": location.lat }}>
+                    <Ionicons name="ios-man" size={30} />
+                </Marker>
 
             </MapView>
             {started ?
@@ -218,7 +340,7 @@ function DriverRequest({ navigation, route }) {
                     snapPoints={[500, 250]}
                     enabledBottomClamp={true}
                     initialSnap={1}
-                    renderContent={() => <RenderContent arrivalTime={arrivalTime} />}
+                    renderContent={() => <RenderContent userId={userUid} navigation={navigation} arrivalTime={arrivalTime} />}
                 />
                 :
                 <View style={styles.ButtonContainer}>
@@ -302,6 +424,7 @@ const styles = StyleSheet.create({
     },
     timeContainer: {
         flex: 1,
+        flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         marginHorizontal: 10,
@@ -311,7 +434,6 @@ const styles = StyleSheet.create({
         height: 800,
         width: '100%',
         shadowColor: "#000",
-        borderRadius: 30,
         shadowOffset: {
             width: 0,
             height: 6,
@@ -348,7 +470,7 @@ const styles = StyleSheet.create({
     },
     completeButton: {
         backgroundColor: color.primaryBlue,
-        width: 200,
+        width: 300,
         height: 50,
         borderRadius: 25,
         alignSelf: 'center',
@@ -369,6 +491,12 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Regular',
         fontSize: 15,
         letterSpacing: 2,
+    },
+    IconContainer: {
+        flex: 1,
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 
 });

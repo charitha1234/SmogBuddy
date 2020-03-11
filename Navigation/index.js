@@ -26,6 +26,7 @@ import DriverHomeScreen from '../Screens/Driver/DriverHome';
 import DriverDriverProfile from '../Screens/Driver/DriverProfile';
 import DriverVehicleProfile from '../Screens/Driver/VehicleProfile';
 import DriverRequest from '../Screens/Driver/DriverRequest';
+import DriverOdometer from '../Screens/Driver/DriverOdometer';
 import DriverNavigation from '../Screens/Driver/DriverNavigation';
 
 const Stack = createStackNavigator();
@@ -86,6 +87,7 @@ function DriverMenuScreens() {
             <Stack.Screen name="DriverRequest" component={DriverRequest} />
             <Stack.Screen name="DriverDriverProfile" component={DriverDriverProfile} />
             <Stack.Screen name="DriverVehicleProfile" component={DriverVehicleProfile} />
+            <Stack.Screen name="DriverOdometer" component={DriverOdometer}/>
         </Stack.Navigator>
     );
 }

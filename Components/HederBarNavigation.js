@@ -17,7 +17,7 @@ function HeaderBar(props) {
                 <View style={styles.headerBar}>
                    <View style={{flex:1}}/>
                     <Text style={styles.headerTitle}>{props.title}</Text>
-                    <TouchableOpacity onPress={props.onPressRightIcon} style={{flex:1,flexDirection:'row', justifyContent:'flex-end'}}>
+                    <TouchableOpacity disabled={!props.navigationEnabled} onPress={props.onPressRightIcon} style={{flex:1,flexDirection:'row', justifyContent:'flex-end'}}>
                         <Ionicons style={{color:color.primaryWhite}} name="md-navigate" size={30}/>
                     </TouchableOpacity>
                 </View>

@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import { RNCamera } from 'react-native-camera';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextBox from '../../Components/textBox';
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
@@ -99,11 +100,11 @@ class OdometerRead extends Component {
                             permissionDialogTitle={'Permission to use camera'}
                             permissionDialogMessage={'We need your permission to use your camera phone'}
                             style={styles.preview}
-                        ><TouchableOpacity disabled={this.state.loading} onPress={this.takePicture.bind(this)} style={styles.capture}>
+                        ><TouchableOpacity disabled={this.state.loading} onPress={this.takePicture.bind(this)}>
                                 {this.state.loading ?
-                                    <ActivityIndicator size={20} color={color.primaryBlack} />
+                                    <ActivityIndicator size={80} color={color.primaryWhite} style={{margin:30}} />
                                     :
-                                    <Text style={{ fontSize: 14 }}> SNAP </Text>
+                                    <Ionicons name="ios-radio-button-off" color={color.primaryWhite} size={80} style={{margin:30}}/>
                                 }
                             </TouchableOpacity></RNCamera>
                         {
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent:'center',
     },
     preview: {
         flex: 1,
@@ -158,8 +159,11 @@ const styles = StyleSheet.create({
     },
     headerTextContainer: {
         alignItems: 'center',
-        flex: 0.25,
-        margin: 30,
+        height:100,
+        width:'100%',
+        justifyContent:'center',
+        backgroundColor:color.primaryWhite
+
 
     },
     formContainer: {

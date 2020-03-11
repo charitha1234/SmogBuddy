@@ -4,10 +4,12 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    ActivityIndicator
+    ActivityIndicator,
+    Image
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import { RNCamera } from 'react-native-camera';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextBox from '../../Components/textBox';
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
@@ -77,6 +79,8 @@ class ScanDMV extends Component {
         return (
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
                 {!this.state.successfull ?
+                <>
+                <View style={styles.headerTextContainer}><Text style={styles.scanScreenMessage}>SCAN YOUR DMV</Text></View>
                     <RNCamera
                         ref={ref => {
                             this.camera = ref;
@@ -89,7 +93,8 @@ class ScanDMV extends Component {
                         permissionDialogTitle={'Permission to use camera'}
                         permissionDialogMessage={'We need your permission to use your camera phone'}
                         style={styles.preview}
-                    ><Text style={styles.scanScreenMessage}>Please scan the DMV</Text></RNCamera>
+                    ><Image resizeMode="contain" source={require('../../Assets/barcodeScan.png')} style={{width:'90%',height:'90%',marginTop:'-45%'}}/></RNCamera>
+                    </>
                     :
                     <View style={styles.container}>
                         <Text style={styles.headerText}>Vehicle Details</Text>
@@ -126,7 +131,7 @@ const styles = StyleSheet.create({
 
     },
     preview: {
-        flex: 0.5,
+        height:'100%',
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
@@ -156,7 +161,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Bold',
         fontSize: 20,
         letterSpacing: 2,
-        color: 'white'
+        color: color.primaryBlack
     },
     middleLine: {
         flex: 1,
@@ -178,5 +183,13 @@ const styles = StyleSheet.create({
         shadowRadius: 8.30,
 
         elevation: 5,
+    },
+    headerTextContainer:{
+        height:100,
+        backgroundColor:color.primaryWhite,
+        width:'100%',
+        justifyContent:'center',
+        alignItems:'center'
+
     }
 });

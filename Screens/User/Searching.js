@@ -65,7 +65,7 @@ class Searching extends Component {
                 </View>
                 {
                     !this.state.placed ?
-                        <Spinner style={styles.spinner} isVisible={true} size={200} type='Bounce' color="black" />
+                        <Spinner style={styles.spinner} isVisible={true} size={200} type='Bounce' color={color.primaryBlack} />
                         :
                         <View style={styles.messageContainer}>
                             <View style={styles.TextContainer}>
