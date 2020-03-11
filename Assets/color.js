@@ -4,6 +4,7 @@ export const color={
     primaryGreen:"#77BD72",
     primaryBlack:"black" ,
     lightBlue:"#A3F8FF",
+    failedRed:'#FC100D',
     lightGreen:"#DEFFC9",
     buttonUpper:'#5773F0',
     buttonLower:'#74BCF7',

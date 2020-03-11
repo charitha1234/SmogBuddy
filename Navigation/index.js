@@ -11,8 +11,13 @@ import UserRegistration_1 from '../Screens/User/UserRegistration_1';
 import UserRegistration_2 from '../Screens/User/UserRegistration_2';
 import Login from '../Screens/login';
 import Splash from '../Screens/splash';
+import AdminHome from '../Screens/Admin/AdminHome';
 import Home from '../Screens/User/HomeScreen';
 import HomeDrawerContent from '../Components/HomeDrawer';
+import AdminDrawerContent from '../Components/AdminDrawer';
+import TrackDriver from '../Screens/Admin/TrackDriver';
+import Process from '../Screens/Admin/Process';
+import ShopProfile from '../Screens/Admin/ShopProfile';
 import OdometerRead from '../Screens/User/takeImages';
 import VideoCapture from '../Screens/User/VideoCapture';
 import Profile from '../Screens/User/Profile';
@@ -20,6 +25,7 @@ import ContactUs from '../Screens/User/contactUs';
 import ScanDMV from '../Screens/User/ScanDMV';
 import DriverTrack from '../Screens/User/trackDriver';
 import DriverProfile from '../Screens/User/DriverProfile';
+import TakeImages from '../Screens/Technician/TakeImages';
 import ServiceSelection from '../Screens/User/serviceSelection';
 import Searching from "../Screens/User/Searching";
 import DriverHomeScreen from '../Screens/Driver/DriverHome';
@@ -96,9 +102,31 @@ function TechnicianScreens(){
     return(
         <Stack.Navigator initialRouteName="SmogTests" screenOptions={{ animationEnabled: false, headerShown: false }}>
             <Stack.Screen name="SmogTests" component ={SmogTests}/>
+            <Stack.Screen name="TakeImages" component={TakeImages}/>
         </Stack.Navigator>
     )
 }
+
+function AdminMenu(){
+return(
+    <Stack.Navigator initialRouteName="AdminHome" screenOptions={{ animationEnabled: false, headerShown: false }}>
+    <Stack.Screen name="AdminHome" component ={AdminHome}/>
+    <Stack.Screen name="Process" component={Process} />
+    <Stack.Screen name="TrackDriver" component={TrackDriver}/>
+    </Stack.Navigator>
+);
+}
+
+function AdminScreens() {
+    return (
+        <Drawer.Navigator initialRouteName="AdminMenu" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <AdminDrawerContent {...props} />}>
+            <Drawer.Screen name="AdminMenu" component ={AdminMenu} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="ShopProfile" component={ShopProfile} options={{ gestureEnabled: false }} />
+            
+        </Drawer.Navigator>
+    );
+}
+
 
 function WelcomeScreen() {
     const [LoggedIn, setLoggedIn] = useState(false)
@@ -155,6 +183,9 @@ function WelcomeScreen() {
                                 :
                                 role == 'TECHNICIAN'?(
                                     <Stack.Screen name="TechnicianScreens" component={TechnicianScreens}/>
+                                )
+                                :role == 'ADMIN'?(
+                                    <Stack.Screen name="AdminScreens" component={AdminScreens}/>
                                 )
                                 :null
                 }
