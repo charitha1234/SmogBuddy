@@ -41,6 +41,9 @@ import DriverNavigation from '../Screens/Driver/DriverNavigation';
 import SmogTests from '../Screens/Technician/SmogTests';
 import EmployeeRegistration_1 from "../Screens/Admin/EmployeeRegistration_1";
 import EmployeeRegistration_2 from "../Screens/Admin/EmployeeRegistration_2";
+import EmployeeProfile from '../Screens/Admin/EmployeeProfile';
+import AddService from '../Screens/Admin/AddServices';
+import ServiceInfo from '../Screens/Admin/ServiceInfo';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -51,7 +54,7 @@ function NewUser() {
     return (
         <Stack.Navigator name="Registration" initialRouteName="UserRegistration_1" screenOptions={{ animationEnabled: false, headerShown: false }}>
             <Stack.Screen name="UserRegistration_1" component={UserRegistration_1} />
-            <Stack.Screen name="UserRegistration_2" component={UserRegistration_2}/>
+            <Stack.Screen name="UserRegistration_2" component={UserRegistration_2} />
         </Stack.Navigator>
 
     );
@@ -99,45 +102,62 @@ function DriverMenuScreens() {
             <Stack.Screen name="DriverRequest" component={DriverRequest} />
             <Stack.Screen name="DriverDriverProfile" component={DriverDriverProfile} />
             <Stack.Screen name="DriverVehicleProfile" component={DriverVehicleProfile} />
-            <Stack.Screen name="DriverOdometer" component={DriverOdometer}/>
+            <Stack.Screen name="DriverOdometer" component={DriverOdometer} />
         </Stack.Navigator>
     );
 }
 
-function TechnicianScreens(){
-    return(
+function TechnicianScreens() {
+    return (
         <Stack.Navigator initialRouteName="SmogTests" screenOptions={{ animationEnabled: false, headerShown: false }}>
-            <Stack.Screen name="SmogTests" component ={SmogTests}/>
-            <Stack.Screen name="TakeImages" component={TakeImages}/>
+            <Stack.Screen name="SmogTests" component={SmogTests} />
+            <Stack.Screen name="TakeImages" component={TakeImages} />
         </Stack.Navigator>
     )
 }
 
-function AdminMenu(){
-return(
-    <Stack.Navigator initialRouteName="AdminHome" screenOptions={{ animationEnabled: false, headerShown: false }}>
-    <Stack.Screen name="AdminHome" component ={AdminHome}/>
-    <Stack.Screen name="Process" component={Process} />
-    <Stack.Screen name="TrackDriver" component={TrackDriver}/>
-    </Stack.Navigator>
-);
+function AdminMenu() {
+    return (
+        <Stack.Navigator initialRouteName="AdminHome" screenOptions={{ animationEnabled: false, headerShown: false }}>
+            <Stack.Screen name="AdminHome" component={AdminHome} />
+            <Stack.Screen name="Process" component={Process} />
+            <Stack.Screen name="TrackDriver" component={TrackDriver} />
+        </Stack.Navigator>
+    );
+}
+function ServicesStack() {
+    return (
+        <Stack.Navigator initialRouteName="AdminServices" screenOptions={{ animationEnabled: false, headerShown: false }}>
+            <Stack.Screen name="AdminServices" component={AdminServices} />
+            <Stack.Screen name="AddService" component={AddService} />
+            <Stack.Screen name="ServiceInfo" component={ServiceInfo} />
+        </Stack.Navigator>
+    );
 }
 
+function ManageUsersStack({ route }) {
+    return (
+        <Stack.Navigator initialRouteName="ManageUsers" screenOptions={{ animationEnabled: false, headerShown: false }}>
+            <Stack.Screen name="ManageUsers" component={ManageUsers} />
+            <Stack.Screen name="InterfaceSelection" component={InterfaceSelection} />
+            <Stack.Screen name="EmployeeProfile" component={EmployeeProfile} />
+            <Stack.Screen name="EmployeeRegistration_1" component={EmployeeRegistration_1} />
+            <Stack.Screen name="EmployeeRegistration_2" component={EmployeeRegistration_2} />
+        </Stack.Navigator>
+    );
+}
 
 
 
 function AdminScreens() {
     return (
         <Drawer.Navigator initialRouteName="AdminMenu" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <AdminDrawerContent {...props} />}>
-            <Drawer.Screen name="AdminMenu" component ={AdminMenu} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="AdminMenu" component={AdminMenu} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="ShopProfile" component={ShopProfile} options={{ gestureEnabled: false }} />
-            <Drawer.Screen name="AdminServices" component={AdminServices} options={{ gestureEnabled: false }}/>
-            <Drawer.Screen name="ManageUsers" component={ManageUsers} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="ServicesStack" component={ServicesStack} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="ManageUsersStack" component={ManageUsersStack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="Sales" component={Sales} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="Requests" component={Requests} options={{ gestureEnabled: false }} />
-            <Drawer.Screen name="InterfaceSelection" component={InterfaceSelection} options={{ gestureEnabled: false }} />
-            <Drawer.Screen name="EmployeeRegistration_1" component={EmployeeRegistration_1} options={{ gestureEnabled: false }}/>
-        <Drawer.Screen name="EmployeeRegistration_2" component={EmployeeRegistration_2} options={{ gestureEnabled: false }}/>
         </Drawer.Navigator>
     );
 }
@@ -159,12 +179,11 @@ function WelcomeScreen() {
                 fetch('https://smogbuddy-dev.herokuapp.com/user/' + user.uid)
                     .then((response) => response.json())
                     .then((responseJson) => {
-                        console.log("RESPONSEJSONNAVIGATION",responseJson)
                         setrole(responseJson.role);
                         setLoggedIn(true);
                         setappOpened(true);
                     })
-                    .catch((e) =>{
+                    .catch((e) => {
                         setappOpened(true);
                     });
 
@@ -196,13 +215,13 @@ function WelcomeScreen() {
                                 <Stack.Screen name="DriverMenuScreens" component={DriverMenuScreens} />
                             )
                                 :
-                                role == 'TECHNICIAN'?(
-                                    <Stack.Screen name="TechnicianScreens" component={TechnicianScreens}/>
+                                role == 'TECHNICIAN' ? (
+                                    <Stack.Screen name="TechnicianScreens" component={TechnicianScreens} />
                                 )
-                                :role == 'ADMIN'?(
-                                    <Stack.Screen name="AdminScreens" component={AdminScreens}/>
-                                )
-                                :null
+                                    : role == 'ADMIN' ? (
+                                        <Stack.Screen name="AdminScreens" component={AdminScreens} />
+                                    )
+                                        : null
                 }
             </Stack.Navigator>
         </NavigationContainer>

@@ -27,36 +27,36 @@ function Users(props) {
 }
 
 class ManageUsers extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             search: '',
-          };
+        };
     }
-    
-    
-      updateSearch = search => {
+
+
+    updateSearch = search => {
         this.setState({ search });
-      };
+    };
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>MANAGE USERS</Text><View /></View>
+                <View style={styles.headerContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>MANAGE USERS</Text><View /></View>
                 <SearchBar
-        placeholder="Type Here..."
-        onChangeText={this.updateSearch}
-        value={this.state.search}
-        showCancel
-        containerStyle={styles.SearchBarStyles}
-        lightTheme
-        inputContainerStyle={{backgroundColor:color.primaryWhite}}
-      />
-      {this.state.search==""?
-        <TouchableOpacity onPress={()=>this.props.navigation.navigate("InterfaceSelection")} style={styles.AddUserContainer}><Text style={styles.AddUserText}>ADD USER</Text></TouchableOpacity>
-        :
-        <FlatList data={UsersList} renderItem={({ item }) => (<Users onPress={() => this.props.navigation.navigate("Process")} Fname={item.UserFirstName} Lname={item.UserLastName} Role={item.Role} />)} keyExtractor={item => item.UserId} />
-      }
-                
+                    placeholder="Type Here..."
+                    onChangeText={this.updateSearch}
+                    value={this.state.search}
+                    showCancel
+                    containerStyle={styles.SearchBarStyles}
+                    lightTheme
+                    inputContainerStyle={{ backgroundColor: color.primaryWhite }}
+                />
+                {this.state.search == "" ?
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate("InterfaceSelection")} style={styles.AddUserContainer}><Text style={styles.AddUserText}>ADD USER</Text></TouchableOpacity>
+                    :
+                    <FlatList data={UsersList} renderItem={({ item }) => (<Users onPress={() => this.props.navigation.navigate("EmployeeProfile")} Fname={item.UserFirstName} Lname={item.UserLastName} Role={item.Role} />)} keyExtractor={item => item.UserId} />
+                }
+
             </View>
         );
     }
@@ -129,19 +129,19 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Regular',
         fontSize: 15,
     },
-    SearchBarStyles:{
-        borderWidth:0,
-        backgroundColor:color.primaryWhite
+    SearchBarStyles: {
+        borderWidth: 0,
+        backgroundColor: color.primaryWhite
     },
-    AddUserContainer:{
-        marginVertical:30,
-        width:'100%',
-        alignItems:'center',
+    AddUserContainer: {
+        marginVertical: 30,
+        width: '100%',
+        alignItems: 'center',
     },
-    AddUserText:{
+    AddUserText: {
         fontFamily: 'Montserrat-Bold',
         fontSize: 20,
-        color:color.primaryBlue
+        color: color.primaryBlue
     }
 
 

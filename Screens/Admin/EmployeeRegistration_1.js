@@ -16,6 +16,7 @@ import TextBox from '../../Components/textBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import GradientButton from '../../Components/longButton';
 function EmployeeRegistration({ navigation, route }) {
+    console.log("ROUTE>>",route)
     const { role } = route.params
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
@@ -108,10 +109,10 @@ function EmployeeRegistration({ navigation, route }) {
                         </View>
                     </View>
                     <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
-                        <Text style={styles.subText}>1/3</Text>
+                        <Text style={styles.subText}>1/2</Text>
                         <TouchableOpacity style={styles.buttonContainer} onPress={() => {
                             if (firstName == "" || lastName == "" || email == "") alert("Please Fill All Requires")
-                            else navigation.navigate("EmployeeRegistration_2", { firstName: firstName, lastName: lastName, email: email, role: role, date: date,uri:filePath.uri })
+                            else navigation.navigate("EmployeeRegistration_2", { firstName: firstName, lastName: lastName, email: email, role: role, date: date,imageUri:filePath.uri })
                         }}><GradientButton style={styles.button} /></TouchableOpacity>
                     </View>
                 </View>

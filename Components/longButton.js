@@ -10,7 +10,12 @@ function GradientButton(props) {
 
     return (
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.buttonUpper, color.buttonLower]} style={styles.container}>
-                <Text style={styles.text}>NEXT STEP</Text>
+                {!props.title?
+                    <Text style={styles.text}>NEXT STEP</Text>
+                    :
+                    <Text style={styles.text}>{props.title}</Text>
+
+                }
             </LinearGradient>
     );
 
