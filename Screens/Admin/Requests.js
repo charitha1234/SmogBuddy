@@ -5,16 +5,16 @@ import {
     StyleSheet
 } from "react-native";
 
-class Services extends Component {
+class Requests extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text>Services</Text>
+                <Text>Requests</Text>
             </View>
         );
     }
 }
-export default Services;
+export default Requests;
 
 const styles = StyleSheet.create({
     container: {

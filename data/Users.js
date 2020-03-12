@@ -1,0 +1,39 @@
+var flatlist=[
+    {   "UserId":'1dwwefsfewrq',
+    "UserFirstName":"Charitha",
+    "UserLastName":"Weerasooriya",
+    "Role":"CUSTOMER",
+    },
+    {
+        "UserId":'1dwwefsfewrfsq',
+        "UserFirstName":"Charitha",
+        "UserLastName":"Weerasooriya",
+        "Role":"DRIVER",
+    },
+    {
+        "UserId":'1dwwedsfafsfewrq',
+        "UserFirstName":"Charitha",
+        "UserLastName":"Weerasooriya",
+        "Role":"TECHNICIAN",
+    },
+    {
+        "UserId":'awd1dwwefsfewrq',
+        "UserFirstName":"Charitha",
+        "UserLastName":"Weerasooriya",
+        "Role":"DRIVER",
+    },
+    {
+        "UserId":'asd1dwwefsfewrq',
+        "UserFirstName":"Charitha",
+        "UserLastName":"Weerasooriya",
+        "Role":"CUSTOMER",
+    },
+    {
+        "UserId":'wqe1dwwefsfewrq',
+        "UserFirstName":"Charitha",
+        "UserLastName":"Weerasooriya",
+        "Role":"DRIVER",
+    },
+]
+
+module.exports=flatlist;

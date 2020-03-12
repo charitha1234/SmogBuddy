@@ -7,15 +7,17 @@ import {
 } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
+import { color } from '../Assets/color';
 function HomeDrawer({navigation},props){
 
 return(
     <View style={styles.container}>
         <View style={styles.imageContainer}></View>
+        <TouchableOpacity onPress={()=>navigation.navigate("Requests")} style={styles.content}><Ionicons name="ios-mail-unread" color={color.failedRed} size={30}/><Text style={[styles.contentText,{color:color.failedRed}]}>REQUESTS</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("ShopProfile")} style={styles.content}><Ionicons name="ios-business" size={30}/><Text style={styles.contentText}>SHOP PROFILE</Text></TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("DriverProfile")} style={styles.content}><Ionicons name="ios-people" size={30}/><Text style={styles.contentText}>MANAGE USERS</Text></TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("DriverTrack")} style={styles.content}><Ionicons name="ios-list" size={30}/><Text style={styles.contentText}>SERVICES</Text></TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("ContactUs")} style={styles.content}><Ionicons name="ios-trending-up" size={30}/><Text style={styles.contentText}>SALES</Text></TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("ManageUsers")} style={styles.content}><Ionicons name="ios-people" size={30}/><Text style={styles.contentText}>MANAGE USERS</Text></TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("AdminServices")} style={styles.content}><Ionicons name="ios-list" size={30}/><Text style={styles.contentText}>SERVICES</Text></TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("Sales")} style={styles.content}><Ionicons name="ios-trending-up" size={30}/><Text style={styles.contentText}>SALES</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>{
             firebase.auth().signOut();}}
              style={styles.logout}><Text style={styles.logoutText}>LOGOUT</Text></TouchableOpacity>

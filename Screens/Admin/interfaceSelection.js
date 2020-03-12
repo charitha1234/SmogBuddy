@@ -5,42 +5,61 @@ import {
     StyleSheet,
     TouchableOpacity
 } from "react-native";
-import { color } from '../Assets/color';
+import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
-import RadioButton from '../Components/radioButton';
+import RadioButton from '../../Components/radioButton';
 function InterfaceSelection({ navigation }) {
     const [driver,setDriver]=useState(false);
-    const [user,setUser]=useState(false);
-
-    useEffect(()=>{
-       driver? navigation.navigate("DriverRegistration_1") :null;
-       user? navigation.navigate("UserRegistration"):null;
-    });
+    const [technician,setTechnician]=useState(false);
+    const [manager,setManager]=useState(false);
     return (
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
+        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
             <View style={styles.upperContainer}>
                 <Text style={styles.waterMarkText}>SMOGBUDDY</Text>
-                <Text style={styles.largeText}>NEW ACCOUNT</Text>
+                <Text style={styles.largeText}>SELECT ACCOUNT TYPE</Text>
             </View>
             <View style={styles.selection}>
                 <View style={styles.insideArea}>
                     <View style={styles.sections}>
-                        <Text style={styles.smallText}>WHO AM I?</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={styles.smallText}>Customer(Vehicle Owner)</Text>
-                            <TouchableOpacity onPress={()=>{driver? setDriver(false) & setUser(true) : setUser(true) }}>
-                                <RadioButton selected={user} />
+                            <Text style={styles.smallText}>Driver</Text>
+                            <TouchableOpacity onPress={()=>{
+                                setDriver(true)
+                                setManager(false)
+                                setTechnician(false)
+                                navigation.navigate("EmployeeRegistration_1",{role:"DRIVER"})
+                            }}>
+                                <RadioButton selected={driver} />
                             </TouchableOpacity>
                         </View>
                     </View>
                     <View style={styles.sections}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={styles.smallText}>Driver</Text>
-                            <TouchableOpacity onPress={()=>{user? setDriver(true) & setUser(false) : setDriver(true)}}>
-                                <RadioButton selected={driver} />
+                            <Text style={styles.smallText}>Technician</Text>
+                            <TouchableOpacity onPress={()=>{
+                                setDriver(false)
+                                setManager(false)
+                                setTechnician(true)
+                                navigation.navigate("EmployeeRegistration_1",{role:"TECHNICIAN"})
+                            }}>
+                                <RadioButton selected={technician} />
                             </TouchableOpacity>
                         </View>
                     </View>
+                    <View style={styles.sections}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={styles.smallText}>Manager</Text>
+                            <TouchableOpacity onPress={()=>{
+                                setDriver(false)
+                                setManager(true)
+                                setTechnician(false)
+                                navigation.navigate("EmployeeRegistration_1",{role:"ADMIN"})
+                            }}>
+                                <RadioButton selected={manager} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    
                 </View>
             </View>
             <View />
@@ -61,7 +80,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         backgroundColor: 'white',
         width: 300,
-        height: 200,
+        height: 300,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -80,12 +99,13 @@ const styles = StyleSheet.create({
         opacity: 0.5
     },
     largeText: {
-        marginLeft: 30,
         marginTop: 70,
         marginBottom: -100,
         fontFamily: 'Montserrat-Bold',
-        fontSize: 25,
+        fontSize: 20,
         letterSpacing: 4,
+        textAlign:'center',
+        alignSelf:'center',
         color: color.primaryBlack,
     },
     waterMarkText: {
@@ -94,7 +114,7 @@ const styles = StyleSheet.create({
         margin: 20,
         letterSpacing: 6,
         marginLeft: 30,
-        color: color.primaryWhite,
+        color: color.primaryBlack,
 
     },
     sections: {
@@ -109,5 +129,6 @@ const styles = StyleSheet.create({
     },
     upperContainer: {
         alignSelf: 'flex-start',
+        width:'100%'
     }
 });

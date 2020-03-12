@@ -6,7 +6,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import firebase from 'react-native-firebase';
 
 
-import InterfaceSelection from '../Screens/interfaceSelection';
+import InterfaceSelection from '../Screens/Admin/interfaceSelection';
 import UserRegistration_1 from '../Screens/User/UserRegistration_1';
 import UserRegistration_2 from '../Screens/User/UserRegistration_2';
 import Login from '../Screens/login';
@@ -18,6 +18,10 @@ import AdminDrawerContent from '../Components/AdminDrawer';
 import TrackDriver from '../Screens/Admin/TrackDriver';
 import Process from '../Screens/Admin/Process';
 import ShopProfile from '../Screens/Admin/ShopProfile';
+import ManageUsers from '../Screens/Admin/ManageUsers';
+import Sales from '../Screens/Admin/Sales';
+import Requests from '../Screens/Admin/Requests';
+import AdminServices from '../Screens/Admin/Services';
 import OdometerRead from '../Screens/User/takeImages';
 import VideoCapture from '../Screens/User/VideoCapture';
 import Profile from '../Screens/User/Profile';
@@ -35,6 +39,8 @@ import DriverRequest from '../Screens/Driver/DriverRequest';
 import DriverOdometer from '../Screens/Driver/DriverOdometer';
 import DriverNavigation from '../Screens/Driver/DriverNavigation';
 import SmogTests from '../Screens/Technician/SmogTests';
+import EmployeeRegistration_1 from "../Screens/Admin/EmployeeRegistration_1";
+import EmployeeRegistration_2 from "../Screens/Admin/EmployeeRegistration_2";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -117,12 +123,21 @@ return(
 );
 }
 
+
+
+
 function AdminScreens() {
     return (
         <Drawer.Navigator initialRouteName="AdminMenu" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <AdminDrawerContent {...props} />}>
             <Drawer.Screen name="AdminMenu" component ={AdminMenu} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="ShopProfile" component={ShopProfile} options={{ gestureEnabled: false }} />
-            
+            <Drawer.Screen name="AdminServices" component={AdminServices} options={{ gestureEnabled: false }}/>
+            <Drawer.Screen name="ManageUsers" component={ManageUsers} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="Sales" component={Sales} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="Requests" component={Requests} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="InterfaceSelection" component={InterfaceSelection} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="EmployeeRegistration_1" component={EmployeeRegistration_1} options={{ gestureEnabled: false }}/>
+        <Drawer.Screen name="EmployeeRegistration_2" component={EmployeeRegistration_2} options={{ gestureEnabled: false }}/>
         </Drawer.Navigator>
     );
 }
