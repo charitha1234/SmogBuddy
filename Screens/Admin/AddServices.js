@@ -13,7 +13,7 @@ import TextBox from '../../Components/textBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import GradientButton from '../../Components/longButton';
 function newService(name, yearRange, cost, averageTime, navigation,route) {
-    fetch('https://smogbuddy-dev.herokuapp.com/service', {
+    fetch('https://smogbuddy.herokuapp.com/service', {
         method: 'POST',
         headers: {
             Accept: 'application/json',

@@ -13,7 +13,7 @@ function HomeDrawer({navigation},props){
 return(
     <View style={styles.container}>
         <View style={styles.imageContainer}></View>
-        <TouchableOpacity onPress={()=>navigation.navigate("Requests")} style={styles.content}><Ionicons name="ios-mail-unread" color={color.failedRed} size={30}/><Text style={[styles.contentText,{color:color.failedRed}]}>REQUESTS</Text></TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("RequestStack")} style={styles.content}><Ionicons name="ios-mail-unread" color={color.failedRed} size={30}/><Text style={[styles.contentText,{color:color.failedRed}]}>REQUESTS</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("ShopProfile")} style={styles.content}><Ionicons name="ios-business" size={30}/><Text style={styles.contentText}>SHOP PROFILE</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("ManageUsersStack")} style={styles.content}><Ionicons name="ios-people" size={30}/><Text style={styles.contentText}>MANAGE USERS</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("ServicesStack")} style={styles.content}><Ionicons name="ios-list" size={30}/><Text style={styles.contentText}>SERVICES</Text></TouchableOpacity>

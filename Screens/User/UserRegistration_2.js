@@ -16,7 +16,7 @@ import firebase from 'react-native-firebase';
 function newUser(username, password, firstName, lastName, address, state, zipCode, phoneNo, navigation) {
     firebase.auth().createUserWithEmailAndPassword(username, password)
         .then((res) => {
-            fetch('https://smogbuddy-dev.herokuapp.com/user/', {
+            fetch('https://smogbuddy.herokuapp.com/user/', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

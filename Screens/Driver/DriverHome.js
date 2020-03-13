@@ -15,18 +15,27 @@ import firebase from 'react-native-firebase';
 async function notification() {
 
     const notificationOpen = await firebase.notifications().getInitialNotification();
+    console.log("OPEN",notificationOpen)
     if (notificationOpen) {
+        
         return notificationOpen.notification['data'];
     }
 }
 
 function Home({ navigation }, props) {
     useEffect(() => {
-        notification().then(data => {
-            if (data.status == 'ASSIGN_CUSTOMER') {
-
-                navigation.navigate("DriverRequest", { userUid: data.userUid, userPickupLocation: data.userPickupLocation });
+        const user = firebase.auth().currentUser;
+        fetch('https://smogbuddy.herokuapp.com/driver/status/'+user.uid)
+        .then((res)=>res.json())
+        .then((resJson)=>{
+            console.log("insodi",resJson)
+            if (resJson.isDriverAssign) {
+                navigation.navigate("DriverRequest", { userUid: resJson.userUid, userPickupLocation: resJson.pickupLocation,status:resJson.status });
             }
+        })
+        notification().then(data => {
+            console.log("data",data)
+            
         })
     });
 

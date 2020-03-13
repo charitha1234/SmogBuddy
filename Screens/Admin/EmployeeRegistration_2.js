@@ -24,7 +24,7 @@ function newUser(firstName, lastName, email, date, employNo, phoneNo, imageUri,l
         .ref('employee/' + uuidv1() + '.jpeg')
         .putFile(imageUri)
         .then((res) => {
-            fetch('https://smogbuddy-dev.herokuapp.com/driver/', {
+            fetch('https://smogbuddy.herokuapp.com/driver/', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

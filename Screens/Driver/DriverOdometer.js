@@ -75,7 +75,7 @@ class OdometerRead extends Component {
 
     sendMeterValues() {
         this.setState({ loading: true });
-        fetch("https://smogbuddy-dev.herokuapp.com/user/odometer",
+        fetch("https://smogbuddy.herokuapp.com/user/odometer",
             {
                 method: 'PUT',
                 headers: {

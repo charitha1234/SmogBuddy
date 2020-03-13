@@ -68,7 +68,7 @@ class ServiceSelection extends Component {
     componentDidMount(){
         const user=firebase.auth().currentUser;
         this.setState({uid:user});
-        fetch('https://smogbuddy-dev.herokuapp.com/service')
+        fetch('https://smogbuddy.herokuapp.com/service')
         .then((res)=>res.json())
         .then((resJson)=>{
             this.setState({serviceList:resJson});

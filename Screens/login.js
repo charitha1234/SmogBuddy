@@ -20,10 +20,10 @@ async function authentication(username, password, navigation) {
     let fcmToken = await AsyncStorage.getItem('fcmToken');
     firebase.auth().signInWithEmailAndPassword(username, password)
         .then((res) => {
-            fetch('https://smogbuddy-dev.herokuapp.com/user/' + res.user.uid)
+            fetch('https://smogbuddy.herokuapp.com/user/' + res.user.uid)
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    fetch('https://smogbuddy-dev.herokuapp.com/user/fcm/' + res.user.uid, {
+                    fetch('https://smogbuddy.herokuapp.com/user/fcm/' + res.user.uid, {
                         method: 'PUT',
                         headers: {
                             Accept: 'application/json',

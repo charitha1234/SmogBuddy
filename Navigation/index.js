@@ -44,6 +44,7 @@ import EmployeeRegistration_2 from "../Screens/Admin/EmployeeRegistration_2";
 import EmployeeProfile from '../Screens/Admin/EmployeeProfile';
 import AddService from '../Screens/Admin/AddServices';
 import ServiceInfo from '../Screens/Admin/ServiceInfo';
+import AssignEmployees from '../Screens/Admin/AssignEmployees';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -96,6 +97,7 @@ function UserMenuScreens() {
 }
 
 function DriverMenuScreens() {
+
     return (
         <Stack.Navigator initialRouteName="HomeScreen" screenOptions={{ animationEnabled: false, headerShown: false }}>
             <Stack.Screen name="DriverHomeScreen" component={DriverHomeScreen} />
@@ -147,6 +149,15 @@ function ManageUsersStack({ route }) {
     );
 }
 
+function RequestStack() {
+    return (
+        <Stack.Navigator initialRouteName="Requests" screenOptions={{ animationEnabled: false, headerShown: false }}>
+            <Stack.Screen name="Requests" component={Requests} />
+            <Stack.Screen name="AssignEmployees" component={AssignEmployees}/>
+        </Stack.Navigator>
+    );
+}
+
 
 
 function AdminScreens() {
@@ -157,7 +168,7 @@ function AdminScreens() {
             <Drawer.Screen name="ServicesStack" component={ServicesStack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="ManageUsersStack" component={ManageUsersStack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="Sales" component={Sales} options={{ gestureEnabled: false }} />
-            <Drawer.Screen name="Requests" component={Requests} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="RequestStack" component={RequestStack} options={{ gestureEnabled: false }} />
         </Drawer.Navigator>
     );
 }
@@ -175,8 +186,7 @@ function WelcomeScreen() {
                 setappOpened(true);
             }
             else {
-                console.log(user)
-                fetch('https://smogbuddy-dev.herokuapp.com/user/' + user.uid)
+                fetch('https://smogbuddy.herokuapp.com/user/' + user.uid)
                     .then((response) => response.json())
                     .then((responseJson) => {
                         setrole(responseJson.role);
@@ -190,7 +200,7 @@ function WelcomeScreen() {
             }
 
         });
-    });
+    },[]);
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Splash" screenOptions={{ animationEnabled: false, headerShown: false }}>

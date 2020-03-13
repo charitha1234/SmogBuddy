@@ -84,7 +84,7 @@ function DriverTrack({ navigation }, props) {
     useEffect(() => {
 
         const user = firebase.auth().currentUser;
-        fetch('https://smogbuddy-dev.herokuapp.com/user/assign/driver/' + user.uid)
+        fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + user.uid)
             .then((res) => res.json())
             .then((responseJson) => {
                 if (responseJson.isDriverAssigned) setdriverAssigned(true);

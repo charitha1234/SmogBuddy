@@ -14,7 +14,7 @@ function OngoingProcesses(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={styles.ProcessContainer}>
             <View style={styles.statusContainer}>
-                <Text style={styles.processNameText}>{props.name}</Text>
+    <Text style={styles.processNameText}>{props.fname} {props.lname}</Text>
                 <Text style={styles.processStatusText}>{props.status}</Text>
             </View>
             <View style={styles.EstimatedTimeContainer}>
@@ -26,12 +26,43 @@ function OngoingProcesses(props) {
 }
 
 class AdminHome extends Component {
+    constructor(props){
+        super(props);
+        this.state={
+            processList:null,
+            isFetching: false,
+        }
+    }
+    
+    getApiData(){
+
+        fetch('https://smogbuddy.herokuapp.com/admin/process')
+        .then((res) => res.json())
+        .then((resJson) => {
+            this.setState({processList:resJson})
+            this.setState({ isFetching: false });
+            console.log("PROCESS LIST",resJson)
+            
+        }
+        
+    )
+    }
+    onRefresh() {
+        this.setState({ isFetching: true }, function() { this.getApiData() });
+     }
+     componentDidMount(){
+        this.onRefresh()
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <Header title="SMOGBUDDY" navigation={this.props.navigation} />
                 <View style={styles.HeaderTextContainer}><Text style={styles.HeaderText}>Ongoing Processes</Text></View>
-                <FlatList data={OngoingProcessList} renderItem={({ item }) => (<OngoingProcesses onPress={()=>this.props.navigation.navigate("Process")} status={item.Status} name={item.CustomerFirstName} time={item.EstimatedTime} />)} keyExtractor={item => item.UserId} />
+                <FlatList data={this.state.processList}
+                onRefresh={() => this.onRefresh()}
+                refreshing={this.state.isFetching} 
+                renderItem={({ item }) => (<OngoingProcesses onPress={()=>this.props.navigation.navigate("Process",{details:item})} status={item.status} fname={item.user.firstName} lname={item.user.lastName} time={item.totalServiceTime} />)} keyExtractor={item => item.UserId} />
             </View>
         );
     }

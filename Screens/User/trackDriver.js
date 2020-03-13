@@ -78,19 +78,22 @@ function DriverTrack({ navigation }, props) {
     const [startGiven, setstartGiven] = useState(false)
     const [arrivalTime, setarrivalTime] = useState("")
     const [loading, setloading] = useState(true)
+    const [fetching, setfetching] = useState(true)
     const origin = { latitude: latitude, longitude: longitude };
     const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
     const destination = { latitude: customerLat, longitude: customerLng }
-    useEffect(() => {
 
+    const getApiData=()=>{
         const user = firebase.auth().currentUser;
-        fetch('https://smogbuddy-dev.herokuapp.com/user/assign/driver/' + user.uid)
+        fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + user.uid)
             .then((res) => res.json())
             .then((responseJson) => {
+                console.log("HIT")
                 if (responseJson.isDriverAssigned) setdriverAssigned(true);
                 if (!responseJson.isDriverAssigned) setdriverAssigned(false);
                 if (responseJson.isDriverStarted) {
                     setstartGiven(true);
+                    setfetching(false);
                     setDriverUid(responseJson.assignedDriver)
                     setcustomerLat(responseJson.userPickupLocation.lat)
                     setcustomerLng(responseJson.userPickupLocation.lng)
@@ -99,6 +102,11 @@ function DriverTrack({ navigation }, props) {
                 setloading(false)
             })
             .catch((e) => alert(e))
+    }
+    useEffect(() => {
+    getApiData()
+        
+        
         if (startGiven) {
 
             firebase.database().ref('location/' + DriverUid).on('value', snapshot => {
@@ -122,7 +130,7 @@ function DriverTrack({ navigation }, props) {
 
             });
         }
-    })
+    },[])
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
             <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>TRACKING</Text><View /></View>

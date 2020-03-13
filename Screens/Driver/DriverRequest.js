@@ -51,7 +51,7 @@ const customStyles = {
 }
 Geolocation.setRNConfiguration({ authorizationLevel: 'always' });
 function feedback(navigation, request, uid, userPickupLocation, distance, duration) {
-    fetch('https://smogbuddy-dev.herokuapp.com/driver/confirmation', {
+    fetch('https://smogbuddy.herokuapp.com/driver/confirmation', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -80,7 +80,7 @@ function feedback(navigation, request, uid, userPickupLocation, distance, durati
 
 function navigationStart(userId) {
     const user = firebase.auth().currentUser;
-    fetch('https://smogbuddy-dev.herokuapp.com/driver/start',
+    fetch('https://smogbuddy.herokuapp.com/driver/start',
         {
             method: 'POST',
             headers: {
@@ -178,7 +178,7 @@ function RenderContent(props) {
                                             text: 'Yes', onPress: () => {
                                                 removeUploaded()
                                                 const user = firebase.auth().currentUser;
-                                                fetch('https://smogbuddy-dev.herokuapp.com/driver/status',
+                                                fetch('https://smogbuddy.herokuapp.com/driver/status',
                                                     {
                                                         method: 'PUT',
                                                         headers: {
@@ -228,7 +228,7 @@ function RenderContent(props) {
                                     text: 'Yes', onPress: () => {
                                         const user = firebase.auth().currentUser;
                                         removeUploaded()
-                                        fetch('https://smogbuddy-dev.herokuapp.com/driver/status',
+                                        fetch('https://smogbuddy.herokuapp.com/driver/status',
                                                     {
                                                         method: 'PUT',
                                                         headers: {
@@ -267,9 +267,9 @@ function RenderContent(props) {
 
 
 function DriverRequest({ navigation, route }) {
-    const { userUid, userPickupLocation } = route.params;
+    const { userUid, userPickupLocation,status } = route.params;
 
-    const location = JSON.parse(userPickupLocation);
+    const location = userPickupLocation;
     const [lat, setlat] = useState(null)
     const [lng, setlng] = useState(null)
     const [loading, setloading] = useState(true)
@@ -281,14 +281,25 @@ function DriverRequest({ navigation, route }) {
     const origin = { latitude: lat, longitude: lng };
     const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
     const destination = { latitude: location.lat, longitude: location.lng }
+
     useEffect(() => {
+        if(status=="DRIVER_ASSIGN")setaccepted(false)
+        else if(status=="ACCEPTED")setaccepted(true)
+        else if(status=="STARTED"){
+            setaccepted(true)
+            setstarted(true)
+        }
+        else{
+            setaccepted(true)
+            setstarted(true)
+        }
         const user = firebase.auth().currentUser;
         var hours = Math.floor(duration / 60);
         var minutes = Math.floor(duration % 60);
+        console.log("lat>>",lat,"lng>>",lng)
         if (minutes / 10 >= 1) setarrivalTime((hours).toString() + " h " + (minutes).toString() + " min");
         else setarrivalTime((hours).toString() + " h 0" + (minutes).toString() + " min");
         Geolocation.watchPosition(info => {
-
             setlat(info.coords.latitude);
             setlng(info.coords.longitude);
         }, e => console.log(e), { distanceFilter: 0 });
@@ -332,12 +343,11 @@ function DriverRequest({ navigation, route }) {
                 <Marker coordinate={{ "longitude": location.lng, "latitude": location.lat }}>
                     <Ionicons name="ios-man" size={30} />
                 </Marker>
-
             </MapView>
             {started ?
                 <BottomSheet
                     borderRadius={40}
-                    snapPoints={[500, 250]}
+                    snapPoints={[500, 300]}
                     enabledBottomClamp={true}
                     initialSnap={1}
                     renderContent={() => <RenderContent userId={userUid} navigation={navigation} arrivalTime={arrivalTime} />}
@@ -358,7 +368,7 @@ function DriverRequest({ navigation, route }) {
                                     <TouchableOpacity style={styles.Button} onPress={() => feedback(navigation, 'REJECT', userUid, userPickupLocation, distance, duration)}><Text style={styles.ButtonText}>REJECT</Text></TouchableOpacity>
                                 </>
                                 :
-                                <TouchableOpacity style={styles.Button} onPress={() => {
+                                <TouchableOpacity disabled={!accepted} style={styles.Button} onPress={() => {
                                     setstarted(true);
                                     navigationStart(userUid);
                                     //turnOnMaps(location.lat,location.lng)

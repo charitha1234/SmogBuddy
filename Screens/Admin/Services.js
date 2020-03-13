@@ -35,7 +35,7 @@ class Services extends Component {
     }
 
     getApiData(){
-        fetch('https://smogbuddy-dev.herokuapp.com/service')
+        fetch('https://smogbuddy.herokuapp.com/service')
         .then((res) => res.json())
         .then((resJson) => {
             this.setState({ serviceList: resJson });

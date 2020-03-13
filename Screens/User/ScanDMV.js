@@ -50,10 +50,9 @@ class ScanDMV extends Component {
             else {
                 let vin = scanResult.data.substr(2, 17);
                 let plate = scanResult.data.substr(20, 7);
-                fetch('https://smogbuddy-dev.herokuapp.com/vehicle/' + this.state.uId + '?plateNumber=' + plate + '&vin=' + vin)
+                fetch('https://smogbuddy.herokuapp.com/vehicle/' + this.state.uId + '?plateNumber=' + plate + '&vin=' + vin)
                     .then((response) => response.json())
                     .then((responseJson) => {
-                        console.log(responseJson),
                             this.setState({
                                 loading: false,
                                 year: responseJson.year.toString(),
@@ -93,7 +92,7 @@ class ScanDMV extends Component {
                         permissionDialogTitle={'Permission to use camera'}
                         permissionDialogMessage={'We need your permission to use your camera phone'}
                         style={styles.preview}
-                    ><Image resizeMode="contain" source={require('../../Assets/barcodeScan.png')} style={{width:'90%',height:'90%',marginTop:'-45%'}}/></RNCamera>
+                    ></RNCamera>
                     </>
                     :
                     <View style={styles.container}>
@@ -126,12 +125,11 @@ export default ScanDMV;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'space-between',
         alignItems: 'center'
 
     },
     preview: {
-        height:'100%',
+        height:'60%',
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
@@ -188,6 +186,7 @@ const styles = StyleSheet.create({
         height:100,
         backgroundColor:color.primaryWhite,
         width:'100%',
+        marginBottom:10,
         justifyContent:'center',
         alignItems:'center'
 

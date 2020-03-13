@@ -21,7 +21,7 @@ function Profile({ navigation }) {
     const [loading, setloading] = useState(true)
     useEffect(() => {
         const user = firebase.auth().currentUser;
-        fetch('https://smogbuddy-dev.herokuapp.com/user/' + user.uid)
+        fetch('https://smogbuddy.herokuapp.com/user/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 setloading(false);
@@ -31,7 +31,7 @@ function Profile({ navigation }) {
                 setstate(resJson.state);
                 setzipCode(resJson.zipCode);
             })
-    })
+    },[]);
 
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>

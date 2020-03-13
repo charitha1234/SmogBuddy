@@ -25,7 +25,7 @@ function Home({ navigation }, props) {
 
             }
         })
-    });
+    },[]);
 
     firebase.notifications().onNotification((notification) => {
         if (notification.data.status == 'ASSIGN_CUSTOMER') {

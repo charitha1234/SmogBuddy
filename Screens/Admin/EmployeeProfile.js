@@ -24,7 +24,7 @@ function EmployeeProfile({ navigation }) {
     const [loading, setloading] = useState(true)
     useEffect(() => {
         const user = firebase.auth().currentUser;
-        fetch('https://smogbuddy-dev.herokuapp.com/user/' + user.uid)
+        fetch('https://smogbuddy.herokuapp.com/user/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 setloading(false);
