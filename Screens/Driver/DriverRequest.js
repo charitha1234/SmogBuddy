@@ -6,7 +6,8 @@ import {
     TouchableOpacity,
     Linking, ActivityIndicator,
     Image,
-    Alert
+    Alert,
+    ScrollView
 } from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 import MapTheme from '../../Assets/mapsStyle';
@@ -50,7 +51,7 @@ const customStyles = {
     labelFontFamily: 'Montserrat-Light'
 }
 Geolocation.setRNConfiguration({ authorizationLevel: 'always' });
-function feedback(navigation, request, uid, userPickupLocation, distance, duration) {
+function feedback(navigation, request, uid, userPickupLocation, distance, duration, setaccepted) {
     fetch('https://smogbuddy.herokuapp.com/driver/confirmation', {
         method: 'POST',
         headers: {
@@ -68,6 +69,8 @@ function feedback(navigation, request, uid, userPickupLocation, distance, durati
     })
         .then((response) => response.json())
         .then((responseJson) => {
+            console.log(responseJson)
+            setaccepted(true)
             console.log("RESPONEJSON>>>", responseJson);
             // navigation.navigate("DriverNavigation", { userPickupLocation: JSON.parse(userPickupLocation), uid: uid });
         })
@@ -133,19 +136,36 @@ async function removeUploaded() {
     }
 }
 function RenderContent(props) {
-    const [currentStage, setcurrentStage] = useState(0)
+    const [currentStage, setcurrentStage] = useState(1)
+    const [loading, setloading] = useState(false)
+    const [fetching, setfetching] = useState(true)
+    const user = firebase.auth().currentUser;
+    const fetchFirebaseStart = () => {
+        firebase.database().ref('location/' + user.uid).once('value', snapshot => {
+            console.log("FIREBASE UPDATED ERROR", snapshot.val().currentStage)
+            if(snapshot.val().currentStage)setcurrentStage(snapshot.val().currentStage)
+            setfetching(false)
+        })
+    }
+
+
     useEffect(() => {
-        const user = firebase.auth().currentUser;
-        firebase.database().ref('location/' + user.uid).update({
-            currentStage
-        });
+        if (fetching) fetchFirebaseStart()
+        if(currentStage==2 || currentStage==4 )props.setreturnToStation(true)
+        else props.setreturnToStation(false)
+        console.log("CURRENTSTAGE", currentStage)
+        if (!fetching) {
+            firebase.database().ref('location/' + user.uid).update({
+                currentStage
+            });
+        }
     });
     return (
         <View style={styles.detailsContainer}>
             <Ionicons name="ios-remove" size={50} style={styles.bottomsheetMoreIcon} />
 
             <View style={styles.timeContainer}>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, justifyContent: 'center' }}>
                     <Text style={styles.timeText}>{props.arrivalTime}</Text>
                     <Text style={styles.label}>Arrival Time</Text>
                 </View>
@@ -176,8 +196,9 @@ function RenderContent(props) {
                                         },
                                         {
                                             text: 'Yes', onPress: () => {
-                                                removeUploaded()
+                                                setloading(true)
                                                 const user = firebase.auth().currentUser;
+
                                                 fetch('https://smogbuddy.herokuapp.com/driver/status',
                                                     {
                                                         method: 'PUT',
@@ -188,20 +209,24 @@ function RenderContent(props) {
                                                         body: JSON.stringify({
                                                             userUid: props.userId,
                                                             driverUid: user.uid,
-                                                            status:cases[currentStage]
+                                                            status: cases[currentStage]
 
 
                                                         }),
                                                     })
                                                     .then((response) => response.json())
                                                     .then((responseJson) => {
+                                                        removeUploaded()
+                                                        setcurrentStage(currentStage + 1)
+                                                        setloading(false)
                                                         console.log("RESPONEJSON>>>", responseJson);
 
                                                     })
                                                     .catch((error) => {
-                                                        console.error(error);
+                                                        setloading(false)
+                                                        alert(error);
                                                     });
-                                                setcurrentStage(currentStage + 1)
+
                                             }
                                         },
                                     ],
@@ -227,31 +252,35 @@ function RenderContent(props) {
                                 {
                                     text: 'Yes', onPress: () => {
                                         const user = firebase.auth().currentUser;
-                                        removeUploaded()
+                                        setloading(true)
+                                        console.log("STAGE", cases[currentStage])
                                         fetch('https://smogbuddy.herokuapp.com/driver/status',
-                                                    {
-                                                        method: 'PUT',
-                                                        headers: {
-                                                            Accept: 'application/json',
-                                                            'Content-Type': 'application/json',
-                                                        },
-                                                        body: JSON.stringify({
-                                                            userUid: props.userId,
-                                                            driverUid: user.uid,
-                                                            status:cases[currentStage]
+                                            {
+                                                method: 'PUT',
+                                                headers: {
+                                                    Accept: 'application/json',
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify({
+                                                    userUid: props.userId,
+                                                    driverUid: user.uid,
+                                                    status: cases[currentStage]
 
 
-                                                        }),
-                                                    })
-                                                    .then((response) => response.json())
-                                                    .then((responseJson) => {
-                                                        console.log("RESPONEJSON>>>", responseJson);
+                                                }),
+                                            })
+                                            .then((response) => response.json())
+                                            .then((responseJson) => {
+                                                removeUploaded()
+                                                setcurrentStage(currentStage + 1)
+                                                setloading(false)
+                                                console.log("RESPONEJSON>>>", responseJson);
 
-                                                    })
-                                                    .catch((error) => {
-                                                        console.error(error);
-                                                    });
-                                        setcurrentStage(currentStage + 1)
+                                            })
+                                            .catch((error) => {
+                                                setloading(false)
+                                                alert(error);
+                                            });
                                     }
                                 },
                             ],
@@ -259,7 +288,13 @@ function RenderContent(props) {
 
                         )
                     }
-                }}><Text style={styles.completeButtonText}>{buttonLabels[currentStage]}</Text></TouchableOpacity>
+                }}>{
+                        loading ?
+                            <ActivityIndicator size={30} color={color.primaryWhite} />
+                            :
+                            <Text style={styles.completeButtonText}>{buttonLabels[currentStage]}</Text>
+                    }
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -267,10 +302,12 @@ function RenderContent(props) {
 
 
 function DriverRequest({ navigation, route }) {
-    const { userUid, userPickupLocation,status } = route.params;
-
-    const location = userPickupLocation;
+    const [returnToStation, setreturnToStation] = useState(false)
+    const { userUid, userPickupLocation, stationLocation, status } = route.params;
+    const location =!returnToStation? userPickupLocation:stationLocation;
+    console.log("RETURN",returnToStation)
     const [lat, setlat] = useState(null)
+    
     const [lng, setlng] = useState(null)
     const [loading, setloading] = useState(true)
     const [distance, setdistance] = useState(null)
@@ -281,22 +318,22 @@ function DriverRequest({ navigation, route }) {
     const origin = { latitude: lat, longitude: lng };
     const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
     const destination = { latitude: location.lat, longitude: location.lng }
-
+    const user = firebase.auth().currentUser;
     useEffect(() => {
-        if(status=="DRIVER_ASSIGN")setaccepted(false)
-        else if(status=="ACCEPTED")setaccepted(true)
-        else if(status=="STARTED"){
+        if (status == "DRIVER_ASSIGN") { }
+        else if (status == "ACCEPTED") setaccepted(true)
+        else if (status == "STARTED") {
             setaccepted(true)
             setstarted(true)
         }
-        else{
+        else {
             setaccepted(true)
             setstarted(true)
         }
-        const user = firebase.auth().currentUser;
+
         var hours = Math.floor(duration / 60);
         var minutes = Math.floor(duration % 60);
-        console.log("lat>>",lat,"lng>>",lng)
+        console.log("lat>>", lat, "lng>>", lng)
         if (minutes / 10 >= 1) setarrivalTime((hours).toString() + " h " + (minutes).toString() + " min");
         else setarrivalTime((hours).toString() + " h 0" + (minutes).toString() + " min");
         Geolocation.watchPosition(info => {
@@ -331,7 +368,7 @@ function DriverRequest({ navigation, route }) {
                     origin={origin}
                     destination={destination}
                     apikey={GOOGLE_MAPS_APIKEY}
-                    strokeWidth={accepted ? 4 : 0}
+                    strokeWidth={4}
                     strokeColor={color.primaryBlue}
                     resetOnChange={false}
                     onReady={(info) => {
@@ -340,9 +377,13 @@ function DriverRequest({ navigation, route }) {
                         setduration(info.duration);
                     }}
                 />
-                <Marker coordinate={{ "longitude": location.lng, "latitude": location.lat }}>
-                    <Ionicons name="ios-man" size={30} />
-                </Marker>
+                {
+                    location.lat && location.lng ?
+                        <Marker coordinate={{ "longitude": location.lng, "latitude": location.lat }}>
+                            <Ionicons name="ios-man" size={30} />
+                        </Marker>
+                        : null
+                }
             </MapView>
             {started ?
                 <BottomSheet
@@ -350,7 +391,7 @@ function DriverRequest({ navigation, route }) {
                     snapPoints={[500, 300]}
                     enabledBottomClamp={true}
                     initialSnap={1}
-                    renderContent={() => <RenderContent userId={userUid} navigation={navigation} arrivalTime={arrivalTime} />}
+                    renderContent={() => <RenderContent userId={userUid} setreturnToStation={setreturnToStation} navigation={navigation} arrivalTime={arrivalTime} />}
                 />
                 :
                 <View style={styles.ButtonContainer}>
@@ -362,10 +403,9 @@ function DriverRequest({ navigation, route }) {
                             !accepted ?
                                 <>
                                     <TouchableOpacity style={styles.Button} onPress={() => {
-                                        feedback(navigation, 'ACCEPT', userUid, userPickupLocation, distance, duration)
-                                        setaccepted(true)
+                                        feedback(navigation, 'ACCEPT', userUid, userPickupLocation, distance, duration, setaccepted)
                                     }}><Text style={styles.ButtonText}>ACCEPT</Text></TouchableOpacity>
-                                    <TouchableOpacity style={styles.Button} onPress={() => feedback(navigation, 'REJECT', userUid, userPickupLocation, distance, duration)}><Text style={styles.ButtonText}>REJECT</Text></TouchableOpacity>
+                                    <TouchableOpacity style={styles.Button} disabled={true} onPress={() => feedback(navigation, 'REJECT', userUid, userPickupLocation, distance, duration)}><Text style={styles.ButtonText}>REJECT</Text></TouchableOpacity>
                                 </>
                                 :
                                 <TouchableOpacity disabled={!accepted} style={styles.Button} onPress={() => {
@@ -433,7 +473,7 @@ const styles = StyleSheet.create({
         letterSpacing: 2,
     },
     timeContainer: {
-        flex: 1,
+        height: 100,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
@@ -441,7 +481,7 @@ const styles = StyleSheet.create({
     },
     detailsContainer: {
         alignSelf: 'center',
-        height: 800,
+        height: 950,
         width: '100%',
         shadowColor: "#000",
         shadowOffset: {
@@ -460,18 +500,13 @@ const styles = StyleSheet.create({
 
     },
     contactContainer: {
-        flex: 5,
-        marginHorizontal: 10
+        height: 700,
+        marginHorizontal: 10,
 
-    },
-    swipHeaderContainer: {
-        backgroundColor: color.primaryWhite,
-        height: 200,
-        width: '90%',
     },
     bottomsheetMoreIcon: {
         color: color.primaryBlack,
-        alignSelf: 'center'
+        alignSelf: 'center',
 
     },
     StepIndicator: {

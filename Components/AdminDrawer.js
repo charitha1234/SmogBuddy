@@ -12,12 +12,13 @@ function HomeDrawer({navigation},props){
 
 return(
     <View style={styles.container}>
-        <View style={styles.imageContainer}></View>
+        <View style={styles.headerContainer}><TouchableOpacity onPress={()=>navigation.closeDrawer()} style={styles.icon}><Ionicons  name="md-arrow-back" size={40}/></TouchableOpacity><View style={styles.imageContainer}></View><View/></View>
         <TouchableOpacity onPress={()=>navigation.navigate("RequestStack")} style={styles.content}><Ionicons name="ios-mail-unread" color={color.failedRed} size={30}/><Text style={[styles.contentText,{color:color.failedRed}]}>REQUESTS</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("ShopProfile")} style={styles.content}><Ionicons name="ios-business" size={30}/><Text style={styles.contentText}>SHOP PROFILE</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("ManageUsersStack")} style={styles.content}><Ionicons name="ios-people" size={30}/><Text style={styles.contentText}>MANAGE USERS</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("ServicesStack")} style={styles.content}><Ionicons name="ios-list" size={30}/><Text style={styles.contentText}>SERVICES</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("Sales")} style={styles.content}><Ionicons name="ios-trending-up" size={30}/><Text style={styles.contentText}>SALES</Text></TouchableOpacity>
+        <View style={styles.content}/>
         <TouchableOpacity onPress={()=>{
             firebase.auth().signOut();}}
              style={styles.logout}><Text style={styles.logoutText}>LOGOUT</Text></TouchableOpacity>
@@ -41,8 +42,17 @@ const styles = StyleSheet.create({
         alignSelf:'center'
 
     },
+    headerContainer: {
+        marginTop:10,
+        height:150,
+        width:'100%',
+        flexDirection:'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
     content:{
         margin:30,
+        flex:1,
         flexDirection:'row',
         alignItems:'center'
     },
@@ -69,5 +79,9 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Regular',
         fontSize: 15,
         letterSpacing: 2,
+    },
+    icon:{
+        marginRight:-20,
+        marginLeft:20
     }
 });

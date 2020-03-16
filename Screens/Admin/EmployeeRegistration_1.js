@@ -30,6 +30,7 @@ function EmployeeRegistration({ navigation, route }) {
     const chooseFile = () => {
         var options = {
           title: 'Select Image',
+          quality:0.5,
           customButtons: [
           ],
           storageOptions: {

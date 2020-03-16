@@ -11,7 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
-import { set } from "react-native-reanimated";
+
 function Profile({ navigation }) {
     const [firstName, setfirstName] = useState("")
     const [lastName, setlastName] = useState("")

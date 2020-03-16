@@ -11,6 +11,7 @@ function HomeDrawer({navigation},props){
 
 return(
     <View style={styles.container}>
+        <View style={styles.headerContainer}><TouchableOpacity onPress={()=>navigation.closeDrawer()} style={styles.icon}><Ionicons  name="md-arrow-back" size={40}/></TouchableOpacity></View>
         <View style={styles.imageContainer}></View>
         <TouchableOpacity onPress={()=>navigation.navigate("Profile")} style={styles.content}><Ionicons name="md-person" size={30}/><Text style={styles.contentText}>PROFILE</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("DriverProfile")} style={styles.content}><Ionicons name="md-car" size={30}/><Text style={styles.contentText}>YOUR DRIVER</Text></TouchableOpacity>
@@ -38,6 +39,14 @@ const styles = StyleSheet.create({
         margin:30,
         alignSelf:'center'
 
+    },
+    headerContainer: {
+        marginTop:10,
+        height:50,
+        width:'100%',
+        flexDirection:'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     content:{
         margin:30,
@@ -67,5 +76,9 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Regular',
         fontSize: 15,
         letterSpacing: 2,
+    },
+    icon:{
+        marginRight:-20,
+        marginLeft:20
     }
 });

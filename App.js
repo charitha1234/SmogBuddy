@@ -11,9 +11,18 @@ import 'react-native-gesture-handler';
 import Appcontainer from './Navigation';
 import firebase from 'react-native-firebase';
 import {Alert} from 'react-native';
+import Dialog from "react-native-dialog";
 import AsyncStorage from '@react-native-community/async-storage';
 
 class  App extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+      dialogboxVisible:false,
+      fuelTitle:null,
+      fuelBody:null
+    }
+  }
 
       async componentDidMount() {
         this.checkPermission();
@@ -30,22 +39,47 @@ class  App extends Component {
       * */
       this.notificationListener = firebase.notifications().onNotification((notification) => {
           const { title, body } = notification;
-          // this.showAlert(title, body);
+          
+          if(notification.data.status=="CHANGE_FUEL_CAP"){
+            console.log(notification.data)
+            this.setState({
+              dialogboxVisible:true,
+              fuelTitle:title,
+              fuelBody:body,
+            })
+          }
+           
       });
       /*
       * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
       * */
       this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
-          const { title, body } = notificationOpen.notification;
-          // this.showAlert(title, body);
+          if (notificationOpen) {   
+            const {data } = notificationOpen.notification;
+            if(data.status=="CHANGE_FUEL_CAP"){
+              this.setState({
+                dialogboxVisible:true,
+                fuelTitle:data.title,
+                fuelBody:data.body,
+              })
+            }
+        }
       });
     
       /*
       * If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
       * */
       const notificationOpen = await firebase.notifications().getInitialNotification();
-      if (notificationOpen) {
-          const { title, body } = notificationOpen.notification;
+      console.log("NOTIFgbg------------",notificationOpen.notification)
+      if (notificationOpen) {   
+        const {data } = notificationOpen.notification;
+        if(data.status=="CHANGE_FUEL_CAP"){
+          this.setState({
+            dialogboxVisible:true,
+            fuelTitle:data.title,
+            fuelBody:data.body,
+          })
+        }
       }
       /*
       * Triggered for data only payload in foreground
@@ -95,9 +129,66 @@ class  App extends Component {
           console.log('permission rejected',error);
       }
     }
+    areYouSure(){
+      
+    }
     
+    fuelcapApi(status){
+      Alert.alert(
+        'Are You Sure',
+        '',
+        [
+            {
+                text: 'No',
+                onPress: () => {},
+                style: 'cancel',
+            },
+            {
+                text: 'Yes', onPress: () => {
+                  this.setState({dialogboxVisible:false})
+                  const user=firebase.auth().currentUser;
+                  fetch('https://smogbuddy.herokuapp.com/user/fuelcap/confirmation', {
+                    method: 'PUT',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        uid:user.uid,
+                        status:status
+                    }),
+                })
+                .then((res) => res.json())
+                .then((resJson) => {})
+                    
+                .catch((e) => {})
+                }
+            },
+        ],
+        { cancelable: false },
+    )
+
+    }
+
     render() {
-        return <Appcontainer/>
+        return (
+          <>
+        <Appcontainer/>
+        <Dialog.Container visible={this.state.dialogboxVisible}>
+        <Dialog.Title>{this.state.fuelTitle}</Dialog.Title>
+          <Dialog.Description>
+            {this.state.fuelBody}
+          </Dialog.Description>
+          <Dialog.Button label="NO" onPress={()=>{
+            this.fuelcapApi("NO")
+        }}/>
+          <Dialog.Button label="YES" onPress={()=>{
+            
+            this.fuelcapApi("YES")
+            }}/>
+        </Dialog.Container>
+        </>
+        )
     }
 }
 

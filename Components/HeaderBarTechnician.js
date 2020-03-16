@@ -22,9 +22,7 @@ function HeaderBar(props) {
                     <Ionicons style={{marginLeft:20,color:color.primaryWhite}} name="ios-log-out" size={30}/>
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>{props.title}</Text>
-                    <TouchableOpacity onPress={()=>props.navigation.navigate("TakeImages")} style={{flex:1,flexDirection:'row', justifyContent:'flex-end'}}>
-                        <Ionicons style={{marginRight:20,color:color.primaryWhite}} name="ios-camera" size={30}/>
-                    </TouchableOpacity>
+                    <View style={{flex:1}}/>
                 </View>
             </SafeAreaView>
         </LinearGradient>

@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import { 
     View,
     StyleSheet,
@@ -7,14 +7,16 @@ import {
 import { Label, Item, Input } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 function TextBox(props){
-
+const [textChanging, settextChanging] = useState(false)
 return(
     <View style={styles.container}>
         <Item style={props.underline? null:{borderColor:'transparent'} } floatingLabel >
             <Label  style={styles.title} >{props.title}</Label>
-            <Input onChangeText={props.onChangeText} secureTextEntry={props.title=="PASSWORD"? true :false}/>
+            <Input onChangeText={props.onChangeText} onFocus={(e)=>settextChanging(true)} onBlur={()=>settextChanging(false)} secureTextEntry={props.title=="PASSWORD"? true :false}/>
         </Item>
+        {textChanging? null:
        <View style={styles.icon}><Ionicons  name={props.icon} size={props.size? props.size : 25}/></View>
+        }
     </View>
     );
 

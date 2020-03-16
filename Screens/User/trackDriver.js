@@ -46,6 +46,11 @@ const customStyles = {
 
 function RenderContent(props) {
     const [currentStage, setcurrentStage] = useState(0)
+    useEffect(()=>{
+        console.log("Called")
+        setcurrentStage(props.currentStage);
+        if(currentStage==8)props.navigation.navigate("UserReview")
+    })
     return (
         <View style={styles.detailsContainer}>
             <Ionicons name="ios-remove" size={50} style={styles.bottomsheetMoreIcon} />
@@ -78,6 +83,7 @@ function DriverTrack({ navigation }, props) {
     const [startGiven, setstartGiven] = useState(false)
     const [arrivalTime, setarrivalTime] = useState("")
     const [loading, setloading] = useState(true)
+    const [currentStage, setcurrentStage] = useState(0)
     const [fetching, setfetching] = useState(true)
     const origin = { latitude: latitude, longitude: longitude };
     const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
@@ -88,7 +94,6 @@ function DriverTrack({ navigation }, props) {
         fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + user.uid)
             .then((res) => res.json())
             .then((responseJson) => {
-                console.log("HIT")
                 if (responseJson.isDriverAssigned) setdriverAssigned(true);
                 if (!responseJson.isDriverAssigned) setdriverAssigned(false);
                 if (responseJson.isDriverStarted) {
@@ -105,12 +110,14 @@ function DriverTrack({ navigation }, props) {
     }
     useEffect(() => {
     getApiData()
-        
+        console.log("USEEFFECT",DriverUid)
         
         if (startGiven) {
 
             firebase.database().ref('location/' + DriverUid).on('value', snapshot => {
+                console.log("snp",snapshot.val())
                 if (snapshot.val()) {
+
 
                     var hours = Math.floor(duration / 60);
                     var minutes = Math.floor(duration % 60);
@@ -126,11 +133,12 @@ function DriverTrack({ navigation }, props) {
                     }
                     setlatitude(snapshot.val().lat),
                     setlongitude(snapshot.val().lng)
+                    setcurrentStage(snapshot.val().currentStage)
                 }
 
             });
         }
-    },[])
+    })
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
             <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>TRACKING</Text><View /></View>
@@ -185,7 +193,7 @@ function DriverTrack({ navigation }, props) {
                            snapPoints={[500, 200]}
                            enabledBottomClamp={true}
                            initialSnap={1}
-                           renderContent={() => <RenderContent arrivalTime={arrivalTime} />}
+                           renderContent={() => <RenderContent navigation={navigation} currentStage={currentStage} arrivalTime={arrivalTime} />}
                        />
                             :
                             driverAssigned ?
@@ -222,10 +230,15 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '50%'
     },
+    timeContainer: {
+        height:100,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        marginHorizontal: 10,
+    },
     detailsContainer: {
         alignSelf: 'center',
-        height: 800,
-        marginTop:50,
+        height: 900,
         width: '100%',
         shadowColor: "#000",
         shadowOffset: {
@@ -262,12 +275,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: color.primaryWhite
-    },
-    timeContainer: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        marginHorizontal: 10,
     },
     contactContainer: {
         flex: 5,

@@ -1,28 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    ActivityIndicator
 } from "react-native";
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-function ShopProfile({navigation}) {
+import firebase from 'react-native-firebase';
+function ShopProfile({ navigation }) {
+    const user = firebase.auth().currentUser
+    const [name, setname] = useState(null)
+    const [address, setaddress] = useState(null)
+    const [ard, setard] = useState(null)
+    const [stationType, setstationType] = useState(null)
+    const [epa, setepa] = useState(null)
+    const [phone, setphone] = useState(null)
+    const [email, setemail] = useState(null)
+    const [loading, setloading] = useState(true)
+    useEffect(() => {
+        fetch("https://smogbuddy.herokuapp.com/admin/shop?adminUid=" + user.uid)
+            .then((res) => res.json())
+            .then((resJson) => {
+                setname(resJson[0].name)
+                setaddress(resJson[0].address)
+                setard(resJson[0].ard)
+                setstationType(resJson[0].stationType)
+                setepa(resJson[0].epaLicenseNumber)
+                setphone(resJson[0].phoneNumber)
+                setemail(resJson[0].email)
+                setloading(false)
+            })
+            .catch((e) => alert(e))
+    })
 
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={()=>navigation.goBack()} style={styles.icon}><Ionicons  name="ios-close" size={40}/></TouchableOpacity><Text style={styles.headerText}>SHOP PROFILE</Text><View/></View>
+            <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>SHOP PROFILE</Text><View /></View>
             <View style={styles.container}>
                 <View style={styles.formContainer}>
-                    <TextBox title="BUSINESS NAME" defaultValue="charitha" disabled={true}/>
-                    <TextBox title="ADDRESS" defaultValue="weerasooriya" disabled={true}/>
-                    <TextBox title="ARD"  defaultValue="kosswatta" disabled={true}/>
-                    <TextBox title="STATION TYPE" defaultValue="nattandiya" disabled={true}/>
-                    <TextBox title="OPTIONAL EPA" defaultValue="9922" disabled={true} />
-                    <TextBox title="TELEPHONE NUMBER" defaultValue="9922" disabled={true} />
-                    <TextBox title="EMAIL" defaultValue="9922" disabled={true} />
+                    {loading ?
+                        <ActivityIndicator size={40} color={color.primaryBlack} />
+                        :
+                        <>
+                            <TextBox title="BUSINESS NAME" defaultValue={name} disabled={true} />
+                            <TextBox title="ADDRESS" defaultValue={address} disabled={true} />
+                            <TextBox title="ARD" defaultValue={ard} disabled={true} />
+                            <TextBox title="STATION TYPE" defaultValue={stationType} disabled={true} />
+                            <TextBox title="OPTIONAL EPA" defaultValue={epa} disabled={true} />
+                            <TextBox title="TELEPHONE NUMBER" defaultValue={phone} disabled={true} />
+                            <TextBox title="EMAIL" defaultValue={email} disabled={true} />
+                        </>
+                    }
                 </View>
             </View>
         </LinearGradient>
@@ -36,12 +68,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        
+
     },
     headerContainer: {
-        height:100,
-        width:'100%',
-        flexDirection:'row',
+        height: 100,
+        width: '100%',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
@@ -51,7 +83,7 @@ const styles = StyleSheet.create({
         letterSpacing: 2,
     },
     formContainer: {
-        marginTop:30,
+        marginTop: 30,
         height: 500,
         width: 300,
         justifyContent: 'center',
@@ -66,8 +98,8 @@ const styles = StyleSheet.create({
 
         elevation: 5,
     },
-    icon:{
-        marginRight:-20,
-        marginLeft:20
+    icon: {
+        marginRight: -20,
+        marginLeft: 20
     }
 });

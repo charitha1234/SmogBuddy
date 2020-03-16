@@ -45,6 +45,10 @@ import EmployeeProfile from '../Screens/Admin/EmployeeProfile';
 import AddService from '../Screens/Admin/AddServices';
 import ServiceInfo from '../Screens/Admin/ServiceInfo';
 import AssignEmployees from '../Screens/Admin/AssignEmployees';
+import UserReview from '../Screens/User/UserReview';
+import PreviousChecks from "../Screens/User/PreviousChecks";
+import CheckDetails from "../Screens/User/CheckDetails";
+
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -84,6 +88,7 @@ function UserHomeScreen() {
             <Drawer.Screen name="ContactUs" component={ContactUs} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="DriverTrack" component={DriverTrack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="DriverProfile" component={DriverProfile} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="UserReview" component ={UserReview}  options={{ gestureEnabled: false }}/>
         </Drawer.Navigator>
     );
 }
@@ -92,6 +97,8 @@ function UserMenuScreens() {
         <Stack.Navigator initialRouteName="UserHomeScreen" screenOptions={{ animationEnabled: false, headerShown: false }}>
             <Stack.Screen name="UserHomeScreen" component={UserHomeScreen} />
             <Stack.Screen name="RequestProcess" component={RequestProcess} />
+            <Stack.Screen name="PreviousChecks" component={PreviousChecks}/>
+            <Stack.Screen name="CheckDetails" component={CheckDetails}/>
         </Stack.Navigator>
     );
 }
@@ -124,6 +131,7 @@ function AdminMenu() {
             <Stack.Screen name="AdminHome" component={AdminHome} />
             <Stack.Screen name="Process" component={Process} />
             <Stack.Screen name="TrackDriver" component={TrackDriver} />
+            
         </Stack.Navigator>
     );
 }

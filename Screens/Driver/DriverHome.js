@@ -30,7 +30,7 @@ function Home({ navigation }, props) {
         .then((resJson)=>{
             console.log("insodi",resJson)
             if (resJson.isDriverAssign) {
-                navigation.navigate("DriverRequest", { userUid: resJson.userUid, userPickupLocation: resJson.pickupLocation,status:resJson.status });
+                navigation.navigate("DriverRequest", { userUid: resJson.userUid, userPickupLocation: resJson.pickupLocation,status:resJson.status,stationLocation:resJson.shopLocation });
             }
         })
         notification().then(data => {
@@ -41,7 +41,7 @@ function Home({ navigation }, props) {
 
     firebase.notifications().onNotification((notification) => {
         if (notification.data.status == 'ASSIGN_CUSTOMER') {
-            navigation.navigate("DriverRequest", { userUid: notification.data.userUid, userPickupLocation: notification.data.userPickupLocation });
+            navigation.navigate("DriverRequest", { userUid: notification.data.userUid, userPickupLocation: notification.data.userPickupLocation,stationLocation:notification.data.shopLocation });
         }
     });
 

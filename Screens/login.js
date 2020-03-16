@@ -16,7 +16,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import TextBox from '../Components/textboxLogin';
 import firebase from 'react-native-firebase';
 
-async function authentication(username, password, navigation) {
+async function authentication(username, password, navigation,setloading) {
     let fcmToken = await AsyncStorage.getItem('fcmToken');
     firebase.auth().signInWithEmailAndPassword(username, password)
         .then((res) => {
@@ -33,17 +33,30 @@ async function authentication(username, password, navigation) {
                             fcm: fcmToken
                         }),
                     }).then((res) => {})
-                        .catch((e) => alert(e));
+                        .catch((e) => {
+                            alert(e)
+                            firebase.auth().signOut();
+                            setloading(false)
+                        
+                        })
+
 
                 })
                 .catch((error) => {
-                    console.error(error);
+                    
+                    alert(error)
+                    firebase.auth().signOut();
+                    setloading(false)
                 });
 
 
 
         })
-        .catch((e) => alert(e));
+        .catch((e) => {
+            setloading(false)
+            alert(e)
+        }
+            );
 
 
 }
@@ -75,7 +88,7 @@ function Login({ navigation }) {
                             <View style={styles.button}>
                                 <TouchableOpacity onPress={() => {
                                     setloading(true);
-                                    authentication(username, password, navigation)
+                                    authentication(username, password, navigation,setloading)
                                 }}>
                                     <GradientButton />
                                 </TouchableOpacity>

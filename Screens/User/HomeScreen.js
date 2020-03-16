@@ -21,6 +21,7 @@ async function notification() {
 function Home({ navigation }, props) {
     useEffect(() => {
         notification().then(data => {
+            console.log("notfihk>>",data)
             if (data.status == 'ASSIGN_CUSTOMER') {
 
             }
@@ -48,7 +49,7 @@ function Home({ navigation }, props) {
                         <Text style={styles.titleText}>PREVIOUS SMOG CHECK</Text>
 
                     </View>
-                    <TouchableOpacity style={styles.button}><GradientButton title="VIEW" /></TouchableOpacity>
+                    <TouchableOpacity onPress={()=>navigation.navigate("PreviousChecks")} style={styles.button}><GradientButton title="VIEW" /></TouchableOpacity>
                 </View>
             </View>
         </LinearGradient>

@@ -5,9 +5,11 @@ import {
     StyleSheet,
     TouchableOpacity,
     SafeAreaView,
+    Alert
 } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
+import firebase from 'react-native-firebase';
 import { color } from '../Assets/color';
 function HeaderBar(props) {
 
@@ -15,7 +17,28 @@ function HeaderBar(props) {
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.lightBlue]} style={styles.container}>
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={styles.headerBar}>
-                   <View style={{flex:1}}/>
+                <TouchableOpacity onPress={()=>{
+                        Alert.alert(
+                            'Are You Sure',
+                            '',
+                            [
+                                {
+                                    text: 'No',
+                                    style: 'cancel',
+                                },
+                                {
+                                    text: 'Yes', onPress: () => {
+                                        firebase.auth().signOut();
+                                    }
+                                },
+                            ],
+                            { cancelable: false },
+
+                        )
+                        
+                    }} style={{flex:1}}>
+                    <Ionicons style={{marginLeft:20,color:color.primaryWhite}} name="ios-log-out" size={30}/>
+                    </TouchableOpacity>
                     <Text style={styles.headerTitle}>{props.title}</Text>
                     <TouchableOpacity disabled={!props.navigationEnabled} onPress={props.onPressRightIcon} style={{flex:1,flexDirection:'row', justifyContent:'flex-end'}}>
                         <Ionicons style={{color:color.primaryWhite}} name="md-navigate" size={30}/>

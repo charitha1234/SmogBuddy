@@ -41,7 +41,6 @@ class AdminHome extends Component {
         .then((resJson) => {
             this.setState({processList:resJson})
             this.setState({ isFetching: false });
-            console.log("PROCESS LIST",resJson)
             
         }
         
@@ -87,7 +86,8 @@ const styles = StyleSheet.create({
     },
     ProcessContainer: {
         flexDirection: 'row',
-        marginTop: 30,
+        marginTop: 10,
+        marginBottom:10,
         height: 100,
         width: '100%',
         justifyContent: 'center',
