@@ -20,8 +20,7 @@ function HeaderBar(props) {
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>{props.title}</Text>
                     <View style={{flex:1,flexDirection:'row', justifyContent:'space-evenly'}}>
-                        <Ionicons style={{color:color.primaryWhite}} name="ios-search" size={30}/>
-                        <Ionicons style={{color:color.primaryWhite}} name="ios-notifications" size={30}/>
+    
                     </View>
                 </View>
             </SafeAreaView>

@@ -1,19 +1,26 @@
-import React from "react";
+import React, {useEffect,useState} from "react";
 import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    FlatList
 } from "react-native";
 import { color } from '../../Assets/color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 function CheckList(props) {
     return (
-        <TouchableOpacity onPress={props.onPress} style={styles.ProcessContainer}>
+        <TouchableOpacity onPress={props.onPress} style={[styles.ProcessContainer,props.status=="ONGOING"?{backgroundColor:color.lightGreen}:{backgroundColor:color.primaryWhite}]}>
             <View style={styles.statusContainer}>
-                <Text style={styles.dateText}>{props.date}</Text>
-                <Text style={styles.driverNameText}>Driver: {props.driver}</Text>
+                {
+                    props.status=="ONGOING"?
+                    <Text style={styles.dateText}>ONGOING</Text>:
+                    <Text style={styles.dateText}>{props.date}</Text>
+                    
+
+                }
+                
             </View>
             <View style={styles.CostContainer}>
                 <Text style={styles.Costlabel}>Total Cost</Text>
@@ -24,11 +31,21 @@ function CheckList(props) {
 }
 
 function PreviousChecks(props) {
+    const [previousChecks, setpreviousChecks] = useState(null)
+    useEffect(()=>{
+        const user=firebase.auth().currentUser
+        fetch('https://smogbuddy.herokuapp.com/user/inspection/history/' + user.uid)
+        .then((res)=>res.json())
+        .then((resJson)=>{
+            setpreviousChecks(resJson)
+        })
+    },[])
 
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}><TouchableOpacity onPress={() => props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>ALL CHECKS</Text><View /></View>
-            <CheckList onPress={()=>props.navigation.navigate("CheckDetails")} driver="Jude" date="12/23/2019" cost="200"/>
+            <FlatList data={previousChecks} renderItem={({item})=>(<CheckList onPress={()=>props.navigation.navigate("CheckDetails",{details:item})} status={item.status} date={item.date} cost={item.totalCost}/>)}/>
+            
         </View>
     );
 
@@ -63,7 +80,6 @@ const styles = StyleSheet.create({
         height: 100,
         width: '100%',
         justifyContent: 'center',
-        backgroundColor: color.primaryWhite,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

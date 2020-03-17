@@ -1,10 +1,11 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
     StyleSheet,
     TouchableOpacity,
-    ActivityIndicator
+    ActivityIndicator,
+    Image
 } from "react-native";
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
@@ -14,39 +15,53 @@ import firebase from 'react-native-firebase';
 function Profile({ navigation }) {
     const [driverAssigned, setdriverAssigned] = useState(false)
     const [loading, setloading] = useState(true)
+    const [name, setname] = useState(null)
+    const [licenseNumber, setlicenseNumber] = useState(null)
+    const [imageUrl, setimageUrl] = useState(null)
     useEffect(() => {
-        const user=firebase.auth().currentUser;
-        fetch('https://smogbuddy.herokuapp.com/user/assign/driver/'+user.uid)
-        .then((res)=>res.json())
-        .then((responseJson)=>{
-            if(responseJson.assignDriver)setdriverAssigned(true);
-            if(!responseJson.assignDriver)setdriverAssigned(false);
-            setloading(false)
-        })
-        .catch((e)=>alert(e))
-    },[])
+        const user = firebase.auth().currentUser;
+        console.log(user.uid)
+        fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + user.uid)
+            .then((res) => res.json())
+            .then((responseJson) => {
+                if (responseJson.isDriverAssigned) {
+                    setdriverAssigned(true);
+                    fetch('https://smogbuddy.herokuapp.com/user/' + responseJson.assignedDriver)
+                        .then((res) => res.json())
+                        .then((responseJson) => {
+                            setname(responseJson.firstName)
+                            setlicenseNumber(responseJson.licenseNumber)
+                            setimageUrl(responseJson.imageUrl)
+
+                        })
+
+                }
+
+                if (!responseJson.isDriverAssigned) setdriverAssigned(false);
+                setloading(false)
+            })
+            .catch((e) => alert(e))
+    }, [])
     return (
 
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
             <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>PROFILE</Text><View /></View>
             {
-            loading?
-            <View style={{flex:1,justifyContent:'center'}}><ActivityIndicator size={40} color={color.primaryBlack}/></View>
-            :
-            driverAssigned ?
-                <View style={styles.container}>
-                    <View style={styles.formContainer}>
-                        <TextBox title="FIRST NAME" defaultValue="charitha" disabled={true} />
-                        <TextBox title="LAST NAME" defaultValue="weerasooriya" disabled={true} />
-                        <TextBox title="ADDRESS" defaultValue="kosswatta" disabled={true} />
-                        <TextBox title="STATE" defaultValue="nattandiya" disabled={true} />
-                        <TextBox title="ZIPCODE" defaultValue="9922" disabled={true} />
-                    </View>
-                </View>
-                :
-                <View style={styles.container}>
-                        <Text style={styles.subText}>Driver Is Not Assigned yet</Text>
-                </View>
+                loading ?
+                    <View style={{ flex: 1, justifyContent: 'center' }}><ActivityIndicator size={40} color={color.primaryBlack} /></View>
+                    :
+                    driverAssigned ?
+                        <View style={styles.container}>
+                            <View style={styles.formContainer}>
+                                <Image style={styles.imageContainer} resizeMode='cover' source={{uri:imageUrl}}/>
+                                <TextBox title="FIRST NAME" defaultValue={name} disabled={true} />
+                                <TextBox title="LICENCE NUMBER" defaultValue={licenseNumber} disabled={true} />
+                            </View>
+                        </View>
+                        :
+                        <View style={styles.container}>
+                            <Text style={styles.subText}>Driver Is Not Assigned yet</Text>
+                        </View>
             }
         </LinearGradient>
     );
@@ -97,5 +112,13 @@ const styles = StyleSheet.create({
     icon: {
         marginRight: -20,
         marginLeft: 20
-    }
+    },
+    imageContainer: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        margin: 30,
+        alignSelf: 'center'
+
+    },
 });

@@ -1,18 +1,25 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { 
     View,
     Text,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    Image
 } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 function HomeDrawer({navigation},props){
-
+    const [imageUrl, setimageUrl] = useState(null)
+    useEffect(()=>{
+        const user=firebase.auth().currentUser;
+        fetch('https://smogbuddy.herokuapp.com/user/'+user.uid)
+        .then((res)=>res.json())
+        .then((resJson)=>setimageUrl(resJson.imageUrl))
+    },[])
 return(
     <View style={styles.container}>
         <View style={styles.headerContainer}><TouchableOpacity onPress={()=>navigation.closeDrawer()} style={styles.icon}><Ionicons  name="md-arrow-back" size={40}/></TouchableOpacity></View>
-        <View style={styles.imageContainer}></View>
+        <Image style={styles.imageContainer} resizeMode='cover' source={{uri:imageUrl}}/>
         <TouchableOpacity onPress={()=>navigation.navigate("Profile")} style={styles.content}><Ionicons name="md-person" size={30}/><Text style={styles.contentText}>PROFILE</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("DriverProfile")} style={styles.content}><Ionicons name="md-car" size={30}/><Text style={styles.contentText}>YOUR DRIVER</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("DriverTrack")} style={styles.content}><Ionicons name="md-navigate" size={30}/><Text style={styles.contentText}>TRACK CAR</Text></TouchableOpacity>
@@ -34,7 +41,6 @@ const styles = StyleSheet.create({
     imageContainer:{
         width:100,
         height:100,
-        backgroundColor:'black',
         borderRadius:50,
         margin:30,
         alignSelf:'center'
