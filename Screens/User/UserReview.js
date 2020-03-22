@@ -10,9 +10,32 @@ import firebase from 'react-native-firebase';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/longButton';
+
+
+
 function Review(props) {
     const [Rating, setRating] = useState(0)
+    const putReview=()=>{
+        const user = firebase.auth().currentUser;
+        fetch('https://smogbuddy.herokuapp.com/user/review',
+        {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                
+                    uid: user.uid,
+                    rate: Rating
+                  
 
+
+            }),
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {props.navigation.navigate("Home")})
+    }
 
     return (
         <View style={styles.container}>
@@ -29,7 +52,9 @@ function Review(props) {
                     onFinishRating={(rating) => setRating(rating)}
                 />
             </View>
-            <TouchableOpacity style={{ paddingBottom: 50, alignSelf: 'center' }} ><GradientButton title="SUBMIT" /></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{
+                putReview()
+            }} style={{ paddingBottom: 50, alignSelf: 'center' }} ><GradientButton title="SUBMIT" /></TouchableOpacity>
         </View>
     );
 

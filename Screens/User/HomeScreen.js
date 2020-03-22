@@ -18,10 +18,11 @@ async function notification() {
         return notificationOpen.notification['data'];
     }
 }
+
+
 function Home({ navigation }, props) {
     useEffect(() => {
         notification().then(data => {
-            console.log("notfihk>>",data)
             if (data.status == 'ASSIGN_CUSTOMER') {
 
             }

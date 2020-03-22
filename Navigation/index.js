@@ -48,6 +48,7 @@ import AssignEmployees from '../Screens/Admin/AssignEmployees';
 import UserReview from '../Screens/User/UserReview';
 import PreviousChecks from "../Screens/User/PreviousChecks";
 import CheckDetails from "../Screens/User/CheckDetails";
+import PaypalScreen from "../Screens/User/PaypalScreen";
 
 
 const Stack = createStackNavigator();
@@ -81,14 +82,55 @@ function RequestProcess() {
 }
 
 function UserHomeScreen() {
+    const [currentState, setcurrentState] = useState(null)
+    const [payable, setpayable] = useState(false)
+    useEffect(() => {
+        const user = firebase.auth().currentUser;
+        fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + user.uid)
+        .then((res)=>res.json())
+        .then((resJson)=>{
+            if(resJson.isDriverAssigned){
+                console.log("DRIVER",resJson.assignedDriver)
+                firebase.database().ref('location/' + resJson.assignedDriver + '/currentStage').on('value', snapshot => {
+                    console.log("current state:", snapshot.val())
+                    setcurrentState(snapshot.val())
+                })
+            }
+        }).catch((e)=>{})
+        
+        
+        if (currentState == 7) {
+            fetch('https://smogbuddy.herokuapp.com/user/amount/' + user.uid)
+                .then((res) => res.json())
+                .then((resJson) => {
+                    console.log("ISPAID>>", resJson)
+                    if (!resJson.isPaid) setpayable(true)
+                    else if(resJson.isPaid)setpayable(false)
+                })
+                .catch((e) => { })
+        }
+    })
     return (
         <Drawer.Navigator initialRouteName="Home" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <HomeDrawerContent {...props} />}>
-            <Drawer.Screen name="Home" component={Home} options={{ gestureEnabled: false }} />
-            <Drawer.Screen name="Profile" component={Profile} options={{ gestureEnabled: false }} />
-            <Drawer.Screen name="ContactUs" component={ContactUs} options={{ gestureEnabled: false }} />
-            <Drawer.Screen name="DriverTrack" component={DriverTrack} options={{ gestureEnabled: false }} />
-            <Drawer.Screen name="DriverProfile" component={DriverProfile} options={{ gestureEnabled: false }} />
-            <Drawer.Screen name="UserReview" component ={UserReview}  options={{ gestureEnabled: false }}/>
+            {
+                payable?
+                    <Drawer.Screen name="PaypalScreen" component={PaypalScreen} options={{ gestureEnabled: false }} />
+                    :
+                    <>
+                        <Drawer.Screen name="Home" component={Home} options={{ gestureEnabled: false }} />
+                        <Drawer.Screen name="Profile" component={Profile} options={{ gestureEnabled: false }} />
+                        <Drawer.Screen name="ContactUs" component={ContactUs} options={{ gestureEnabled: false }} />
+                        <Drawer.Screen name="DriverTrack" component={DriverTrack} options={{ gestureEnabled: false }} />
+                        <Drawer.Screen name="DriverProfile" component={DriverProfile} options={{ gestureEnabled: false }} />
+                        <Drawer.Screen name="UserReview" component={UserReview} options={{ gestureEnabled: false }} />
+                    </>
+                    
+
+            }
+
+
+
+
         </Drawer.Navigator>
     );
 }
@@ -97,8 +139,8 @@ function UserMenuScreens() {
         <Stack.Navigator initialRouteName="UserHomeScreen" screenOptions={{ animationEnabled: false, headerShown: false }}>
             <Stack.Screen name="UserHomeScreen" component={UserHomeScreen} />
             <Stack.Screen name="RequestProcess" component={RequestProcess} />
-            <Stack.Screen name="PreviousChecks" component={PreviousChecks}/>
-            <Stack.Screen name="CheckDetails" component={CheckDetails}/>
+            <Stack.Screen name="PreviousChecks" component={PreviousChecks} />
+            <Stack.Screen name="CheckDetails" component={CheckDetails} />
         </Stack.Navigator>
     );
 }
@@ -131,7 +173,7 @@ function AdminMenu() {
             <Stack.Screen name="AdminHome" component={AdminHome} />
             <Stack.Screen name="Process" component={Process} />
             <Stack.Screen name="TrackDriver" component={TrackDriver} />
-            
+
         </Stack.Navigator>
     );
 }
@@ -161,7 +203,7 @@ function RequestStack() {
     return (
         <Stack.Navigator initialRouteName="Requests" screenOptions={{ animationEnabled: false, headerShown: false }}>
             <Stack.Screen name="Requests" component={Requests} />
-            <Stack.Screen name="AssignEmployees" component={AssignEmployees}/>
+            <Stack.Screen name="AssignEmployees" component={AssignEmployees} />
         </Stack.Navigator>
     );
 }
@@ -208,7 +250,7 @@ function WelcomeScreen() {
             }
 
         });
-    },[]);
+    }, []);
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Splash" screenOptions={{ animationEnabled: false, headerShown: false }}>

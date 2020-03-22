@@ -151,10 +151,11 @@ function RenderContent(props) {
 
     useEffect(() => {
         if (fetching) fetchFirebaseStart()
-        if(currentStage==2 || currentStage==4 )props.setreturnToStation(true)
+        if(currentStage==3 )props.setreturnToStation(true)
         else props.setreturnToStation(false)
+        if(currentStage==8)props.navigation.navigate("DriverHomeScreen")
         console.log("CURRENTSTAGE", currentStage)
-        if (!fetching) {
+        if (!fetching || !currentStage==8) {
             firebase.database().ref('location/' + user.uid).update({
                 currentStage
             });
@@ -320,6 +321,7 @@ function DriverRequest({ navigation, route }) {
     const destination = { latitude: location.lat, longitude: location.lng }
     const user = firebase.auth().currentUser;
     useEffect(() => {
+
         if (status == "DRIVER_ASSIGN") { }
         else if (status == "ACCEPTED") setaccepted(true)
         else if (status == "STARTED") {

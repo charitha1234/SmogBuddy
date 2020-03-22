@@ -54,7 +54,7 @@ function UserRegistration_2({ navigation, route }) {
 
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
-            <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: 550, justifyContent: 'space-between' }}>
+            <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: 650, justifyContent: 'space-between' }}>
                 {
                     loading ?
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -73,8 +73,8 @@ function UserRegistration_2({ navigation, route }) {
                             <View style={styles.selection}>
                                 <View style={styles.insideArea}>
                                     <TextBox title="ZIP CODE" underline={true} onChangeText={text => setzipcode(text)} />
-                                    <TextBox title="PHONE NO" underline={true} onChangeText={text => setphoneNo(text)} />
-                                    <TextBox title="EMAIL" underline={true} onChangeText={text => setusername(text)} disabled={false} />
+                                    <TextBox title="PHONE NO" underline={true} onChangeText={text => setphoneNo(text)} keyboardType='phone-pad'/>
+                                    <TextBox title="EMAIL" underline={true} onChangeText={text => setusername(text)} disabled={false} keyboardType='email-address' />
                                     <TextBox title="PASSWORD" underline={true} onChangeText={text => setpassword(text)} disabled={false} />
                                 </View>
                                 <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>

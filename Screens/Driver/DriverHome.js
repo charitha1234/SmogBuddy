@@ -15,7 +15,6 @@ import firebase from 'react-native-firebase';
 async function notification() {
 
     const notificationOpen = await firebase.notifications().getInitialNotification();
-    console.log("OPEN",notificationOpen)
     if (notificationOpen) {
         
         return notificationOpen.notification['data'];
@@ -28,23 +27,25 @@ function Home({ navigation }, props) {
         fetch('https://smogbuddy.herokuapp.com/driver/status/'+user.uid)
         .then((res)=>res.json())
         .then((resJson)=>{
-            console.log("insodi",resJson)
             if (resJson.isDriverAssign) {
+
                 navigation.navigate("DriverRequest", { userUid: resJson.userUid, userPickupLocation: resJson.pickupLocation,status:resJson.status,stationLocation:resJson.shopLocation });
             }
         })
         notification().then(data => {
-            console.log("data",data)
+            navigation.navigate("DriverRequest", { userUid: data.userUid, userPickupLocation: data.userPickupLocation,status:data.status,stationLocation:data.shopLocation });
             
         })
+        firebase.notifications().onNotification((notification) => {
+            if (notification.data.status == 'ASSIGN_CUSTOMER') {
+                const location=JSON.parse(notification.data.userPickupLocation)
+                navigation.navigate("DriverRequest", { userUid: notification.data.userUid,status:notification.data.status, userPickupLocation: location,stationLocation:notification.data.shopLocation });
+            }
+        });
+    
     });
 
-    firebase.notifications().onNotification((notification) => {
-        if (notification.data.status == 'ASSIGN_CUSTOMER') {
-            navigation.navigate("DriverRequest", { userUid: notification.data.userUid, userPickupLocation: notification.data.userPickupLocation,stationLocation:notification.data.shopLocation });
-        }
-    });
-
+    
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
             <Header title="SMOGBUDDY" navigation={navigation} />

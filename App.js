@@ -70,7 +70,6 @@ class  App extends Component {
       * If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
       * */
       const notificationOpen = await firebase.notifications().getInitialNotification();
-      console.log("NOTIFgbg------------",notificationOpen.notification)
       if (notificationOpen) {   
         const {data } = notificationOpen.notification;
         if(data.status=="CHANGE_FUEL_CAP"){
