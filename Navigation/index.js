@@ -117,7 +117,7 @@ function UserHomeScreen() {
                     <Drawer.Screen name="PaypalScreen" component={PaypalScreen} options={{ gestureEnabled: false }} />
                     :
                     <>
-                        <Drawer.Screen name="Home" component={Home} options={{ gestureEnabled: false }} />
+                        <Drawer.Screen name="Home" component={Home} />
                         <Drawer.Screen name="Profile" component={Profile} options={{ gestureEnabled: false }} />
                         <Drawer.Screen name="ContactUs" component={ContactUs} options={{ gestureEnabled: false }} />
                         <Drawer.Screen name="DriverTrack" component={DriverTrack} options={{ gestureEnabled: false }} />
@@ -213,7 +213,7 @@ function RequestStack() {
 function AdminScreens() {
     return (
         <Drawer.Navigator initialRouteName="AdminMenu" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <AdminDrawerContent {...props} />}>
-            <Drawer.Screen name="AdminMenu" component={AdminMenu} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="AdminMenu" component={AdminMenu} />
             <Drawer.Screen name="ShopProfile" component={ShopProfile} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="ServicesStack" component={ServicesStack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="ManageUsersStack" component={ManageUsersStack} options={{ gestureEnabled: false }} />

@@ -15,22 +15,20 @@ const [Name, setName] = useState("")
 const [status, setstatus] = useState("")
 const [assignedDriver, setassignedDriver] = useState("")
 const [estimatedTime, setestimatedTime] = useState("")
-const [driverTelephoneNo, setdriverTelephoneNo] = useState("")
 const [customerTelephoneNo, setcustomerTelephoneNo] = useState("")
 const [assignedTechnician, setassignedTechnician] = useState("")
 useEffect(() => {
+    console.log(details)
     setName(details.user.firstName+" "+details.user.lastName);
     setstatus(details.status);
     if(details.driver){
     setassignedDriver(details.driver.firstName+" "+details.driver.lastName)
-    setdriverTelephoneNo(details.driver.phoneNumber)
     setestimatedTime(details.driver.estimatedTime)
     setassignedTechnician(details.technician.firstName+" "+details.technician.lastName)
     }
     else{
     setassignedDriver("_")
     setestimatedTime("_")
-    setdriverTelephoneNo("_")
     setassignedTechnician("_")
     }
     setcustomerTelephoneNo(details.user.phoneNumber)
@@ -38,16 +36,15 @@ useEffect(() => {
 })
     return (
         <View style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={()=>navigation.goBack()} style={styles.icon}><Ionicons  name="ios-close" size={40}/></TouchableOpacity><Text style={styles.headerText}>PROCESS</Text><TouchableOpacity onPress={()=>navigation.navigate("TrackDriver")}><Ionicons style={{marginRight:10}} name="md-navigate" size={40} color={color.primaryBlue}/></TouchableOpacity></View>
+            <View style={styles.headerContainer}><TouchableOpacity onPress={()=>navigation.goBack()} style={styles.icon}><Ionicons  name="ios-close" size={40}/></TouchableOpacity><Text style={styles.headerText}>PROCESS</Text><TouchableOpacity onPress={()=>navigation.navigate("TrackDriver",{userId:details.userId})}><Ionicons style={{marginRight:10}} name="md-navigate" size={40} color={color.primaryBlue}/></TouchableOpacity></View>
             <View style={styles.container}>
                 <View style={styles.formContainer}>
-                    <TextBox title="CUSTOMER NAME" defaultValue={Name}  disabled={true}/>
-                    <TextBox title="STATUS" defaultValue={status} disabled={true}/>
-                    <TextBox title="ASSIGNED DRIVER"  defaultValue={assignedDriver} disabled={true}/>
-                    <TextBox title="ASSIGNED TECHNICIAN"  defaultValue={assignedTechnician} disabled={true}/>
-                    <TextBox title="ESTIMATED TIME" defaultValue={estimatedTime} disabled={true}/>
-                    <TextBox title="DRIVER TELEPHONE NO." defaultValue={driverTelephoneNo} disabled={true} />
-                    <TextBox title="CUSTOMER TELEPHONE NO." defaultValue={customerTelephoneNo} disabled={true} />
+                    <TextBox title="CUSTOMER NAME" value={Name}  disabled={true}/>
+                    <TextBox title="STATUS" value={status} disabled={true}/>
+                    <TextBox title="ASSIGNED DRIVER"  value={assignedDriver} disabled={true}/>
+                    <TextBox title="ASSIGNED TECHNICIAN"  value={assignedTechnician} disabled={true}/>
+                    <TextBox title="ESTIMATED TIME" value={estimatedTime} disabled={true}/>
+                    <TextBox title="CUSTOMER TELEPHONE NO." value={customerTelephoneNo} disabled={true} />
                 </View>
             </View>
         </View>

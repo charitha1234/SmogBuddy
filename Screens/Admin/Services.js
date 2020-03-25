@@ -59,7 +59,7 @@ class Services extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.headerContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>SERVICES</Text><TouchableOpacity onPress={() => this.props.navigation.navigate("AddService")}><Ionicons style={{ marginRight: 20, marginLeft: -20 }} name="ios-add" size={50} /></TouchableOpacity></View>
+                <View style={styles.headerContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>SERVICES</Text><TouchableOpacity style={{ marginRight: 20, marginLeft: -20 }} onPress={() => this.props.navigation.navigate("AddService")}><Ionicons  name="ios-add" size={50} /></TouchableOpacity></View>
                 <FlatList data={this.state.serviceList} 
                 onRefresh={() => this.onRefresh()}
                 refreshing={this.state.isFetching}

@@ -83,7 +83,7 @@ function AssignEmployees({ navigation, route }) {
                             <ActivityIndicator size="large" color={color.primaryBlack} />
                             :
                             <>
-                                <TextBox title="CUSTOMER NAME" defaultValue={Name} disabled={true} />
+                                <TextBox title="CUSTOMER NAME" value={Name} disabled={true} />
                                 <Picker style={styles.picker} itemStyle={styles.pickerItems}
                                     selectedValue={driver}
                                     onValueChange={(itemValue, itemIndex) =>
@@ -202,8 +202,8 @@ const styles = StyleSheet.create({
 
     },
     buttonContainer: {
-        alignItems: 'flex-end',
-        marginBottom: -10,
+        alignItems: 'center',
+        marginBottom: -20,
         marginRight: -10,
         zIndex: 1
     },

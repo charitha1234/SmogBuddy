@@ -46,13 +46,13 @@ function ShopProfile({ navigation }) {
                         <ActivityIndicator size={40} color={color.primaryBlack} />
                         :
                         <>
-                            <TextBox title="BUSINESS NAME" defaultValue={name} disabled={true} />
-                            <TextBox title="ADDRESS" defaultValue={address} disabled={true} />
-                            <TextBox title="ARD" defaultValue={ard} disabled={true} />
-                            <TextBox title="STATION TYPE" defaultValue={stationType} disabled={true} />
-                            <TextBox title="OPTIONAL EPA" defaultValue={epa} disabled={true} />
-                            <TextBox title="TELEPHONE NUMBER" defaultValue={phone} disabled={true} />
-                            <TextBox title="EMAIL" defaultValue={email} disabled={true} />
+                            <TextBox title="BUSINESS NAME" value={name} disabled={true} />
+                            <TextBox title="ADDRESS" value={address} disabled={true} />
+                            <TextBox title="ARD" value={ard} disabled={true} />
+                            <TextBox title="STATION TYPE" value={stationType} disabled={true} />
+                            <TextBox title="OPTIONAL EPA" value={epa} disabled={true} />
+                            <TextBox title="TELEPHONE NUMBER" value={phone} disabled={true} />
+                            <TextBox title="EMAIL" value={email} disabled={true} />
                         </>
                     }
                 </View>

@@ -45,6 +45,7 @@
     "react-native-video": "^5.0.2",
     "react-native-webview": "^9.0.1",
     "reanimated-bottom-sheet": "^1.0.0-alpha.19",
+    "reinput": "^3.7.1",
     "time-convert": "0.0.2",
     "uuid": "^3.4.0"
   },

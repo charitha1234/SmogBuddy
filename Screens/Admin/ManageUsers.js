@@ -31,12 +31,16 @@ class ManageUsers extends Component {
         super(props);
         this.state = {
             search: '',
+            searched:false
         };
     }
 
+    search(){
+        this.setState({searched:true})
+    }
 
     updateSearch = search => {
-        this.setState({ search });
+        this.setState({ search:search,searched:false });
     };
     render() {
         return (
@@ -54,7 +58,16 @@ class ManageUsers extends Component {
                 {this.state.search == "" ?
                     <TouchableOpacity onPress={() => this.props.navigation.navigate("InterfaceSelection")} style={styles.AddUserContainer}><Text style={styles.AddUserText}>ADD USER</Text></TouchableOpacity>
                     :
-                    <FlatList data={UsersList} renderItem={({ item }) => (<Users onPress={() => this.props.navigation.navigate("EmployeeProfile")} Fname={item.UserFirstName} Lname={item.UserLastName} Role={item.Role} />)} keyExtractor={item => item.UserId} />
+                    <>  
+                        
+                        {
+                            this.state.searched?
+                            <FlatList data={UsersList} renderItem={({ item }) => (<Users onPress={() => this.props.navigation.navigate("EmployeeProfile")} Fname={item.UserFirstName} Lname={item.UserLastName} Role={item.Role} />)} keyExtractor={item => item.UserId} />
+                            :
+                            <TouchableOpacity onPress={()=>this.search()} style={styles.AddUserContainer}><Text style={styles.AddUserText}>SEARCH</Text></TouchableOpacity>
+                        }
+                        
+                    </>
                 }
 
             </View>
@@ -135,13 +148,27 @@ const styles = StyleSheet.create({
     },
     AddUserContainer: {
         marginVertical: 30,
-        width: '100%',
+        width: 200,
+        height:50,
+        justifyContent:'center',
+        borderRadius:25,
+        alignSelf:'center',
+        backgroundColor:color.primaryBlue,
         alignItems: 'center',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: .2,
+        shadowRadius: 8.30,
+        borderRadius: 30,
+        elevation: 3,
     },
     AddUserText: {
         fontFamily: 'Montserrat-Bold',
         fontSize: 20,
-        color: color.primaryBlue
+        color: color.primaryWhite
     }
 
 

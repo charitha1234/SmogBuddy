@@ -3,7 +3,8 @@ import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    ActivityIndicator,
 } from "react-native";
 var Spinner = require('react-native-spinkit');
 import Geolocation from '@react-native-community/geolocation';
@@ -13,7 +14,7 @@ import { color } from '../../Assets/color';
 import firebase from 'react-native-firebase';
 import MapView, { Marker } from 'react-native-maps';
 import GradientButton from '../../Components/CustomButton';
-Geolocation.setRNConfiguration({ authorizationLevel: 'always' });
+Geolocation.setRNConfiguration({ authorizationLevel: "auto" });
 class Searching extends Component {
     constructor(props) {
         super(props);
@@ -22,48 +23,50 @@ class Searching extends Component {
             locationSelected: false,
             midlat: null,
             midlng: null,
+            lng: null,
+            lat: null,
 
         }
 
     }
 
-    componentDidMount() {
 
-        Geolocation.watchPosition(info => {});
-        
+componentWillMount() {
+    Geolocation.getCurrentPosition(info => { this.setState({ lat: info.coords.latitude, lng: info.coords.longitude }) });
+
 
 
 
     }
-    requestingDriver(){
+    requestingDriver() {
         console.log("HERE")
-        this.setState({locationSelected:true})
+        this.setState({ locationSelected: true })
         const user = firebase.auth().currentUser;
         console.log("HERE>>>>")
-            fetch('https://smogbuddy.herokuapp.com/user/request', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    uid: user.uid,
-                    serviceList: this.props.route.params.serviceList,
-                    pickupLocation: { lat: this.state.midlat, lng: this.state.midlng },
-                    images: this.props.route.params.images
+        fetch('https://smogbuddy.herokuapp.com/user/request', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                uid: user.uid,
+                serviceList: this.props.route.params.serviceList,
+                pickupLocation: { lat: this.state.midlat, lng: this.state.midlng },
+                images: this.props.route.params.images
 
-                }),
-            })
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    console.log(responseJson);
-                    this.setState({
-                        placed: true,
-                        totalServiceTime: responseJson.totalServiceTime,
-                        totalCost: responseJson.totalCost,
+            }),
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson);
+                this.setState({
+                    placed: true,
+                    totalServiceTime: responseJson.totalServiceTime,
+                    totalCost: responseJson.totalCost,
 
-                    });
                 });
+            });
     }
 
     render() {
@@ -83,38 +86,49 @@ class Searching extends Component {
                 {
                     this.state.locationSelected ?
                         !this.state.placed ?
-                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                            <Spinner style={styles.spinner} isVisible={true} size={200} type='Bounce' color={color.primaryBlack} />
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <Spinner style={styles.spinner} isVisible={true} size={200} type='Bounce' color={color.primaryBlack} />
                             </View>
                             :
-                            <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                            <View style={styles.messageContainer}>
-                                <View style={styles.TextContainer}>
-                                    <Text style={styles.bodyText}>Your Request Is Placed. totalServiceTime is {this.state.totalServiceTime} and totalcost is {this.state.totalCost}. We Will Notify You In A Moment</Text>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("UserHomeScreen")} style={styles.button}><GradientButton title="GO TO HOME" /></TouchableOpacity>
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <View style={styles.messageContainer}>
+                                    <View style={styles.TextContainer}>
+                                        <Text style={styles.bodyText}>Your Request Is Placed. totalServiceTime is {this.state.totalServiceTime} and totalcost is {this.state.totalCost}. We Will Notify You In A Moment</Text>
+                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("UserHomeScreen")} style={styles.button}><GradientButton title="GO TO HOME" /></TouchableOpacity>
+                                    </View>
                                 </View>
-                            </View>
                             </View>
                         :
                         <>
-                            <MapView
-                                onRegionChange={(info) => {
-                                    this.state.locationSelected?
-                                    null:
-                                    this.setState({
-                                        midlat: info.latitude,
-                                        midlng: info.longitude
-                                    })
-                                }}
-                                showsUserLocation={true}
-                                style={{ flex: 1 }}
-                                initialRegion={{
-                                    latitude: 6.794791,
-                                    longitude: 79.900713,
-                                    latitudeDelta: 0.0922,
-                                    longitudeDelta: 0.0421,
-                                }}
-                            />
+                            {
+                                (this.state.lat && this.state.lng) ?
+                                    <MapView
+                                        onRegionChange={(info) => {
+                                            this.state.locationSelected ?
+                                                null :
+                                                this.setState({
+                                                    midlat: info.latitude,
+                                                    midlng: info.longitude
+                                                })
+                                        }}
+                                        showsUserLocation={true}
+                                        style={{ flex: 1 }}
+                                        initialRegion={{
+                                            latitude: this.state.lat,
+                                            longitude: this.state.lng,
+                                            latitudeDelta: 0.0922,
+                                            longitudeDelta: 0.0421,
+                                        }}
+                                    />
+                                    :
+                                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                        <ActivityIndicator size={40} color={color.primaryBlack} />
+
+                                    </View>
+
+
+                            }
+
 
                             <Ionicons style={styles.startIcon} name="md-pin" size={30} />
                             <TouchableOpacity onPress={this.requestingDriver.bind(this)} style={styles.doneButton}><Text>SELECT</Text></TouchableOpacity>

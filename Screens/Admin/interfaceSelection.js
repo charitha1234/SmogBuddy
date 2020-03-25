@@ -6,6 +6,7 @@ import {
     TouchableOpacity
 } from "react-native";
 import { color } from '../../Assets/color';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import RadioButton from '../../Components/radioButton';
 function InterfaceSelection({ navigation }) {
@@ -16,6 +17,7 @@ function InterfaceSelection({ navigation }) {
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
             <View style={styles.upperContainer}>
                 <Text style={styles.waterMarkText}>SMOGBUDDY</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{marginLeft:30}}><Ionicons name="ios-close" size={40} /></TouchableOpacity>
                 <Text style={styles.largeText}>SELECT ACCOUNT TYPE</Text>
             </View>
             <View style={styles.selection}>

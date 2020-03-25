@@ -24,7 +24,7 @@ class OdometerRead extends Component {
             uid: null,
             images: [],
             loading: false,
-            finished:false,
+            finished: false,
         }
     }
     formatDate() {
@@ -66,27 +66,33 @@ class OdometerRead extends Component {
 
         return (
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-                {this.state.images.length > 10||this.state.finished ?
+                {this.state.images.length > 10 || this.state.finished ?
                     <View style={styles.container}>
-                        <Text style={[styles.headerText, { fontSize: 30 }]}>ODOMETER</Text>
+                        <View style={styles.headerTextContainer}>
+                                    <TouchableOpacity style={{flex:0.5}} onPress={() => this.props.navigation.goBack()} ><Ionicons style={{ marginLeft: 10}} name="ios-arrow-back" size={40} /></TouchableOpacity>
+                                    <View style={{flex:2}}><Text style={styles.headerText}>ODOMETER</Text></View>
+                                    <View style={{flex:0.5}}/>
+                                </View>
                         <View style={styles.formContainer}>
-                            <TextBox title="METER READING" underline={true} />
+                            <TextBox  title="METER READING" underline={true} />
                             <TextBox title="FUEL" underline={true} />
                         </View>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate("Searching", { serviceList: this.props.route.params.serviceList,images:this.state.images })} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate("Searching", { serviceList: this.props.route.params.serviceList, images: this.state.images })} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
                     </View>
                     :
                     <>
                         {
                             this.state.images.length == 0 ?
                                 <View style={styles.headerTextContainer}>
-                                    <Text style={styles.headerText}>TAKE A PICTURE OF</Text>
-                                    <Text style={styles.headerText}>ODOMETER</Text>
+                                    <TouchableOpacity style={{flex:0.5}} onPress={() => this.props.navigation.goBack()} ><Ionicons style={{ marginLeft: 10}} name="ios-arrow-back" size={40} /></TouchableOpacity>
+                                    <View style={{flex:2}}><Text style={styles.headerText}>TAKE A PICTURE OF ODOMETER</Text></View>
+                                    <View style={{flex:0.5}}/>
                                 </View>
                                 :
                                 <View style={styles.headerTextContainer}>
-                                    <Text style={styles.headerText}>TAKE PICTURES OF</Text>
-                                    <Text style={styles.headerText}>CAR</Text>
+                                    <TouchableOpacity style={{flex:0.5}} onPress={() => this.props.navigation.goBack()} ><Ionicons style={{ marginLeft: 10}} name="ios-arrow-back" size={40} /></TouchableOpacity>
+                                    <View style={{flex:2}}><Text style={styles.headerText}>TAKE PICTURES OF CAR</Text></View>
+                                    <View style={{flex:0.5}}/>
                                 </View>
                         }
                         <RNCamera
@@ -102,16 +108,16 @@ class OdometerRead extends Component {
                             style={styles.preview}
                         ><TouchableOpacity disabled={this.state.loading} onPress={this.takePicture.bind(this)}>
                                 {this.state.loading ?
-                                    <ActivityIndicator size={80} color={color.primaryWhite} style={{margin:30}} />
+                                    <ActivityIndicator size={80} color={color.primaryWhite} style={{ margin: 30 }} />
                                     :
-                                    <Ionicons name="ios-radio-button-off" color={color.primaryWhite} size={80} style={{margin:30}}/>
+                                    <Ionicons name="ios-radio-button-off" color={color.primaryWhite} size={80} style={{ margin: 30 }} />
                                 }
                             </TouchableOpacity></RNCamera>
                         {
-                            this.state.images.length>0?
-                            <TouchableOpacity onPress={()=>{this.setState({finished:true})}} style={styles.uploadButton}>{this.state.uploading ? <ActivityIndicator size="large" color="black" /> : <Text style={styles.uploadText}>NEXT</Text>}</TouchableOpacity>
-                            :
-                            null
+                            this.state.images.length > 0 ?
+                                <TouchableOpacity onPress={() => { this.setState({ finished: true }) }} style={styles.uploadButton}>{this.state.uploading ? <ActivityIndicator size="large" color="black" /> : <Text style={styles.uploadText}>NEXT</Text>}</TouchableOpacity>
+                                :
+                                null
                         }
                     </>
 
@@ -128,7 +134,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent:'center',
+        justifyContent: 'space-between',
     },
     preview: {
         flex: 1,
@@ -150,19 +156,21 @@ const styles = StyleSheet.create({
         height: 50,
         alignItems: 'center',
         justifyContent: 'center'
-      },
+    },
     headerText: {
+        textAlign: 'center',
         fontFamily: 'Montserrat-Bold',
         fontSize: 20,
         letterSpacing: 2,
 
     },
     headerTextContainer: {
+        flexDirection: 'row',
         alignItems: 'center',
-        height:100,
-        width:'100%',
-        justifyContent:'center',
-        backgroundColor:color.primaryWhite
+        height: 100,
+        width: '100%',
+        justifyContent: 'space-between',
+        backgroundColor: color.primaryWhite
 
 
     },

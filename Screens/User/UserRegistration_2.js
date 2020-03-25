@@ -13,7 +13,7 @@ import TextBox from '../../Components/textBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import GradientButton from '../../Components/longButton';
 import firebase from 'react-native-firebase';
-function newUser(username, password, firstName, lastName, address, state, zipCode, phoneNo, navigation) {
+function newUser(username, password, firstName, lastName, address, state, zipCode, phoneNo, navigation,setloading,setserverError) {
     firebase.auth().createUserWithEmailAndPassword(username, password)
         .then((res) => {
             fetch('https://smogbuddy.herokuapp.com/user/', {
@@ -39,18 +39,29 @@ function newUser(username, password, firstName, lastName, address, state, zipCod
                     console.log(responseJson);
                 })
                 .catch((error) => {
-                    console.error(error);
+                    setserverError(true)
+                    setloading(false)
+                    alert(error)
                 });
         })
-        .catch((e) => alert(e))
+        .catch((e) => {
+            setserverError(true)
+            setloading(false)
+            alert(e)
+        }
+            )
 
 }
 function UserRegistration_2({ navigation, route }) {
     const [username, setusername] = useState("");
     const [password, setpassword] = useState("");
+    const [retypePassword, setretypePassword] = useState("")
     const [zipcode, setzipcode] = useState("");
     const [phoneNo, setphoneNo] = useState("");
     const [loading, setloading] = useState(false)
+    const [error, seterror] = useState(null)
+    const [isMissmatched, setisMissmatched] = useState(null)
+    const [serverError, setserverError] = useState(false)
 
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
@@ -70,18 +81,56 @@ function UserRegistration_2({ navigation, route }) {
                                 <Text style={styles.smallText}>|</Text>
                                 <Text style={styles.smallText}> CUSTOMER</Text>
                             </View>
-                            <View style={styles.selection}>
+                            <View style={[styles.selection,(error||isMissmatched||serverError)?{borderWidth:3,borderColor:color.failedRed}:null]}>
                                 <View style={styles.insideArea}>
-                                    <TextBox title="ZIP CODE" underline={true} onChangeText={text => setzipcode(text)} />
-                                    <TextBox title="PHONE NO" underline={true} onChangeText={text => setphoneNo(text)} keyboardType='phone-pad'/>
-                                    <TextBox title="EMAIL" underline={true} onChangeText={text => setusername(text)} disabled={false} keyboardType='email-address' />
-                                    <TextBox title="PASSWORD" underline={true} onChangeText={text => setpassword(text)} disabled={false} />
+                                    <TextBox title="ZIP CODE"  value={zipcode}  error={error} underline={true} onChangeText={text => {
+                                        setisMissmatched(false)
+                                        setserverError(false)
+                                        seterror(false)
+                                        setzipcode(text)}} keyboardType='phone-pad' />
+                                    <TextBox title="PHONE NO" value={phoneNo} error={error} underline={true} onChangeText={text => {
+                                        setisMissmatched(false)
+                                        setserverError(false)
+                                        seterror(false)
+                                        setphoneNo(text)}} keyboardType='phone-pad'/>
+                                    <TextBox title="EMAIL" value={username} error={error} underline={true} onChangeText={text => {
+                                        setisMissmatched(false)
+                                        setserverError(false)
+                                        seterror(false)
+                                        setusername(text)}} disabled={false} keyboardType='email-address' />
+                                    <TextBox title="PASSWORD" value={password} error={error} underline={true} onChangeText={text => {
+                                        setisMissmatched(false)
+                                        setserverError(false)
+                                        seterror(false)
+                                        setpassword(text)}} disabled={false} />
+                                    <TextBox title="RETYPE PASSWORD" value={retypePassword} isMissmatched={isMissmatched} error={error?error:isMissmatched?isMissmatched:null} underline={true} onChangeText={text => {
+                                        setisMissmatched(false)
+                                        setserverError(false)
+                                        seterror(false)
+                                        setretypePassword(text)}} disabled={false} />
                                 </View>
                                 <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
                                     <Text style={styles.subText}>2/2</Text>
                                     <TouchableOpacity style={styles.buttonContainer} onPress={() => {
-                                        setloading(true)
-                                        newUser(username, password, route.params.firstName, route.params.lastName, route.params.address, route.params.state, zipcode, phoneNo, navigation)
+                                        if(username &&
+                                            password &&
+                                            retypePassword &&
+                                            zipcode &&
+                                            phoneNo
+                                        ){
+                                            if(password==retypePassword){
+                                                setloading(true)
+                                                newUser(username, password, route.params.firstName, route.params.lastName, route.params.address, route.params.state, zipcode, phoneNo, navigation,setloading,setserverError)
+                                            }
+                                            else{
+                                                setisMissmatched("Password is not matched")
+                                            }
+                                            
+                                        }
+                                        else{
+                                            seterror("Please fill these requirements")
+                                        }
+                                        
                                     }}
                                     ><GradientButton style={styles.button} /></TouchableOpacity>
                                 </View>

@@ -60,10 +60,10 @@ function AddServices({ navigation, route }) {
                             </View>
                             <View style={styles.selection}>
                                 <View style={styles.insideArea}>
-                                    <TextBox title="SERVICE NAME" underline={true} onChangeText={text => setname(text)} />
-                                    <TextBox title="YEAR RANGE" underline={true} onChangeText={text => setyearRange(text)} />
-                                    <TextBox title="COST" underline={true} onChangeText={text => setcost(text)} />
-                                    <TextBox title="AVERAGE TIME" underline={true} onChangeText={text => setaverageTime(text)} />
+                                    <TextBox title="SERVICE NAME" value={name} underline={true} onChangeText={text => setname(text)} />
+                                    <TextBox title="YEAR RANGE" value={yearRange} underline={true} onChangeText={text => setyearRange(text)} />
+                                    <TextBox title="COST" value={cost} underline={true} keyboardType='phone-pad' onChangeText={text => setcost(text)}/>
+                                    <TextBox title="AVERAGE TIME" value={averageTime} keyboardType='phone-pad' underline={true} onChangeText={text => setaverageTime(text)} />
                                 </View>
                                 <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
                                     <Text style={styles.subText}></Text>

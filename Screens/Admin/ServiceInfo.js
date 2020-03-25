@@ -10,8 +10,25 @@ import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-function deleteService() {
-
+function deleteService(serviceID,setloading,navigation) {
+    setloading(true)
+    fetch("https://smogbuddy.herokuapp.com/service/" + serviceID,
+    {
+    method: 'DELETE',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    }
+    )
+    .then((res)=>res.json())
+    .then((resJson)=>{
+        console.log("RES",resJson)
+        setloading(false)
+        
+    }
+        )
+    .catch((e)=>navigation.goBack())
 }
 
 function ServiceInfo({ navigation,route }) {
@@ -19,6 +36,7 @@ function ServiceInfo({ navigation,route }) {
     const [yearRange, setyearRange] = useState("");
     const [cost, setcost] = useState("");
     const [averageTime, setaverageTime] = useState("")
+    const [loading, setloading] = useState(false)
     const {info}=route.params;
     useEffect(()=>{
         setname(info.serviceName)
@@ -32,14 +50,14 @@ function ServiceInfo({ navigation,route }) {
             <View style={styles.container}>
                 <View style={styles.formContainer}>
 
-                    <TextBox title="SERVICE NAME" underline={true} defaultValue={name} onChangeText={text => setname(text)} disabled={true} />
-                    <TextBox title="YEAR RANGE" underline={true} defaultValue={yearRange} onChangeText={text => setyearRange(text)} disabled={true} />
-                    <TextBox title="COST" underline={true} defaultValue={cost} onChangeText={text => setcost(text)} disabled={true} />
-                    <TextBox title="AVERAGE TIME" underline={true} defaultValue={averageTime} onChangeText={text => setaverageTime(text)} disabled={true} />
+                    <TextBox title="SERVICE NAME" underline={true} value={name} onChangeText={text => setname(text)} disabled={true} />
+                    <TextBox title="YEAR RANGE" underline={true} value={yearRange} onChangeText={text => setyearRange(text)} disabled={true} />
+                    <TextBox title="COST" underline={true} value={cost} onChangeText={text => setcost(text)} disabled={true} />
+                    <TextBox title="AVERAGE TIME" underline={true} value={averageTime} onChangeText={text => setaverageTime(text)} disabled={true} />
 
                 </View>
             </View>
-            <TouchableOpacity onPress={() => deleteService()} style={styles.deleteButton}><Text style={styles.deleteText}>DELETE SERVICE</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => deleteService(info.serviceID,setloading,navigation)} style={styles.deleteButton}><Text style={styles.deleteText}>DELETE SERVICE</Text></TouchableOpacity>
         </LinearGradient>
     );
 

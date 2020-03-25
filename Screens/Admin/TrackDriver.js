@@ -46,6 +46,10 @@ const customStyles = {
 
 function RenderContent(props) {
     const [currentStage, setcurrentStage] = useState(0)
+    useEffect(()=>{
+        console.log("Called")
+        setcurrentStage(props.currentStage);
+    })
     return (
         <View style={styles.detailsContainer}>
             <Ionicons name="ios-remove" size={50} style={styles.bottomsheetMoreIcon} />
@@ -66,7 +70,7 @@ function RenderContent(props) {
         </View>
     );
 }
-function DriverTrack({ navigation }, props) {
+function DriverTrack({ navigation,route }, props) {
     const [DriverUid, setDriverUid] = useState(null)
     const [longitude, setlongitude] = useState(null)
     const [latitude, setlatitude] = useState(null)
@@ -78,19 +82,21 @@ function DriverTrack({ navigation }, props) {
     const [startGiven, setstartGiven] = useState(false)
     const [arrivalTime, setarrivalTime] = useState("")
     const [loading, setloading] = useState(true)
+    const [currentStage, setcurrentStage] = useState(0)
+    const [fetching, setfetching] = useState(true)
     const origin = { latitude: latitude, longitude: longitude };
     const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
     const destination = { latitude: customerLat, longitude: customerLng }
-    useEffect(() => {
-
-        const user = firebase.auth().currentUser;
-        fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + user.uid)
+const {userId} =route.params
+    const getApiData=()=>{
+        fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + userId)
             .then((res) => res.json())
             .then((responseJson) => {
                 if (responseJson.isDriverAssigned) setdriverAssigned(true);
                 if (!responseJson.isDriverAssigned) setdriverAssigned(false);
                 if (responseJson.isDriverStarted) {
                     setstartGiven(true);
+                    setfetching(false);
                     setDriverUid(responseJson.assignedDriver)
                     setcustomerLat(responseJson.userPickupLocation.lat)
                     setcustomerLng(responseJson.userPickupLocation.lng)
@@ -99,10 +105,15 @@ function DriverTrack({ navigation }, props) {
                 setloading(false)
             })
             .catch((e) => alert(e))
+    }
+    useEffect(() => {
+    getApiData()
+        
         if (startGiven) {
 
             firebase.database().ref('location/' + DriverUid).on('value', snapshot => {
                 if (snapshot.val()) {
+
 
                     var hours = Math.floor(duration / 60);
                     var minutes = Math.floor(duration % 60);
@@ -118,6 +129,7 @@ function DriverTrack({ navigation }, props) {
                     }
                     setlatitude(snapshot.val().lat),
                     setlongitude(snapshot.val().lng)
+                    setcurrentStage(snapshot.val().currentStage)
                 }
 
             });
@@ -139,8 +151,8 @@ function DriverTrack({ navigation }, props) {
                             showsUserLocation={true}
                             style={{ flex: 1 }}
                             initialRegion={{
-                                latitude: 6.794791,
-                                longitude: 79.900713,
+                                latitude:origin.latitude,
+                                longitude: origin.longitude,
                                 latitudeDelta: 0.0922,
                                 longitudeDelta: 0.0421,
                             }}
@@ -177,7 +189,7 @@ function DriverTrack({ navigation }, props) {
                            snapPoints={[500, 200]}
                            enabledBottomClamp={true}
                            initialSnap={1}
-                           renderContent={() => <RenderContent arrivalTime={arrivalTime} />}
+                           renderContent={() => <RenderContent navigation={navigation} currentStage={currentStage} arrivalTime={arrivalTime} />}
                        />
                             :
                             driverAssigned ?
@@ -214,10 +226,15 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '50%'
     },
+    timeContainer: {
+        height:100,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        marginHorizontal: 10,
+    },
     detailsContainer: {
         alignSelf: 'center',
-        height: 800,
-        marginTop:50,
+        height: 900,
         width: '100%',
         shadowColor: "#000",
         shadowOffset: {
@@ -254,12 +271,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: color.primaryWhite
-    },
-    timeContainer: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        marginHorizontal: 10,
     },
     contactContainer: {
         flex: 5,
