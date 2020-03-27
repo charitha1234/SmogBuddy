@@ -119,7 +119,7 @@ class ScanDMV extends Component {
                             </>
                             :
                             <View style={styles.formContainer}>
-                                <ActivityIndicator size="large" color="black" />
+                                <ActivityIndicator size={40} color="black" />
                             </View>
                         }
                         <TouchableOpacity onPress={() =>{!this.state.loading? this.props.navigation.navigate("OdometerRead",{serviceList:this.props.route.params.serviceList}):null}} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>

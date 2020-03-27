@@ -5,10 +5,14 @@ import {
     StyleSheet,
     TouchableOpacity,
     ActivityIndicator,
+    ImageBackground,
+    ScrollView,
+    Dimensions
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import { RNCamera } from 'react-native-camera';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import TextBox from '../../Components/textBox';
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
@@ -20,13 +24,15 @@ class OdometerRead extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            picture: false,
+            picture: null,
             uid: null,
             images: [],
             loading: false,
             finished: false,
+            uploaded: false,
         }
     }
+
     formatDate() {
         let d = new Date(),
             month = '' + (d.getMonth() + 1),
@@ -42,24 +48,33 @@ class OdometerRead extends Component {
 
         return [year, month, day].join('-');
     }
-    takePicture = async () => {
+
+    uploadImage = () => {
         const user = firebase.auth().currentUser;
         this.setState({ uid: user.uid });
+    this.setState({loading:true})
+        firebase
+            .storage()
+            .ref(this.formatDate() + '/' + user.uid + '/' + uuidv1() + '.jpeg')
+            .putFile(this.state.picture)
+            .then((res) => {
+                if (this.state.images.length == 0) this.state.images.push({ imageUrl: res.downloadURL, imagePath: res.ref, isOdometer: true })
+                else this.state.images.push({ imageUrl: res.downloadURL, imagePath: res.ref, isOdometer: false })
+                this.setState({ loading: false, picture: null });
+
+            })
+            .catch((e) => {
+                this.setState({ loading: false, picture: null });
+                alert(e)
+            });
+    }
+
+    takePicture = async () => {
+        
         if (this.camera) {
             const options = { quality: 0.5, base64: true };
             const data = await this.camera.takePictureAsync(options);
-            this.setState({ loading: true });
             this.setState({ picture: data.uri });
-            firebase
-                .storage()
-                .ref(this.formatDate() + '/' + user.uid + '/' + uuidv1() + '.jpeg')
-                .putFile(data.uri)
-                .then((res) => {
-                    if (this.state.images.length == 0) this.state.images.push({ imageUrl: res.downloadURL, imagePath: res.ref, isOdometer: true })
-                    else this.state.images.push({ imageUrl: res.downloadURL, imagePath: res.ref, isOdometer: false })
-                    this.setState({ loading: false });
-                })
-                .catch((e) => alert(e));
         }
     }
     render() {
@@ -69,57 +84,78 @@ class OdometerRead extends Component {
                 {this.state.images.length > 10 || this.state.finished ?
                     <View style={styles.container}>
                         <View style={styles.headerTextContainer}>
-                                    <TouchableOpacity style={{flex:0.5}} onPress={() => this.props.navigation.goBack()} ><Ionicons style={{ marginLeft: 10}} name="ios-arrow-back" size={40} /></TouchableOpacity>
-                                    <View style={{flex:2}}><Text style={styles.headerText}>ODOMETER</Text></View>
-                                    <View style={{flex:0.5}}/>
-                                </View>
+                            <TouchableOpacity style={{ flex: 0.5 }} onPress={() => this.props.navigation.goBack()} ><Ionicons style={{ marginLeft: 10 }} name="ios-arrow-back" size={40} /></TouchableOpacity>
+                            <View style={{ flex: 2 }}><Text style={styles.headerText}>ODOMETER</Text></View>
+                            <View style={{ flex: 0.5 }} />
+                        </View>
+                        <KeyboardAwareScrollView style={{flex:1}} showsVerticalScrollIndicator={false} contentContainerStyle={{height:400,justifyContent:'space-between',alignItems:'center'}}>
                         <View style={styles.formContainer}>
-                            <TextBox  title="METER READING" underline={true} />
+                            <TextBox title="METER READING" underline={true} />
                             <TextBox title="FUEL" underline={true} />
                         </View>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate("Searching", { serviceList: this.props.route.params.serviceList, images: this.state.images })} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
+                    </KeyboardAwareScrollView>
                     </View>
                     :
-                    <>
-                        {
-                            this.state.images.length == 0 ?
-                                <View style={styles.headerTextContainer}>
-                                    <TouchableOpacity style={{flex:0.5}} onPress={() => this.props.navigation.goBack()} ><Ionicons style={{ marginLeft: 10}} name="ios-arrow-back" size={40} /></TouchableOpacity>
-                                    <View style={{flex:2}}><Text style={styles.headerText}>TAKE A PICTURE OF ODOMETER</Text></View>
-                                    <View style={{flex:0.5}}/>
-                                </View>
-                                :
-                                <View style={styles.headerTextContainer}>
-                                    <TouchableOpacity style={{flex:0.5}} onPress={() => this.props.navigation.goBack()} ><Ionicons style={{ marginLeft: 10}} name="ios-arrow-back" size={40} /></TouchableOpacity>
-                                    <View style={{flex:2}}><Text style={styles.headerText}>TAKE PICTURES OF CAR</Text></View>
-                                    <View style={{flex:0.5}}/>
-                                </View>
-                        }
-                        <RNCamera
-                            ref={ref => {
-                                this.camera = ref;
-                            }}
-                            defaultTouchToFocus
-                            mirrorImage={false}
-                            onFocusChanged={() => { }}
-                            onZoomChanged={() => { }}
-                            permissionDialogTitle={'Permission to use camera'}
-                            permissionDialogMessage={'We need your permission to use your camera phone'}
-                            style={styles.preview}
-                        ><TouchableOpacity disabled={this.state.loading} onPress={this.takePicture.bind(this)}>
-                                {this.state.loading ?
-                                    <ActivityIndicator size={80} color={color.primaryWhite} style={{ margin: 30 }} />
+                    !this.state.picture ?
+                        <>
+                            {
+                                this.state.images.length == 0 ?
+                                    <View style={styles.headerTextContainer}>
+                                        <TouchableOpacity style={{ flex: 0.5 }} onPress={() => this.props.navigation.goBack()} ><Ionicons style={{ marginLeft: 10 }} name="ios-arrow-back" size={40} /></TouchableOpacity>
+                                        <View style={{ flex: 2 }}><Text style={styles.headerText}>TAKE A PICTURE OF ODOMETER</Text></View>
+                                        <View style={{ flex: 0.5 }} />
+                                    </View>
                                     :
-                                    <Ionicons name="ios-radio-button-off" color={color.primaryWhite} size={80} style={{ margin: 30 }} />
+                                    <View style={styles.headerTextContainer}>
+                                        <TouchableOpacity style={{ flex: 0.5 }} onPress={() => this.props.navigation.goBack()} ><Ionicons style={{ marginLeft: 10 }} name="ios-arrow-back" size={40} /></TouchableOpacity>
+                                        <View style={{ flex: 2 }}><Text style={styles.headerText}>TAKE PICTURES OF CAR</Text></View>
+                                        <View style={{ flex: 0.5 }} />
+                                    </View>
+                            }
+                            <RNCamera
+                                ref={ref => {
+                                    this.camera = ref;
+                                }}
+                                defaultTouchToFocus
+                                mirrorImage={false}
+                                onFocusChanged={() => { }}
+                                onZoomChanged={() => { }}
+                                permissionDialogTitle={'Permission to use camera'}
+                                permissionDialogMessage={'We need your permission to use your camera phone'}
+                                style={styles.preview}
+                            >
+                                <Text style={[styles.headerText, {color:color.primaryWhite}]}>You have only {10-this.state.images.length} more pictures allowed</Text>
+                                <TouchableOpacity disabled={this.state.loading} onPress={this.takePicture.bind(this)}>
+                                    {this.state.loading ?
+                                        <ActivityIndicator size={80} color={color.primaryWhite} style={{ margin: 30 }} />
+                                        :
+                                        <Ionicons name="ios-radio-button-off" color={color.primaryWhite} size={80} style={{ margin: 30 }} />
+                                    }
+                                </TouchableOpacity></RNCamera>
+                            {
+                                this.state.images.length > 0 ?
+                                    <TouchableOpacity onPress={() => { this.setState({ finished: true }) }} style={styles.uploadButton}>{this.state.uploading ? <ActivityIndicator size="large" color="black" /> : <Text style={styles.uploadText}>NEXT</Text>}</TouchableOpacity>
+                                    :
+                                    null
+                            }
+                        </>
+                        :
+                        <ImageBackground source={{ uri: this.state.picture }} style={styles.preview}>
+                            <View style={styles.retakeButton}>
+                                {
+                                    this.state.loading ?
+                                        <TouchableOpacity  style={styles.uploadButton}><ActivityIndicator size="large" color="black" /></TouchableOpacity>
+                                        :
+                                        <>
+                                            <TouchableOpacity onPress={() => this.setState({ picture: null })} style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text style={styles.uploadText}>RETAKE</Text></TouchableOpacity>
+                                            <TouchableOpacity onPress={this.uploadImage.bind(this)} style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text style={styles.uploadText}>UPLOAD</Text></TouchableOpacity>
+                                        </>
                                 }
-                            </TouchableOpacity></RNCamera>
-                        {
-                            this.state.images.length > 0 ?
-                                <TouchableOpacity onPress={() => { this.setState({ finished: true }) }} style={styles.uploadButton}>{this.state.uploading ? <ActivityIndicator size="large" color="black" /> : <Text style={styles.uploadText}>NEXT</Text>}</TouchableOpacity>
-                                :
-                                null
-                        }
-                    </>
+
+
+                            </View>
+                        </ImageBackground>
 
                 }
             </LinearGradient>
@@ -156,6 +192,18 @@ const styles = StyleSheet.create({
         height: 50,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    uploadText: {
+        textAlign: 'center',
+        fontFamily: 'Montserrat-Regular',
+        fontSize: 20,
+        letterSpacing: 2,
+    },
+    retakeButton: {
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        width: '100%',
+        height: 50,
     },
     headerText: {
         textAlign: 'center',

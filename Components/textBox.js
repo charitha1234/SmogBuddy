@@ -7,7 +7,7 @@ import {
 import { Label, Item, Input } from 'native-base';
 import Reinput from 'reinput'
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {color} from '../Assets/color'
+import { color } from '../Assets/color'
 
 
 function TextBox(props) {
@@ -15,12 +15,12 @@ function TextBox(props) {
     return (
         <View style={styles.container}>
             <Reinput label={props.title}
-                error={props.value?props.isMissmatched?props.isMissmatched:null: props.error}
+                error={props.value ? props.isMissmatched ? props.isMissmatched : null : props.error}
                 value={props.value}
                 autoCapitalize="none"
                 keyboardType={props.keyboardType}
                 activeColor={color.primaryBlue}
-                labelColor={props.value?color.primaryBlue:"#757575"}
+                labelColor={props.value ? color.primaryBlue : "#757575"}
                 labelActiveColor={color.primaryBlue}
                 errorColor={color.failedRed}
                 editable={!props.disabled}
@@ -28,12 +28,12 @@ function TextBox(props) {
                 height={100}
                 fontFamily='Montserrat-Bold'
                 fontSize={15}
-                letterSpacing= {5}
-                iconOverlay={<Ionicons name={props.icon} color={props.error?color.failedRed:color.primaryBlack} size={props.size ? props.size : 25} />}
+                letterSpacing={5}
+                iconOverlay={<Ionicons name={props.icon} color={props.error ? color.failedRed : color.primaryBlack} size={props.size ? props.size : 25} />}
                 onChangeText={props.onChangeText}
                 onFocus={props.onFocus}
                 onBlur={props.onBlur}
-                secureTextEntry={props.title == "PASSWORD" || props.title == "RETYPE PASSWORD"   ? true : false} />
+                secureTextEntry={props.title == "PASSWORD" || props.title == "RETYPE PASSWORD" ? true : false} />
         </View>
     );
 

@@ -18,13 +18,13 @@ import firebase from 'react-native-firebase';
 function Service(props) {
     return (
         <View style={styles.serviceContainer}>
-            <View style={styles.imageContainer}>
-            </View>
-            <View style={styles.serviceTextContainer}>
+            <View style={{ flex: 2 }}>
                 <Text style={styles.serviceNameText}>{props.serviceName}</Text>
                 <Text style={styles.serviceNameText}>{props.serviceYear}</Text>
             </View>
-            <CheckBox onChange={props.onChange} value={props.Checked} />
+            <View style={{ flex: 0.25 }}>
+                <CheckBox onChange={props.onChange} value={props.Checked} />
+            </View>
         </View>
 
     );
@@ -36,50 +36,73 @@ class ServiceSelection extends Component {
         super(props)
         this.state = {
             check: {},
-            serviceList:null,
+            serviceList: null,
             checkAll: false,
-            uid:null,
-            selectedList:[]
+            uid: null,
+            selectedList: []
         }
 
     }
-    handleRequest=()=>{
-        this.setState({selectedList:[]});
-        for (const sId in this.state.check) {
-            if(this.state.check[sId]) this.state.selectedList.push({serviceID:sId})
-        } 
-        console.log("ServiceLISt",this.state.selectedList)
-        this.props.navigation.navigate("ScanDMV",{serviceList:this.state.selectedList})
+
+    isEmpty=(list)=> {
+        let x;
+        for (x in list) {
+            if (list[x]) return false
+        }
+        return true
     }
-    CheckAll = () => {
-        this.setState({ checkAll:!this.state.checkAll })
+    handleRequest = () => {
+        const list=this.state.check
+        if (!this.isEmpty(list)) {
+            this.setState({ selectedList: [] });
+            for (const sId in this.state.check) {
+                if (this.state.check[sId]) this.state.selectedList.push({ serviceID: sId })
+            }
+            this.props.navigation.navigate("ScanDMV", { serviceList: this.state.selectedList })
+        }
+        else alert("Please select services")
     }
+
     checkBox_Test = (id) => {
         const checkCopy = { ...this.state.check }
         if (checkCopy[id]) {
             checkCopy[id] = false;
         }
-        else{
+        else {
             checkCopy[id] = true;
-            
+
         }
         this.setState({ check: checkCopy });
     }
-    componentDidMount(){
-        const user=firebase.auth().currentUser;
-        this.setState({uid:user});
-        fetch('https://smogbuddy.herokuapp.com/service')
-        .then((res)=>res.json())
-        .then((resJson)=>{
-            this.setState({serviceList:resJson});
+    CheckAll = () => {
+        const checkCopy = { ...this.state.check }
+        let x;
+        for (x of this.state.serviceList) {
+            if (this.state.checkAll) checkCopy[x.serviceID] = false;
+            else checkCopy[x.serviceID] = true;
         }
+        this.setState({ check: checkCopy });
+        this.setState({ checkAll: !this.state.checkAll })
+    }
+    componentDidMount() {
+        const user = firebase.auth().currentUser;
+        this.setState({ uid: user });
+        fetch('https://smogbuddy.herokuapp.com/service')
+            .then((res) => res.json())
+            .then((resJson) => {
+                this.setState({ serviceList: resJson });
+            }
             )
     }
     render() {
         return (
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
                 <SafeAreaView style={styles.container}>
-                    <View style={styles.headerContainer}><Text style={styles.headerText}>SELECT SERVICES</Text></View>
+                    <View style={styles.headerTextContainer}>
+                        <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity>
+
+                        <Text style={styles.headerText}>SELECT SERVICES</Text>
+                    </View>
                     <View style={styles.serviceListContainer}>
                         <View style={styles.serviceContainer}><Text style={styles.selectAllText}>SELECT ALL</Text><CheckBox value={this.state.checkAll} onChange={this.CheckAll} /></View>
                         <FlatList data={this.state.serviceList} renderItem={({ item }) => (<Service serviceName={item.serviceName} serviceYear={item.yearRange} Checked={this.state.check[item.serviceID]} onChange={() => this.checkBox_Test(item.serviceID)} />)} keyExtractor={item => item.serviceID} />
@@ -101,14 +124,20 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
         justifyContent: 'space-between'
     },
-    headerContainer: {
-        flex: 0.5,
-        justifyContent: 'center',
+    headerTextContainer: {
+        height: 100,
+        backgroundColor: color.primaryWhite,
+        width: '100%',
+        marginBottom: 10,
+        flexDirection: 'row',
+
+        justifyContent: 'space-evenly',
         alignItems: 'center'
+
     },
     headerText: {
         fontFamily: 'Montserrat-Bold',
-        fontSize: 30,
+        fontSize: 25,
         letterSpacing: 2,
     },
     selectAllText: {
