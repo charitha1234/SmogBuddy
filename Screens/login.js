@@ -8,7 +8,7 @@ import {
     ActivityIndicator,
     Keyboard
 } from "react-native";
-import AsyncStorage from '@react-native-community/async-storage';
+
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../Assets/color';
 import Logo from '../Assets/logo';
@@ -18,37 +18,10 @@ import TextBox from '../Components/textboxLogin';
 import firebase from 'react-native-firebase';
 
 async function authentication(username, password, navigation, setloading) {
-    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    
     firebase.auth().signInWithEmailAndPassword(username, password)
         .then((res) => {
-            fetch('https://smogbuddy.herokuapp.com/user/' + res.user.uid)
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    fetch('https://smogbuddy.herokuapp.com/user/fcm/' + res.user.uid, {
-                        method: 'PUT',
-                        headers: {
-                            Accept: 'application/json',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            fcm: fcmToken
-                        }),
-                    }).then((res) => { })
-                        .catch((e) => {
-                            alert(e)
-                            firebase.auth().signOut();
-                            setloading(false)
-
-                        })
-
-
-                })
-                .catch((error) => {
-                    setloading(false)
-                    alert(error)
-                    firebase.auth().signOut();
-                    
-                });
+            
 
 
 

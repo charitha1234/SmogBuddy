@@ -13,43 +13,81 @@ import TextBox from '../../Components/textBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import GradientButton from '../../Components/longButton';
 import firebase from 'react-native-firebase';
-function newUser(username, password, firstName, lastName, address, state, zipCode, phoneNo, navigation,setloading,setserverError) {
+const uuidv1 = require('uuid/v1');
+function formatDate() {
+    let d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) {
+        month = '0' + month;
+    }
+    if (day.length < 2) {
+        day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
+}
+function newUser(username, password, firstName, lastName, imageUrl, address, state, zipCode, phoneNo, navigation, setloading, setserverError) {
+    console.log("User", username, password)
     firebase.auth().createUserWithEmailAndPassword(username, password)
         .then((res) => {
-            fetch('https://smogbuddy.herokuapp.com/user/', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    uid: res.user.uid,
-                    firstName: firstName,
-                    lastName: lastName,
-                    address: address,
-                    state: state,
-                    zipCode: zipCode,
-                    phoneNumber: phoneNo,
-                    email: username,
-                    role: "CUSTOMER"
-                }),
-            })
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    console.log(responseJson);
+            firebase
+                .storage()
+                .ref(formatDate() + '/' + res.user.uid + '/' + uuidv1() + '.jpeg')
+                .putFile(imageUrl.uri)
+                .then((imageRes) => {
+                    fetch('https://smogbuddy.herokuapp.com/user/', {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            uid: res.user.uid,
+                            firstName: firstName,
+                            lastName: lastName,
+                            address: address,
+                            state: state,
+                            imageUrl: imageRes.downloadURL,
+                            zipCode: zipCode,
+                            phoneNumber: phoneNo,
+                            email: username,
+                            role: "CUSTOMER"
+                        }),
+                    }).then((res)=>res.json())
+                        .then((responseJson) => {
+                            setloading(false)
+                            firebase.auth().signOut()
+                            navigation.navigate("Login")
+                        })
+                        .catch((error) => {
+                            setserverError(true)
+                            setloading(false)
+                            res.user.delete().then(function () {
+                            }, function (error) {
+                                // An error happened.
+                            });
+                            alert(error)
+                        });
                 })
-                .catch((error) => {
-                    setserverError(true)
+                .catch((e) => {
                     setloading(false)
-                    alert(error)
+                    res.user.delete().then(function () {
+                    }, function (error) {
+                        // An error happened.
+                    });
+                    alert(e)
                 });
         })
         .catch((e) => {
             setserverError(true)
             setloading(false)
+            console.log("USER NOT created")
             alert(e)
         }
-            )
+    )
 
 }
 function UserRegistration_2({ navigation, route }) {
@@ -81,56 +119,61 @@ function UserRegistration_2({ navigation, route }) {
                                 <Text style={styles.smallText}>|</Text>
                                 <Text style={styles.smallText}> CUSTOMER</Text>
                             </View>
-                            <View style={[styles.selection,(error||isMissmatched||serverError)?{borderWidth:3,borderColor:color.failedRed}:null]}>
+                            <View style={[styles.selection, (error || isMissmatched || serverError) ? { borderWidth: 3, borderColor: color.failedRed } : null]}>
                                 <View style={styles.insideArea}>
-                                    <TextBox title="ZIP CODE"  value={zipcode}  error={error} underline={true} onChangeText={text => {
+                                    <TextBox title="ZIP CODE" value={zipcode} error={error} underline={true} onChangeText={text => {
                                         setisMissmatched(false)
                                         setserverError(false)
                                         seterror(false)
-                                        setzipcode(text)}} keyboardType='phone-pad' />
+                                        setzipcode(text)
+                                    }} keyboardType='phone-pad' />
                                     <TextBox title="PHONE NO" value={phoneNo} error={error} underline={true} onChangeText={text => {
                                         setisMissmatched(false)
                                         setserverError(false)
                                         seterror(false)
-                                        setphoneNo(text)}} keyboardType='phone-pad'/>
+                                        setphoneNo(text)
+                                    }} keyboardType='phone-pad' />
                                     <TextBox title="EMAIL" value={username} error={error} underline={true} onChangeText={text => {
                                         setisMissmatched(false)
                                         setserverError(false)
                                         seterror(false)
-                                        setusername(text)}} disabled={false} keyboardType='email-address' />
+                                        setusername(text)
+                                    }} disabled={false} keyboardType='email-address' />
                                     <TextBox title="PASSWORD" value={password} error={error} underline={true} onChangeText={text => {
                                         setisMissmatched(false)
                                         setserverError(false)
                                         seterror(false)
-                                        setpassword(text)}} disabled={false} />
-                                    <TextBox title="RETYPE PASSWORD" value={retypePassword} isMissmatched={isMissmatched} error={error?error:isMissmatched?isMissmatched:null} underline={true} onChangeText={text => {
+                                        setpassword(text)
+                                    }} disabled={false} />
+                                    <TextBox title="RETYPE PASSWORD" value={retypePassword} isMissmatched={isMissmatched} error={error ? error : isMissmatched ? isMissmatched : null} underline={true} onChangeText={text => {
                                         setisMissmatched(false)
                                         setserverError(false)
                                         seterror(false)
-                                        setretypePassword(text)}} disabled={false} />
+                                        setretypePassword(text)
+                                    }} disabled={false} />
                                 </View>
                                 <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
                                     <Text style={styles.subText}>2/2</Text>
                                     <TouchableOpacity style={styles.buttonContainer} onPress={() => {
-                                        if(username &&
+                                        if (username &&
                                             password &&
                                             retypePassword &&
                                             zipcode &&
                                             phoneNo
-                                        ){
-                                            if(password==retypePassword){
+                                        ) {
+                                            if (password == retypePassword) {
                                                 setloading(true)
-                                                newUser(username, password, route.params.firstName, route.params.lastName, route.params.address, route.params.state, zipcode, phoneNo, navigation,setloading,setserverError)
+                                                newUser(username, password, route.params.firstName, route.params.lastName, route.params.imageUrl, route.params.address, route.params.state, zipcode, phoneNo, navigation, setloading, setserverError)
                                             }
-                                            else{
+                                            else {
                                                 setisMissmatched("Password is not matched")
                                             }
-                                            
+
                                         }
-                                        else{
+                                        else {
                                             seterror("Please fill these requirements")
                                         }
-                                        
+
                                     }}
                                     ><GradientButton style={styles.button} /></TouchableOpacity>
                                 </View>

@@ -49,7 +49,8 @@ import UserReview from '../Screens/User/UserReview';
 import PreviousChecks from "../Screens/User/PreviousChecks";
 import CheckDetails from "../Screens/User/CheckDetails";
 import PaypalScreen from "../Screens/User/PaypalScreen";
-
+import AsyncStorage from '@react-native-community/async-storage';
+import PdfViewer from '../Screens/Admin/checkDetails';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -87,25 +88,25 @@ function UserHomeScreen() {
     useEffect(() => {
         const user = firebase.auth().currentUser;
         fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + user.uid)
-        .then((res)=>res.json())
-        .then((resJson)=>{
-            if(resJson.isDriverAssigned){
-                console.log("DRIVER",resJson.assignedDriver)
-                firebase.database().ref('location/' + resJson.assignedDriver + '/currentStage').on('value', snapshot => {
-                    console.log("current state:", snapshot.val())
-                    setcurrentState(snapshot.val())
-                })
-            }
-        }).catch((e)=>{})
-        
-        
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.isDriverAssigned) {
+                    console.log("DRIVER", resJson.assignedDriver)
+                    firebase.database().ref('location/' + resJson.assignedDriver + '/currentStage').on('value', snapshot => {
+                        console.log("current state:", snapshot.val())
+                        setcurrentState(snapshot.val())
+                    })
+                }
+            }).catch((e) => { })
+
+
         if (currentState == 7) {
             fetch('https://smogbuddy.herokuapp.com/user/amount/' + user.uid)
                 .then((res) => res.json())
                 .then((resJson) => {
                     console.log("ISPAID>>", resJson)
                     if (!resJson.isPaid) setpayable(true)
-                    else if(resJson.isPaid)setpayable(false)
+                    else if (resJson.isPaid) setpayable(false)
                 })
                 .catch((e) => { })
         }
@@ -113,7 +114,7 @@ function UserHomeScreen() {
     return (
         <Drawer.Navigator initialRouteName="Home" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <HomeDrawerContent {...props} />}>
             {
-                payable?
+                payable ?
                     <Drawer.Screen name="PaypalScreen" component={PaypalScreen} options={{ gestureEnabled: false }} />
                     :
                     <>
@@ -124,7 +125,7 @@ function UserHomeScreen() {
                         <Drawer.Screen name="DriverProfile" component={DriverProfile} options={{ gestureEnabled: false }} />
                         <Drawer.Screen name="UserReview" component={UserReview} options={{ gestureEnabled: false }} />
                     </>
-                    
+
 
             }
 
@@ -219,6 +220,7 @@ function AdminScreens() {
             <Drawer.Screen name="ManageUsersStack" component={ManageUsersStack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="Sales" component={Sales} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="RequestStack" component={RequestStack} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="PdfViewer" component={PdfViewer} options={{ gestureEnabled: false }}/>
         </Drawer.Navigator>
     );
 }
@@ -228,6 +230,59 @@ function WelcomeScreen() {
     const [LoggedIn, setLoggedIn] = useState(false)
     const [appOpened, setappOpened] = useState(false)
     const [role, setrole] = useState(null)
+    const setUid=async (user)=>{
+        console.log("SETUSER",user)
+        try {
+            await AsyncStorage.setItem('userId', user.uid)
+          } catch (e) {
+            alert("User is not Logged Properly")
+          }
+    }
+
+    const datafetch = async (user) => {
+        let fcmToken = await AsyncStorage.getItem('fcmToken');
+        console.log(user.uid)
+        fetch('https://smogbuddy.herokuapp.com/user/' + user.uid)
+            .then((response) => response.json())
+            .then((Json)=>{
+                console.log("RES",Json)
+                fetch('https://smogbuddy.herokuapp.com/user/fcm/' +user.uid, {
+                    method: 'PUT',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fcm: fcmToken
+                    }),
+                })
+                    .then((resJson) => {
+                        if (resJson.status == 200) {
+                                console.log("reeponseparse",Json)
+                                setrole(Json.role);
+                                setUid(user)
+                                setLoggedIn(true);
+                                setappOpened(true); 
+                            }
+                            
+                        else alert("FCM not sent")
+                    })
+                    .catch((e) => {
+                        alert(e)
+                        firebase.auth().signOut();
+
+                    })
+
+
+                
+            })
+            .catch((e) => {
+                console.log("INDEX ERROR",e)
+                setappOpened(true);
+            });
+
+    }
+
     useEffect(() => {
 
         firebase.auth().onAuthStateChanged(user => {
@@ -236,21 +291,11 @@ function WelcomeScreen() {
                 setappOpened(true);
             }
             else {
-                fetch('https://smogbuddy.herokuapp.com/user/' + user.uid)
-                    .then((response) => response.json())
-                    .then((responseJson) => {
-                        setrole(responseJson.role);
-                        setLoggedIn(true);
-                        setappOpened(true);
-                    })
-                    .catch((e) => {
-                        setappOpened(true);
-                    });
-
+                datafetch(user)
             }
 
         });
-    }, []);
+    },[]);
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Splash" screenOptions={{ animationEnabled: false, headerShown: false }}>

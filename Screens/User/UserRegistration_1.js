@@ -89,7 +89,7 @@ function UserRegistration({ navigation }) {
                                 setimageError(true)
                                 alert("Please upload an image")
                             }
-                            else navigation.navigate("UserRegistration_2", { firstName: firstName, lastName: lastName, address: address, state: state })
+                            else navigation.navigate("UserRegistration_2", { firstName: firstName, lastName: lastName, address: address, state: state ,imageUrl:filePath})
                         }}><GradientButton style={styles.button} /></TouchableOpacity>
                     </View>
                 </View>

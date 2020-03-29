@@ -43,11 +43,11 @@ function Profile({ navigation }) {
                             <ActivityIndicator size="large" color={color.primaryBlack} />
                             :
                             <>
-                                <TextBox title="FIRST NAME" defaultValue={firstName} disabled={true} />
-                                <TextBox title="LAST NAME" defaultValue={lastName} disabled={true} />
-                                <TextBox title="ADDRESS" defaultValue={address} disabled={true} />
-                                <TextBox title="STATE" defaultValue={state} disabled={true} />
-                                <TextBox title="ZIPCODE" defaultValue={zipCode} disabled={true} />
+                                <TextBox title="FIRST NAME" value={firstName} disabled={true} />
+                                <TextBox title="LAST NAME" value={lastName} disabled={true} />
+                                <TextBox title="ADDRESS" value={address} disabled={true} />
+                                <TextBox title="STATE" value={state} disabled={true} />
+                                <TextBox title="ZIPCODE" value={zipCode} disabled={true} />
                             </>
 
                     }
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
 
     },
     headerContainer: {
-        flex: 0.25,
+        height:100,
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
