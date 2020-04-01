@@ -135,7 +135,7 @@ class  App extends Component {
     }
       //3
       async getToken() {
-      let fcmToken = await AsyncStorage.getItem('fcmToken');
+      fcmToken = await AsyncStorage.getItem('fcmToken');
       if (!fcmToken) {
           fcmToken = await firebase.messaging().getToken();
           if (fcmToken) {

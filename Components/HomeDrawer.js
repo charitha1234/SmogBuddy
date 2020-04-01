@@ -24,6 +24,7 @@ return(
         <TouchableOpacity onPress={()=>navigation.navigate("DriverProfile")} style={styles.content}><Ionicons name="md-car" size={30}/><Text style={styles.contentText}>YOUR DRIVER</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("DriverTrack")} style={styles.content}><Ionicons name="md-navigate" size={30}/><Text style={styles.contentText}>TRACK CAR</Text></TouchableOpacity>
         <TouchableOpacity onPress={()=>navigation.navigate("ContactUs")} style={styles.content}><Ionicons name="md-contacts" size={30}/><Text style={styles.contentText}>CONTACT US</Text></TouchableOpacity>
+        <View style={{height:70,width:150}}/>
         <TouchableOpacity onPress={()=>{
             firebase.auth().signOut();}}
              style={styles.logout}><Text style={styles.logoutText}>LOGOUT</Text></TouchableOpacity>
@@ -55,7 +56,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     content:{
-        margin:30,
+        flex:1,
+        marginLeft:30,
         flexDirection:'row',
         alignItems:'center'
     },

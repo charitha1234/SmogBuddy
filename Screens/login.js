@@ -28,7 +28,7 @@ async function authentication(username, password, navigation, setloading) {
         })
         .catch((e) => {
             setloading(false)
-            alert("Wrong username or password")
+            alert(e)
         }
         );
 

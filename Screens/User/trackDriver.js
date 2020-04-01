@@ -15,9 +15,10 @@ import BottomSheet from 'reanimated-bottom-sheet'
 import Geolocation from '@react-native-community/geolocation';
 import StepIndicator from 'react-native-step-indicator';
 import MapViewDirections from 'react-native-maps-directions';
+import { set } from "react-native-reanimated";
 Geolocation.setRNConfiguration({ authorizationLevel: 'always' });
-const labels = ["Driver Is On The Way", "Driver Arrived","PickedUp The Car", "Arrived To The Service Center", "Completed Service", "Driver Is On The Way", "Driver Arrived", "Finished"];
-const buttonLabels=["IM ON THE WAY","I've ARRIVED","CAR IS PICKED UP","ARRIVED TO THE STATION","SERVICE COMPLETED","IM ON THE WAY","I've ARRIVED","FINISHED"]
+const labels = ["Driver Is On The Way", "Driver Arrived", "PickedUp The Car", "Arrived To The Service Center", "Completed Service", "Driver Is On The Way", "Driver Arrived", "Finished"];
+const buttonLabels = ["IM ON THE WAY", "I've ARRIVED", "CAR IS PICKED UP", "ARRIVED TO THE STATION", "SERVICE COMPLETED", "IM ON THE WAY", "I've ARRIVED", "FINISHED"]
 const customStyles = {
     stepIndicatorSize: 30,
     currentStepIndicatorSize: 40,
@@ -46,10 +47,10 @@ const customStyles = {
 
 function RenderContent(props) {
     const [currentStage, setcurrentStage] = useState(0)
-    useEffect(()=>{
+    useEffect(() => {
         console.log("Called")
         setcurrentStage(props.currentStage);
-        if(currentStage==8)props.navigation.navigate("UserReview")
+        if (currentStage == 8) props.navigation.navigate("UserReview")
     })
     return (
         <View style={styles.detailsContainer}>
@@ -83,22 +84,32 @@ function DriverTrack({ navigation }, props) {
     const [startGiven, setstartGiven] = useState(false)
     const [arrivalTime, setarrivalTime] = useState("")
     const [loading, setloading] = useState(true)
+    const [ownLat, setownLat] = useState(null)
+    const [ownLng, setownLng] = useState(null)
     const [currentStage, setcurrentStage] = useState(0)
     const [fetching, setfetching] = useState(true)
+    const [showAlert, setshowAlert] = useState(true)
     const origin = { latitude: latitude, longitude: longitude };
     const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
     const destination = { latitude: customerLat, longitude: customerLng }
 
-    const getApiData=()=>{
+    const getApiData = () => {
+        if(fetching){
         const user = firebase.auth().currentUser;
         fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + user.uid)
             .then((res) => res.json())
             .then((responseJson) => {
-                if (responseJson.isDriverAssigned) setdriverAssigned(true);
+                console.log("RESSSSS",responseJson)
+                setfetching(false)
+                if (responseJson.isDriverAssigned) {
+                    console.log("FOT")
+                    alert("Driver Will Depart in 8 minutes")
+                    setdriverAssigned(true);
+
+                }
                 if (!responseJson.isDriverAssigned) setdriverAssigned(false);
                 if (responseJson.isDriverStarted) {
                     setstartGiven(true);
-                    setfetching(false);
                     setDriverUid(responseJson.assignedDriver)
                     setcustomerLat(responseJson.userPickupLocation.lat)
                     setcustomerLng(responseJson.userPickupLocation.lng)
@@ -107,44 +118,49 @@ function DriverTrack({ navigation }, props) {
                 setloading(false)
             })
             .catch((e) => alert(e))
+        }
     }
     useEffect(() => {
-    getApiData()
-        console.log("USEEFFECT",DriverUid)
-        
+
+        getApiData()
+        console.log("USEEFFECT", DriverUid)
+        Geolocation.getCurrentPosition(info => {
+            setownLat(info.coords.latitude);
+            setownLng(info.coords.longitude);
+        }, e => console.log(e), { distanceFilter: 0 });
         if (startGiven) {
 
             firebase.database().ref('location/' + DriverUid).on('value', snapshot => {
-                console.log("snp",snapshot.val())
+                console.log("snp", snapshot.val())
                 if (snapshot.val()) {
 
 
                     var hours = Math.floor(duration / 60);
                     var minutes = Math.floor(duration % 60);
 
-                    if (minutes / 10 >= 1){
-                        if(hours==0) setarrivalTime((minutes).toString()+" min");
-                        else setarrivalTime((hours).toString() + "h " + (minutes).toString()+" min");
+                    if (minutes / 10 >= 1) {
+                        if (hours == 0) setarrivalTime((minutes).toString() + " min");
+                        else setarrivalTime((hours).toString() + "h " + (minutes).toString() + " min");
                     }
 
                     else {
-                        if(hours==0) setarrivalTime("0"+(minutes).toString()+" min");
-                        else setarrivalTime((hours).toString() + "h " + (minutes).toString()+" min");
+                        if (hours == 0) setarrivalTime("0" + (minutes).toString() + " min");
+                        else setarrivalTime((hours).toString() + "h " + (minutes).toString() + " min");
                     }
                     setlatitude(snapshot.val().lat),
-                    setlongitude(snapshot.val().lng)
+                        setlongitude(snapshot.val().lng)
                     setcurrentStage(snapshot.val().currentStage)
                 }
 
             });
         }
-    })
+    },[])
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
             <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>TRACKING</Text><View /></View>
-            {loading ?
-            <View style={{ flex: 1,justifyContent:'center',alignItems:'center' }}>
-                <ActivityIndicator  size={40} color={color.primaryBlack} />
+            {loading || !ownLat || !ownLng ?
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size={40} color={color.primaryBlack} />
                 </View>
                 :
 
@@ -155,8 +171,8 @@ function DriverTrack({ navigation }, props) {
                             showsUserLocation={true}
                             style={{ flex: 1 }}
                             initialRegion={{
-                                latitude: 6.794791,
-                                longitude: 79.900713,
+                                latitude: ownLat,
+                                longitude: ownLng,
                                 latitudeDelta: 0.0922,
                                 longitudeDelta: 0.0421,
                             }}
@@ -177,10 +193,10 @@ function DriverTrack({ navigation }, props) {
                                             }}
                                         />
                                         <Marker coordinate={{ "latitude": latitude, "longitude": longitude }}>
-                                            <Ionicons name="md-car" size={30}/>
+                                            <Ionicons name="md-car" size={30} />
                                         </Marker>
                                         <Marker coordinate={{ "latitude": customerLat, "longitude": customerLng }}>
-                                            <Ionicons name="md-man" size={30}/>
+                                            <Ionicons name="md-man" size={30} />
                                         </Marker>
                                     </>
                                     :
@@ -188,13 +204,13 @@ function DriverTrack({ navigation }, props) {
                             }
                         </MapView>
                         {startGiven ?
-                           <BottomSheet
-                           borderRadius={40}
-                           snapPoints={[500, 200]}
-                           enabledBottomClamp={true}
-                           initialSnap={1}
-                           renderContent={() => <RenderContent navigation={navigation} currentStage={currentStage} arrivalTime={arrivalTime} />}
-                       />
+                            <BottomSheet
+                                borderRadius={40}
+                                snapPoints={[500, 200]}
+                                enabledBottomClamp={true}
+                                initialSnap={1}
+                                renderContent={() => <RenderContent navigation={navigation} currentStage={currentStage} arrivalTime={arrivalTime} />}
+                            />
                             :
                             driverAssigned ?
                                 null
@@ -231,7 +247,7 @@ const styles = StyleSheet.create({
         height: '50%'
     },
     timeContainer: {
-        height:100,
+        height: 100,
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         marginHorizontal: 10,

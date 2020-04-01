@@ -4,7 +4,8 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity, ScrollView, KeyboardAvoidingView,
-    ActivityIndicator
+    ActivityIndicator,
+    Dimensions
 } from "react-native";
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
@@ -69,7 +70,7 @@ function EmployeeRegistration_2({ navigation, route }) {
 
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
-            <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: 650, justifyContent: 'space-between' }}>
+            <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: 650 }}>
                 {
                     loading ?
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -129,8 +130,8 @@ const styles = StyleSheet.create({
     selection: {
         alignSelf: 'center',
         backgroundColor: 'white',
-        width: 300,
-        height: 500,
+        width: '90%',
+        height: Dimensions.get('window').height*0.7,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

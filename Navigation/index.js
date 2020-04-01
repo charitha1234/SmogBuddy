@@ -51,6 +51,7 @@ import CheckDetails from "../Screens/User/CheckDetails";
 import PaypalScreen from "../Screens/User/PaypalScreen";
 import AsyncStorage from '@react-native-community/async-storage';
 import PdfViewer from '../Screens/Admin/checkDetails';
+import AdminUserProfile from '../Screens/Admin/UserProfile';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -221,6 +222,7 @@ function AdminScreens() {
             <Drawer.Screen name="Sales" component={Sales} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="RequestStack" component={RequestStack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="PdfViewer" component={PdfViewer} options={{ gestureEnabled: false }}/>
+            <Drawer.Screen name="AdminUserProfile" component={AdminUserProfile} options={{ gestureEnabled: false }}/>
         </Drawer.Navigator>
     );
 }
@@ -265,7 +267,11 @@ function WelcomeScreen() {
                                 setappOpened(true); 
                             }
                             
-                        else alert("FCM not sent")
+                        else {
+                            firebase.auth().signOut()
+                            alert("FCM not sent")
+                        }
+                        
                     })
                     .catch((e) => {
                         alert(e)

@@ -45,7 +45,7 @@ function ShopProfile({ navigation }) {
                     {loading ?
                         <ActivityIndicator size={40} color={color.primaryBlack} />
                         :
-                        <>
+                        <>  
                             <TextBox title="BUSINESS NAME" value={name} disabled={true} />
                             <TextBox title="ADDRESS" value={address} disabled={true} />
                             <TextBox title="ARD" value={ard} disabled={true} />
@@ -84,9 +84,9 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         marginTop: 30,
-        height: 500,
-        width: 300,
-        justifyContent: 'center',
+        height:'90%',
+        width: '90%',
+        justifyContent: 'space-evenly',
         backgroundColor: color.primaryWhite,
         shadowColor: "#000",
         shadowOffset: {

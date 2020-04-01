@@ -58,9 +58,10 @@ class SmogTests extends Component {
             failedParts: [],
             currentServiceId: "",
             failedPart: null,
-            fuelCapRequested: true,
+            fuelCapRequested: false,
             fuelcapApporved: false,
-            capLoading: false
+            capLoading: false,
+            Completed: false
 
         }
 
@@ -107,6 +108,7 @@ class SmogTests extends Component {
                 this.setState({ filePath: source });
                 const user = firebase.auth().currentUser
                 console.log(source.uri)
+                this.setState({ isFetching: true })
                 firebase
                     .storage()
                     .ref(this.formatDate() + '/' + user.uid + '/' + uuidv1() + '.jpeg')
@@ -161,16 +163,39 @@ class SmogTests extends Component {
 
         });
     };
+    completeChecks() {
 
+        const user = firebase.auth().currentUser
+        fetch("https://smogbuddy.herokuapp.com/technician/complete/" + user.uid,
+            {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.statusCode==500) {
+                    console.log("ERR", resJson)
+                    alert("Complete All Checks")
+                }
+                else {
+                    console.log("RESPONSEE", resJson)
+                }
+
+            })
+            .catch((e) => console.log(e))
+    }
     getApiData() {
-        this.setState({capLoading:true})
+        this.setState({ capLoading: true })
         const user = firebase.auth().currentUser
         console.log("JHJH", this.state.failedPart)
         fetch("https://smogbuddy.herokuapp.com/technician/assign/service/" + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 console.log(resJson)
-                this.setState({capLoading:false, serviceList: resJson.services, isFetching: false, fuelcapApporved: resJson.isNeedToAddFuelCap == "YES" })
+                this.setState({ capLoading: false, serviceList: resJson.services, isFetching: false, fuelcapApporved: resJson.isNeedToAddFuelCap == "YES",fuelCapRequested:resJson.isFuelCapRequested })
             })
             .catch((e) => console.log(e))
     }
@@ -292,22 +317,35 @@ class SmogTests extends Component {
                             refreshing={this.state.isFetching}
                             onRefresh={() => this.onRefresh()}
                         />
-                        <TouchableOpacity disabled={this.state.fuelcapApporved} onPress={() => this.TakeCap()} style={styles.fuelCapContainer}>
-                            {
-                                this.state.capLoading ?
-                                    <ActivityIndicator size={30} color={color.primaryWhite} />
-                                    :
-                                    !this.state.fuelCapRequested ?
-                                        <Text style={styles.fuelCapRequestText}>Send Fuel Cap Request</Text>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity disabled={this.state.fuelcapApporved} onPress={() => this.TakeCap()} style={styles.fuelCapContainer}>
+                                {
+                                    this.state.capLoading ?
+                                        <ActivityIndicator size={30} color={color.primaryWhite} />
                                         :
-                                        this.state.fuelcapApporved ?
-                                            <Text style={styles.fuelCapRequestText}>Fuel Cap Request Approved</Text>
-
+                                        !this.state.fuelCapRequested ?
+                                            <Text style={styles.fuelCapRequestText}>Send Fuel Cap Request</Text>
                                             :
-                                            <Text style={styles.fuelCapRequestText}>Fuel Cap Request Sent</Text>
+                                            this.state.fuelcapApporved ?
+                                                <Text style={styles.fuelCapRequestText}>Fuel Cap Request Approved</Text>
 
-                            }
-                        </TouchableOpacity>
+                                                :
+                                                <Text style={styles.fuelCapRequestText}>Fuel Cap Request Sent</Text>
+
+                                }
+                            </TouchableOpacity>
+                            <TouchableOpacity disabled={this.state.fuelcapApporved} onPress={this.completeChecks.bind(this)} style={[styles.fuelCapContainer, { backgroundColor: color.primaryBlue }]}>
+                                {
+                                    this.state.capLoading ?
+                                        <ActivityIndicator size={30} color={color.primaryWhite} />
+                                        :
+                                        !this.state.Completed ?
+                                            <Text style={styles.fuelCapRequestText}>COMPLETE</Text>
+                                            :
+                                            <Ionicons name="ios-check" size={40} color={color.primaryBlack} />
+                                }
+                            </TouchableOpacity>
+                        </View>
                     </>
                     :
                     <View style={styles.content}>
@@ -364,9 +402,8 @@ const styles = StyleSheet.create({
     },
     fuelCapContainer: {
         height: 50,
-        width: 200,
+        width: '40%',
         alignSelf: "center",
-        margin: 20,
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: color.failedRed,
@@ -418,6 +455,14 @@ const styles = StyleSheet.create({
         marginBottom: 10,
 
 
+
+    },
+    buttonContainer: {
+        height: 70,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        width: '100%',
 
     },
 

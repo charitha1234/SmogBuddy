@@ -18,10 +18,9 @@ function deleteProfile(){
 function EmployeeProfile({ navigation,route }) {
     const [firstName, setfirstName] = useState("")
     const [lastName, setlastName] = useState("")
-    const [role, setrole] = useState("")
-    const [position, setposition] = useState("")
-    const [employeeNo, setemployeeNo] = useState("")
-    const [licenceNo, setlicenceNo] = useState("")
+    const [address, setaddress] = useState("")
+    const [state, setstate] = useState("")
+    const [zipCode, setzipCode] = useState("")
     const [loading, setloading] = useState(true)
     const {userId}= route.params
     useEffect(() => {
@@ -32,11 +31,9 @@ function EmployeeProfile({ navigation,route }) {
                 setloading(false);
                 setfirstName(resJson.firstName);
                 setlastName(resJson.lastName);
-                setemployeeNo(resJson.employNumber);
-                setposition(resJson.position);
-                setlicenceNo(resJson.licenseNumber)
-                setrole(resJson.role);
-
+                setaddress(resJson.address);
+                setstate(resJson.state);
+                setzipCode(resJson.zipCode);
             })
     },[])
 
@@ -52,15 +49,9 @@ function EmployeeProfile({ navigation,route }) {
                             <>
                                 <TextBox title="FIRST NAME" value={firstName} disabled={true} />
                                 <TextBox title="LAST NAME" value={lastName} disabled={true} />
-                                {
-                                    role=="DRIVER"?
-                                    <TextBox title="LICENCE NUMBER" value={licenceNo} disabled={true} />
-                                    :null
-
-                                }
-
-                                <TextBox title="EMPLOYEE NUMBER" value={employeeNo} disabled={true} />
-                                <TextBox title="POSITION" value={position} disabled={true} />
+                                <TextBox title="ADDRESS" value={address} disabled={true} />
+                                <TextBox title="STATE" value={state} disabled={true} />
+                                <TextBox title="ZIPCODE" value={zipCode} disabled={true} />
                             </>
 
                     }

@@ -73,8 +73,8 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         marginTop:30,
-        height: 500,
-        width: 300,
+        height: '90%',
+        width: '90%',
         justifyContent: 'center',
         backgroundColor: color.primaryWhite,
         shadowColor: "#000",

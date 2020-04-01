@@ -4,6 +4,7 @@ import {
     Text,
     StyleSheet,
     Button,
+    Dimensions,
     TouchableOpacity, ScrollView, KeyboardAvoidingView
 } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -74,7 +75,7 @@ function EmployeeRegistration({ navigation, route }) {
 
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
-            <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: 650, justifyContent: 'space-between' }}>
+            <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: 650 }}>
                 <View style={styles.upperContainer}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
@@ -136,8 +137,8 @@ const styles = StyleSheet.create({
     selection: {
         alignSelf: 'center',
         backgroundColor: 'white',
-        width: 300,
-        height: 500,
+        width: '90%',
+        height:Dimensions.get('window').height*0.7,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

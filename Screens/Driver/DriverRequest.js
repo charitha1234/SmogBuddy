@@ -7,7 +7,9 @@ import {
     Linking, ActivityIndicator,
     Image,
     Alert,
-    ScrollView
+    ScrollView,
+    Modal,
+    FlatList
 } from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 import MapTheme from '../../Assets/mapsStyle';
@@ -135,32 +137,56 @@ async function removeUploaded() {
         alert(e)
     }
 }
+function Service(props) {
+    return (
+        <View style={styles.serviceContainer}>
+            <Text style={styles.serviceNameText,{marginRight:20}}>{props.number + 1}</Text>
+            <View style={{ flex: 1 }}>
+                <Text style={styles.serviceNameText}>{props.serviceName}</Text>
+                <Text style={styles.serviceNameText}>{props.serviceYear}</Text>
+            </View>
+        </View>
+
+    );
+}
 function RenderContent(props) {
     const [currentStage, setcurrentStage] = useState(1)
     const [loading, setloading] = useState(false)
+    const [serviceList, setserviceList] = useState(null)
     const [fetching, setfetching] = useState(true)
+    const [modalVisible, setmodalVisible] = useState(false)
     const user = firebase.auth().currentUser;
     const fetchFirebaseStart = () => {
         firebase.database().ref('location/' + user.uid).once('value', snapshot => {
             console.log("FIREBASE UPDATED ERROR", snapshot.val().currentStage)
-            if(snapshot.val().currentStage)setcurrentStage(snapshot.val().currentStage)
+            if (snapshot.val().currentStage) setcurrentStage(snapshot.val().currentStage)
             setfetching(false)
         })
     }
-
+    const getServiceList = () => {
+        setmodalVisible(true)
+        fetch('https://smogbuddy.herokuapp.com/driver/assign/service/' + user.uid)
+            .then((res) => res.json())
+            .then((resJson) => {
+                setserviceList(resJson.services)
+                console.log(resJson)
+            })
+            .catch((e) => console.log("error", e))
+    }
 
     useEffect(() => {
         if (fetching) fetchFirebaseStart()
-        if(currentStage==3 )props.setreturnToStation(true)
+        if (currentStage == 3) props.setreturnToStation(true)
         else props.setreturnToStation(false)
-        if(currentStage==8)props.navigation.navigate("DriverHomeScreen")
+        if (currentStage == 8) props.navigation.navigate("DriverHomeScreen")
         console.log("CURRENTSTAGE", currentStage)
-        if (!fetching || !currentStage==8) {
+        if (!fetching || !currentStage == 8) {
+            console.log("fetching")
             firebase.database().ref('location/' + user.uid).update({
                 currentStage
             });
         }
-    });
+    },[]);
     return (
         <View style={styles.detailsContainer}>
             <Ionicons name="ios-remove" size={50} style={styles.bottomsheetMoreIcon} />
@@ -170,9 +196,21 @@ function RenderContent(props) {
                     <Text style={styles.timeText}>{props.arrivalTime}</Text>
                     <Text style={styles.label}>Arrival Time</Text>
                 </View>
-                <TouchableOpacity disabled={!(currentStage == 2 || currentStage == 4 || currentStage == 7)} onPress={() => props.navigation.navigate("DriverOdometer", { case: cases[currentStage], userId: props.userId })} style={styles.IconContainer}>
-                    <Ionicons name="ios-camera" size={50} />
-                </TouchableOpacity>
+                <View style={styles.IconContainer}>
+                    <TouchableOpacity disabled={!(currentStage == 2 || currentStage == 4 || currentStage == 7)} onPress={() => props.navigation.navigate("DriverOdometer", { case: cases[currentStage], userId: props.userId })} >
+                        <Ionicons name="ios-camera" size={50} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => getServiceList()} >
+                        <Ionicons name="ios-list-box" size={50} />
+                    </TouchableOpacity>
+                </View>
+                <Modal visible={modalVisible} onRequestClose={() => setmodalVisible(false)}>
+                    <View style={styles.headerContainer}><TouchableOpacity onPress={() => setmodalVisible(false)} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>CHECK LIST</Text><View /></View>
+                    <FlatList data={serviceList} renderItem={({ item, index }) => (
+                        <Service serviceName={item.serviceName} number={index} serviceYear={item.yearRange} />
+                    )} keyExtractor={item => item.serviceID} />
+
+                </Modal>
             </View>
             <View style={styles.contactContainer}>
                 <StepIndicator
@@ -305,10 +343,10 @@ function RenderContent(props) {
 function DriverRequest({ navigation, route }) {
     const [returnToStation, setreturnToStation] = useState(false)
     const { userUid, userPickupLocation, stationLocation, status } = route.params;
-    const location =!returnToStation? userPickupLocation:stationLocation;
-    console.log("RETURN",returnToStation)
+    const location = !returnToStation ? userPickupLocation : stationLocation;
+    console.log("RETURN", status)
     const [lat, setlat] = useState(null)
-    
+
     const [lng, setlng] = useState(null)
     const [loading, setloading] = useState(true)
     const [distance, setdistance] = useState(null)
@@ -323,8 +361,8 @@ function DriverRequest({ navigation, route }) {
     useEffect(() => {
 
         if (status == "DRIVER_ASSIGN") { }
-        else if (status == "ACCEPTED") setaccepted(true)
-        else if (status == "STARTED") {
+        else if (status == "DRIVER_ACCEPTED") setaccepted(true)
+        else if (status == "DRIVER_STARTED") {
             setaccepted(true)
             setstarted(true)
         }
@@ -332,6 +370,8 @@ function DriverRequest({ navigation, route }) {
             setaccepted(true)
             setstarted(true)
         }
+        console.log("accepted", accepted)
+        console.log("started", started)
 
         var hours = Math.floor(duration / 60);
         var minutes = Math.floor(duration % 60);
@@ -356,41 +396,49 @@ function DriverRequest({ navigation, route }) {
                 :
                 null
             }
-            <MapView
-                showsUserLocation={true}
-                style={{ flex: 1 }}
-                initialRegion={{
-                    latitude: 6.794791,
-                    longitude: 79.900713,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }}
-            >
-                <MapViewDirections
-                    origin={origin}
-                    destination={destination}
-                    apikey={GOOGLE_MAPS_APIKEY}
-                    strokeWidth={4}
-                    strokeColor={color.primaryBlue}
-                    resetOnChange={false}
-                    onReady={(info) => {
-                        setloading(false);
-                        setdistance(info.distance);
-                        setduration(info.duration);
-                    }}
-                />
-                {
-                    location.lat && location.lng ?
-                        <Marker coordinate={{ "longitude": location.lng, "latitude": location.lat }}>
-                            <Ionicons name="ios-man" size={30} />
-                        </Marker>
-                        : null
-                }
-            </MapView>
+            {
+                lat && lng ?
+                    <MapView
+                        showsUserLocation={true}
+                        style={{ flex: 1 }}
+                        initialRegion={{
+                            latitude: lat,
+                            longitude: lng,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421,
+                        }}
+                    >
+                        <MapViewDirections
+                            origin={origin}
+                            destination={destination}
+                            apikey={GOOGLE_MAPS_APIKEY}
+                            strokeWidth={4}
+                            strokeColor={color.primaryBlue}
+                            resetOnChange={false}
+                            onReady={(info) => {
+                                setloading(false);
+                                setdistance(info.distance);
+                                setduration(info.duration);
+                            }}
+                        />
+                        {
+                            location.lat && location.lng ?
+                                <Marker coordinate={{ "longitude": location.lng, "latitude": location.lat }}>
+                                    <Ionicons name="ios-man" size={30} />
+                                </Marker>
+                                : null
+                        }
+                    </MapView>
+                    :
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <ActivityIndicator size={40} color={color.primaryBlack} />
+                    </View>
+            }
+
             {started ?
                 <BottomSheet
                     borderRadius={40}
-                    snapPoints={[500, 300]}
+                    snapPoints={[500, '30%']}
                     enabledBottomClamp={true}
                     initialSnap={1}
                     renderContent={() => <RenderContent userId={userUid} setreturnToStation={setreturnToStation} navigation={navigation} arrivalTime={arrivalTime} />}
@@ -432,6 +480,18 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center'
     },
+    headerContainer: {
+        height: 100,
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    icon: {
+        marginRight: -20,
+        marginLeft: 20
+    },
+
     headerText: {
         fontFamily: 'Montserrat-Bold',
         fontSize: 25,
@@ -480,6 +540,21 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         marginHorizontal: 10,
+    },
+    serviceContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        margin: 10,
+        marginHorizontal: 30,
+
+    },
+    serviceNameText: {
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 15,
+        opacity: 0.8
+
+
     },
     detailsContainer: {
         alignSelf: 'center',

@@ -31,16 +31,36 @@ class ManageUsers extends Component {
         super(props);
         this.state = {
             search: '',
-            searched:false
+            searched: false,
+            totalUserArr: null,
+            filteredList:[],
         };
     }
-
-    search(){
-        this.setState({searched:true})
+    componentDidMount() {
+        fetch('https://smogbuddy.herokuapp.com/admin/users')
+            .then((res) => res.json())
+            .then((resJson) => {
+                this.setState({ totalUserArr: resJson })
+                console.log("RES", resJson)
+            })
+            .catch((e) => console.log("error", e))
+    }
+    search() {
+        this.setState({ searched: true })
     }
 
     updateSearch = search => {
-        this.setState({ search:search,searched:false });
+        this.setState({ search: search, searched: false });
+        let user;
+        let tempFilteredList=[]
+        for(user of this.state.totalUserArr){
+            
+            if(user.keyword.toLowerCase().includes(search.toLowerCase())){
+                console.log("KEYWORD",user.keyword)
+                tempFilteredList.push(user)
+            }
+        }
+        this.setState({filteredList:tempFilteredList})
     };
     render() {
         return (
@@ -58,16 +78,9 @@ class ManageUsers extends Component {
                 {this.state.search == "" ?
                     <TouchableOpacity onPress={() => this.props.navigation.navigate("InterfaceSelection")} style={styles.AddUserContainer}><Text style={styles.AddUserText}>ADD USER</Text></TouchableOpacity>
                     :
-                    <>  
-                        
-                        {
-                            this.state.searched?
-                            <FlatList data={UsersList} renderItem={({ item }) => (<Users onPress={() => this.props.navigation.navigate("EmployeeProfile")} Fname={item.UserFirstName} Lname={item.UserLastName} Role={item.Role} />)} keyExtractor={item => item.UserId} />
-                            :
-                            <TouchableOpacity onPress={()=>this.search()} style={styles.AddUserContainer}><Text style={styles.AddUserText}>SEARCH</Text></TouchableOpacity>
-                        }
-                        
-                    </>
+                    <FlatList data={this.state.filteredList} renderItem={({ item }) => (<Users onPress={() => this.props.navigation.navigate(item.role=="CUSTOMER"?"AdminUserProfile":"EmployeeProfile",{userId:item.uid})} Fname={item.firstName} Lname={item.lastName} Role={item.role} />)} keyExtractor={item => item.UserId} />
+
+
                 }
 
             </View>
@@ -99,7 +112,8 @@ const styles = StyleSheet.create({
     },
     UserContainer: {
         flexDirection: 'row',
-        marginTop: 30,
+        marginTop: 10,
+        marginBottom:10,
         height: 100,
         width: '100%',
         justifyContent: 'center',
@@ -149,11 +163,11 @@ const styles = StyleSheet.create({
     AddUserContainer: {
         marginVertical: 30,
         width: 200,
-        height:50,
-        justifyContent:'center',
-        borderRadius:25,
-        alignSelf:'center',
-        backgroundColor:color.primaryBlue,
+        height: 50,
+        justifyContent: 'center',
+        borderRadius: 25,
+        alignSelf: 'center',
+        backgroundColor: color.primaryBlue,
         alignItems: 'center',
         shadowColor: "#000",
         shadowOffset: {

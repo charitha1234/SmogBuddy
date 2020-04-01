@@ -27,6 +27,7 @@ function Home({ navigation }, props) {
         fetch('https://smogbuddy.herokuapp.com/driver/status/'+user.uid)
         .then((res)=>res.json())
         .then((resJson)=>{
+            console.log("driver res",resJson)
             if (resJson.isDriverAssign) {
 
                 navigation.navigate("DriverRequest", { userUid: resJson.userUid, userPickupLocation: resJson.pickupLocation,status:resJson.status,stationLocation:resJson.shopLocation });
@@ -43,7 +44,7 @@ function Home({ navigation }, props) {
             }
         });
     
-    });
+    },[]);
 
     
     return (

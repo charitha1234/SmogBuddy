@@ -54,8 +54,8 @@ function Profile({ navigation }) {
                         <View style={styles.container}>
                             <View style={styles.formContainer}>
                                 <Image style={styles.imageContainer} resizeMode='cover' source={{uri:imageUrl}}/>
-                                <TextBox title="FIRST NAME" defaultValue={name} disabled={true} />
-                                <TextBox title="LICENCE NUMBER" defaultValue={licenseNumber} disabled={true} />
+                                <TextBox title="FIRST NAME" value={name} disabled={true} />
+                                <TextBox title="LICENCE NUMBER" value={licenseNumber} disabled={true} />
                             </View>
                         </View>
                         :
