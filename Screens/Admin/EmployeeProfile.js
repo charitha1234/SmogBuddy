@@ -11,6 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
+import Dialog from "react-native-dialog";
 function deleteProfile(){
     
 }
@@ -23,6 +24,9 @@ function EmployeeProfile({ navigation,route }) {
     const [employeeNo, setemployeeNo] = useState("")
     const [licenceNo, setlicenceNo] = useState("")
     const [loading, setloading] = useState(true)
+    const [title, settitle] = useState("")
+    const [body, setbody] = useState("")
+    const [dialogboxVisible, setdialogboxVisible] = useState(false)
     const {userId}= route.params
     useEffect(() => {
         fetch('https://smogbuddy.herokuapp.com/user/' + userId)
@@ -40,9 +44,29 @@ function EmployeeProfile({ navigation,route }) {
             })
     },[])
 
+    const sendMessage=()=>{
+        fetch('https://smogbuddy.herokuapp.com/admin/notification', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                uid: userId,
+                title: title,
+                body: body
+            }),
+        })
+        .then((res)=>res.json())
+        .then((resJson)=>console.log("RES",resJson))
+        .catch((e)=>alert(e))
+    }
+
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>PROFILE</Text><View /></View>
+            <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>PROFILE</Text>
+            <TouchableOpacity  onPress={()=>setdialogboxVisible(true)} style={{marginLeft:-40,marginRight:20}}><Ionicons name="ios-mail" size={40} /></TouchableOpacity>
+            </View>
             <View style={styles.container}>
                 <View style={styles.formContainer}>
                     {
@@ -67,6 +91,16 @@ function EmployeeProfile({ navigation,route }) {
 
                 </View>
             </View>
+            <Dialog.Container visible={dialogboxVisible}>
+                <Dialog.Title>Please Enter Message</Dialog.Title>
+                <Dialog.Input wrapperStyle={{borderBottomWidth:1}} label="Type Title" onChangeText={(text) => settitle(text)} />
+                <Dialog.Input  wrapperStyle={{borderBottomWidth:1}} label="Type Body" onChangeText={(text) => setbody(text)} />
+                <Dialog.Button onPress={() => { setdialogboxVisible(false)}} label="Cancel" />
+                <Dialog.Button onPress={() => {
+                    setdialogboxVisible(false)
+                    sendMessage()
+                }} label="SEND" />
+            </Dialog.Container>
             <TouchableOpacity onPress={()=>deleteProfile()} style={styles.deleteButton}><Text style={styles.deleteText}>DELETE PROFILE</Text></TouchableOpacity>
         </LinearGradient>
     );

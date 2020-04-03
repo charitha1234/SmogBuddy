@@ -176,7 +176,7 @@ class SmogTests extends Component {
             })
             .then((res) => res.json())
             .then((resJson) => {
-                if (resJson.statusCode==500) {
+                if (resJson.statusCode == 500) {
                     console.log("ERR", resJson)
                     alert("Complete All Checks")
                 }
@@ -195,7 +195,7 @@ class SmogTests extends Component {
             .then((res) => res.json())
             .then((resJson) => {
                 console.log(resJson)
-                this.setState({ capLoading: false, serviceList: resJson.services, isFetching: false, fuelcapApporved: resJson.isNeedToAddFuelCap == "YES",fuelCapRequested:resJson.isFuelCapRequested })
+                this.setState({ capLoading: false, serviceList: resJson.services, isFetching: false, fuelcapApporved: resJson.isNeedToAddFuelCap == "YES", fuelCapRequested: resJson.isFuelCapRequested })
             })
             .catch((e) => console.log(e))
     }
@@ -358,7 +358,7 @@ class SmogTests extends Component {
                     <Dialog.Title>Enter Part Name</Dialog.Title>
                     <Dialog.Description>
                         Please Enter Failed Part Name
-          </Dialog.Description>
+                    </Dialog.Description>
                     <Dialog.Input label="Type Here" onChangeText={(text) => this.setState({ failedPart: text })} />
                     <Dialog.Button onPress={() => { this.setState({ dialogBoxvisible: false }) }} label="Cancel" />
                     <Dialog.Button disabled={!this.state.failedPart} onPress={() => {
