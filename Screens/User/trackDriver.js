@@ -102,8 +102,6 @@ function DriverTrack({ navigation }, props) {
                 console.log("RESSSSS",responseJson)
                 setfetching(false)
                 if (responseJson.isDriverAssigned) {
-                    console.log("FOT")
-                    alert("Driver Will Depart in 8 minutes")
                     setdriverAssigned(true);
 
                 }
@@ -116,13 +114,19 @@ function DriverTrack({ navigation }, props) {
                 }
                 if (!responseJson.isDriverStarted) setstartGiven(false);
                 setloading(false)
+                if(responseJson.isDriverAssigned && !responseJson.isDriverStarted){
+                    alert("Driver Will Depart in 8 minutes")
+                }
             })
             .catch((e) => alert(e))
         }
     }
+    useEffect(()=>{
+        getApiData()
+    },[])
     useEffect(() => {
 
-        getApiData()
+        
         console.log("USEEFFECT", DriverUid)
         Geolocation.getCurrentPosition(info => {
             setownLat(info.coords.latitude);
@@ -148,13 +152,13 @@ function DriverTrack({ navigation }, props) {
                         else setarrivalTime((hours).toString() + "h " + (minutes).toString() + " min");
                     }
                     setlatitude(snapshot.val().lat),
-                        setlongitude(snapshot.val().lng)
+                    setlongitude(snapshot.val().lng)
                     setcurrentStage(snapshot.val().currentStage)
                 }
 
             });
         }
-    },[])
+    })
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
             <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>TRACKING</Text><View /></View>
@@ -187,7 +191,9 @@ function DriverTrack({ navigation }, props) {
                                             strokeWidth={3}
                                             strokeColor={color.primaryBlack}
                                             resetOnChange={false}
+                                            onStart={(info)=>console.log("Starting",info)}
                                             onReady={(info) => {
+                                                console.log("READY",info)
                                                 setdistance(info.distance);
                                                 setduration(info.duration);
                                             }}

@@ -39,7 +39,8 @@ class ServiceSelection extends Component {
             serviceList: null,
             checkAll: false,
             uid: null,
-            selectedList: []
+            selectedList: [],
+            totalTime:0,
         }
 
     }
@@ -55,10 +56,25 @@ class ServiceSelection extends Component {
         const list=this.state.check
         if (!this.isEmpty(list)) {
             this.setState({ selectedList: [] });
+            let totalTime=0;
             for (const sId in this.state.check) {
-                if (this.state.check[sId]) this.state.selectedList.push({ serviceID: sId })
+                if (this.state.check[sId]) {
+                    for(const service of this.state.serviceList){
+                        if(sId==service.serviceID){
+                            totalTime+=service.averageTime
+                        }
+                    }
+                    this.state.selectedList.push({ serviceID: sId })
+                }
             }
-            this.props.navigation.navigate("ScanDMV", { serviceList: this.state.selectedList })
+            console.log("Time",totalTime)
+            console.log("TOTALTIME",new Date(new Date().getTime() + totalTime*60000).getHours())
+            if(new Date(new Date().getTime() + totalTime*60000).getHours()>=17){
+                alert("Service Station Closes At 5 PM")
+            }
+            else{
+                this.props.navigation.navigate("ScanDMV", { serviceList: this.state.selectedList })
+            }
         }
         else alert("Please select services")
     }
@@ -100,16 +116,13 @@ class ServiceSelection extends Component {
                 <SafeAreaView style={styles.container}>
                     <View style={styles.headerTextContainer}>
                         <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity>
-
                         <Text style={styles.headerText}>SELECT SERVICES</Text>
                     </View>
                     <View style={styles.serviceListContainer}>
                         <View style={styles.serviceContainer}><Text style={styles.selectAllText}>SELECT ALL</Text><CheckBox value={this.state.checkAll} onChange={this.CheckAll} /></View>
                         <FlatList data={this.state.serviceList} renderItem={({ item }) => (<Service serviceName={item.serviceName} serviceYear={item.yearRange} Checked={this.state.check[item.serviceID]} onChange={() => this.checkBox_Test(item.serviceID)} />)} keyExtractor={item => item.serviceID} />
-
                     </View>
                     <TouchableOpacity onPress={this.handleRequest.bind(this)} style={styles.buttonContainer}><GradientButton style={styles.button} title="NEXT" /></TouchableOpacity>
-
                 </SafeAreaView>
             </LinearGradient>
         );

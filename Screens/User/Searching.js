@@ -93,7 +93,7 @@ componentWillMount() {
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <View style={styles.messageContainer}>
                                     <View style={styles.TextContainer}>
-                                        <Text style={styles.bodyText}>Your Request Is Placed. totalServiceTime is {this.state.totalServiceTime} and totalcost is {this.state.totalCost}. We Will Notify You In A Moment</Text>
+                                        <Text style={styles.bodyText}>Your Request Is Placed. Total Service Time is {this.state.totalServiceTime} and Total Amount is {this.state.totalCost}. We Will Notify You In A Moment</Text>
                                         <TouchableOpacity onPress={() => this.props.navigation.navigate("UserHomeScreen")} style={styles.button}><GradientButton title="GO TO HOME" /></TouchableOpacity>
                                     </View>
                                 </View>
