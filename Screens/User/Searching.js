@@ -14,7 +14,7 @@ import { color } from '../../Assets/color';
 import firebase from 'react-native-firebase';
 import MapView, { Marker } from 'react-native-maps';
 import GradientButton from '../../Components/CustomButton';
-Geolocation.setRNConfiguration({ authorizationLevel: "auto" });
+Geolocation.setRNConfiguration({ authorizationLevel: "always" });
 class Searching extends Component {
     constructor(props) {
         super(props);
@@ -41,7 +41,7 @@ class Searching extends Component {
     time_convert(num) {
         const hours = Math.floor(num / 60);
         const minutes = num % 60;
-        return hours + " h " + minutes +" min";
+        return hours + " h " + minutes + " min";
     }
     requestingDriver() {
         console.log("HERE")

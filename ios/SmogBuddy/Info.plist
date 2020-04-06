@@ -108,5 +108,9 @@
 <!-- Include this only if you are planning to use the microphone for video recording -->
 <key>NSMicrophoneUsageDescription</key>
 <string>Your message to user when the microphone is accessed for the first time</string>
+
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>SmogBuddy requires background tracking for driver tracking.</string>
+
 </dict>
 </plist>
