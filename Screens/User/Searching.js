@@ -31,42 +31,52 @@ class Searching extends Component {
     }
 
 
-componentWillMount() {
-    Geolocation.getCurrentPosition(info => { this.setState({ lat: info.coords.latitude, lng: info.coords.longitude }) });
+    componentWillMount() {
+        Geolocation.getCurrentPosition(info => { this.setState({ lat: info.coords.latitude, lng: info.coords.longitude, midlat: info.coords.latitude, midlng: info.coords.longitude }) });
 
 
 
 
     }
+    time_convert(num) {
+        const hours = Math.floor(num / 60);
+        const minutes = num % 60;
+        return hours + " h " + minutes +" min";
+    }
     requestingDriver() {
         console.log("HERE")
         this.setState({ locationSelected: true })
         const user = firebase.auth().currentUser;
-        console.log("HERE>>>>")
-        fetch('https://smogbuddy.herokuapp.com/user/request', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                uid: user.uid,
-                serviceList: this.props.route.params.serviceList,
-                pickupLocation: { lat: this.state.midlat, lng: this.state.midlng },
-                images: this.props.route.params.images
+        console.log("HERE>>>>", this.state.lat, this.state.lng)
+        if (this.state.lat && this.state.lng) {
+            fetch('https://smogbuddy.herokuapp.com/user/request', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    uid: user.uid,
+                    serviceList: this.props.route.params.serviceList,
+                    pickupLocation: { lat: this.state.midlat, lng: this.state.midlng },
+                    images: this.props.route.params.images
 
-            }),
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson);
-                this.setState({
-                    placed: true,
-                    totalServiceTime: responseJson.totalServiceTime,
-                    totalCost: responseJson.totalCost,
+                }),
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    this.setState({
+                        placed: true,
+                        totalServiceTime: responseJson.totalServiceTime,
+                        totalCost: responseJson.totalCost,
 
+                    });
                 });
-            });
+        }
+        else {
+            alert("Location service is not working")
+        }
     }
 
     render() {
@@ -93,7 +103,7 @@ componentWillMount() {
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <View style={styles.messageContainer}>
                                     <View style={styles.TextContainer}>
-                                        <Text style={styles.bodyText}>Your Request Is Placed. Total Service Time is {this.state.totalServiceTime} and Total Amount is {this.state.totalCost}. We Will Notify You In A Moment</Text>
+                                        <Text style={styles.bodyText}>Your Request Is Placed. Total Service Time is {this.time_convert(this.state.totalServiceTime)} and Total Amount is ${this.state.totalCost}. We Will Notify You In A Moment</Text>
                                         <TouchableOpacity onPress={() => this.props.navigation.navigate("UserHomeScreen")} style={styles.button}><GradientButton title="GO TO HOME" /></TouchableOpacity>
                                     </View>
                                 </View>

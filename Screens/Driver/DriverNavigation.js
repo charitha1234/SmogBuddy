@@ -11,24 +11,10 @@ import {
 import MapView, { Marker } from 'react-native-maps';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { color } from '../../Assets/color';
-import BackgroundFetch from "react-native-background-fetch";
 import firebase from 'react-native-firebase';
 import Geolocation from '@react-native-community/geolocation';
 import MapViewDirections from 'react-native-maps-directions';
-import BackgroundTask from 'react-native-background-task'
 Geolocation.setRNConfiguration({ authorizationLevel: 'always' });
-BackgroundTask.define(() => {
-    console.log('Hello from a background task')
-    Geolocation.watchPosition(info => {
-        const lat = info.coords.latitude
-        const lng = info.coords.longitude
-        firebase.database().ref('location/' + uid).update({
-            lat,
-            lng,
-        });
-    }, e => console.log(e), { distanceFilter: 0 });
-    BackgroundTask.finish()
-})
 
 async function checkStatus() {
     const status = await BackgroundTask.statusAsync()

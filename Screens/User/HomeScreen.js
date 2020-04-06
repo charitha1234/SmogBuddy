@@ -36,7 +36,7 @@ function Home({ navigation }, props) {
     });
 
     return (
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
+        <View style={styles.container}>
             <Header title="SMOGBUDDY" navigation={navigation} />
             <View style={styles.content}>
                 <View style={styles.process}>
@@ -53,7 +53,7 @@ function Home({ navigation }, props) {
                     <TouchableOpacity onPress={()=>navigation.navigate("PreviousChecks")} style={styles.button}><GradientButton title="VIEW" /></TouchableOpacity>
                 </View>
             </View>
-        </LinearGradient>
+        </View>
     );
 
 }
@@ -84,12 +84,12 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: .2,
         shadowRadius: 8.30,
+        borderRadius:40,
         elevation: 5,
     },
     button: {
-        alignSelf: 'flex-end',
+        alignSelf: 'center',
         marginBottom: -20,
-        marginRight: -20,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

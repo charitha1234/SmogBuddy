@@ -45,7 +45,7 @@ function Profile({ navigation }) {
     return (
 
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>PROFILE</Text><View /></View>
+            <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>DRIVER</Text><View /></View>
             {
                 loading ?
                     <View style={{ flex: 1, justifyContent: 'center' }}><ActivityIndicator size={40} color={color.primaryBlack} /></View>

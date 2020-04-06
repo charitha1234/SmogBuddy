@@ -143,6 +143,16 @@ android {
         versionName "1.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
+    signingConfigs {
+        release {
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                storeFile file(MYAPP_UPLOAD_STORE_FILE)
+                storePassword MYAPP_UPLOAD_STORE_PASSWORD
+                keyAlias MYAPP_UPLOAD_KEY_ALIAS
+                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+            }
+        }
+    }
     splits {
         abi {
             reset()
@@ -167,6 +177,7 @@ android {
             // Caution! In production, you need to generate your own keystore file.
             // see https://facebook.github.io/react-native/docs/signed-apk-android.
             signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -188,7 +199,6 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-background-task')
     def multidex_version = "2.0.1"
     implementation 'androidx.multidex:multidex:$multidex_version'
     implementation fileTree(dir: "libs", include: ["*.jar"])

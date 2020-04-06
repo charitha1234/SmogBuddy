@@ -91,7 +91,6 @@ class OdometerRead extends Component {
                         <KeyboardAwareScrollView style={{flex:1}} showsVerticalScrollIndicator={false} contentContainerStyle={{height:400,justifyContent:'space-between',alignItems:'center'}}>
                         <View style={styles.formContainer}>
                             <TextBox title="METER READING" underline={true} />
-                            <TextBox title="FUEL" underline={true} />
                         </View>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate("Searching", { serviceList: this.props.route.params.serviceList, images: this.state.images })} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
                     </KeyboardAwareScrollView>

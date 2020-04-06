@@ -113,7 +113,7 @@ function EmployeeRegistration({ navigation, route }) {
                     <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
                         <Text style={styles.subText}>1/2</Text>
                         <TouchableOpacity style={styles.buttonContainer} onPress={() => {
-                            if (firstName == "" || lastName == "" || email == "") alert("Please Fill All Requires")
+                            if (firstName == "" || lastName == "" || email == ""|| !filePath) alert("Please Fill All Requires")
                             else navigation.navigate("EmployeeRegistration_2", { firstName: firstName, lastName: lastName, email: email, role: role, date: date,imageUri:filePath.uri })
                         }}><GradientButton style={styles.button} /></TouchableOpacity>
                     </View>

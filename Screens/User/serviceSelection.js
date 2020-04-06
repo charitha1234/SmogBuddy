@@ -61,7 +61,7 @@ class ServiceSelection extends Component {
                 if (this.state.check[sId]) {
                     for(const service of this.state.serviceList){
                         if(sId==service.serviceID){
-                            totalTime+=service.averageTime
+                            totalTime+=parseInt(service.averageTime)
                         }
                     }
                     this.state.selectedList.push({ serviceID: sId })
