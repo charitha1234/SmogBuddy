@@ -14,7 +14,7 @@ function OngoingProcesses(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={styles.ProcessContainer}>
             <View style={styles.statusContainer}>
-    <Text style={styles.processNameText}>{props.fname} {props.lname}</Text>
+                <Text style={styles.processNameText}>{props.fname} {props.lname}</Text>
                 <Text style={styles.processStatusText}>{props.status}</Text>
             </View>
             <View style={styles.EstimatedTimeContainer}>
@@ -26,30 +26,30 @@ function OngoingProcesses(props) {
 }
 
 class AdminHome extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state={
-            processList:null,
+        this.state = {
+            processList: null,
             isFetching: false,
         }
     }
-    
-    getApiData(){
+
+    getApiData() {
 
         fetch('https://smogbuddy.herokuapp.com/admin/process')
-        .then((res) => res.json())
-        .then((resJson) => {
-            this.setState({processList:resJson})
-            this.setState({ isFetching: false });
-            
-        }
-        
-    )
+            .then((res) => res.json())
+            .then((resJson) => {
+                this.setState({ processList: resJson })
+                this.setState({ isFetching: false });
+
+            }
+
+            )
     }
     onRefresh() {
-        this.setState({ isFetching: true }, function() { this.getApiData() });
-     }
-     componentDidMount(){
+        this.setState({ isFetching: true }, function () { this.getApiData() });
+    }
+    componentDidMount() {
         this.onRefresh()
     }
 
@@ -58,10 +58,16 @@ class AdminHome extends Component {
             <View style={styles.container}>
                 <Header title="SMOGBUDDY" navigation={this.props.navigation} />
                 <View style={styles.HeaderTextContainer}><Text style={styles.HeaderText}>Ongoing Processes</Text></View>
-                <FlatList data={this.state.processList}
-                onRefresh={() => this.onRefresh()}
-                refreshing={this.state.isFetching} 
-                renderItem={({ item }) => (<OngoingProcesses onPress={()=>this.props.navigation.navigate("Process",{details:item})} status={item.status} fname={item.user.firstName} lname={item.user.lastName} time={item.totalServiceTime} />)} keyExtractor={item => item.UserId} />
+                {
+                    this.state.processList ?
+                        <FlatList data={this.state.processList}
+                            onRefresh={() => this.onRefresh()}
+                            refreshing={this.state.isFetching}
+                            renderItem={({ item }) => (<OngoingProcesses onPress={() => this.props.navigation.navigate("Process", { details: item })} status={item.status} fname={item.user.firstName} lname={item.user.lastName} time={item.totalServiceTime} />)} keyExtractor={item => item.UserId} />
+                        :
+                        <Text style={styles.processNameText}>No Ongoing Processes</Text>
+                }
+
             </View>
         );
     }
@@ -87,7 +93,7 @@ const styles = StyleSheet.create({
     ProcessContainer: {
         flexDirection: 'row',
         marginTop: 10,
-        marginBottom:10,
+        marginBottom: 10,
         height: 100,
         width: '100%',
         justifyContent: 'center',
