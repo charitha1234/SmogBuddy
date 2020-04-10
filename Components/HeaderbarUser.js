@@ -14,11 +14,11 @@ function HeaderBar(props) {
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.lightBlue]} style={styles.container}>
                 <View style={styles.headerBar}>
-                    <TouchableOpacity style={{flex:1}} onPress={()=>props.navigation.openDrawer()} >
+                    <TouchableOpacity style={{flex:0.5,height:'100%',justifyContent:'center'}} onPress={()=>props.navigation.openDrawer()} >
                         <Ionicons style={{color:color.primaryWhite}}  name="ios-menu" size={30} />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>{props.title}</Text>
-                    <View style={{flex:1,flexDirection:'row', justifyContent:'space-evenly'}}>
+                    <View style={{flex:0.5,flexDirection:'row', justifyContent:'space-evenly'}}>
     
                     </View>
                 </View>

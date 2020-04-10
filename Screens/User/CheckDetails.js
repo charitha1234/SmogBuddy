@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
@@ -18,15 +18,15 @@ function ServiceList(props) {
             <View style={styles.statusContainer}>
                 <Text style={styles.driverNameText}>{props.ServiceName}</Text>
                 {
-                    props.status=="FAILED"?
-                    <Text style={styles.dateText}>{props.status}:{props.failedPart}</Text>:
-                    <Text style={styles.dateText}>{props.status}</Text>
-                    
-                
+                    props.status == "FAILED" ?
+                        <Text style={styles.dateText}>{props.status}:{props.failedPart}</Text> :
+                        <Text style={styles.dateText}>{props.status}</Text>
+
+
 
                 }
-                
-                
+
+
             </View>
             <View style={styles.CostContainer}>
                 <Text style={styles.Costlabel}>Cost</Text>
@@ -36,14 +36,20 @@ function ServiceList(props) {
     )
 }
 
-function Process({navigation,route}) {
-    const {details}=route.params;
+function Process({ navigation, route }) {
+    const { details } = route.params;
 
     return (
         <View style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={()=>navigation.goBack()} style={styles.icon}><Ionicons  name="ios-close" size={40}/></TouchableOpacity><Text style={styles.headerText}>INSPECTIOIN HISTORY</Text><View/></View>
-        <FlatList data={details.serviceList} renderItem={({item})=>(<ServiceList ServiceName={item.serviceName} failedPart={item.partName} status={item.status} cost={item.cost}/>)}/>
-        
+            <View style={styles.headerContainer}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}>
+                    <Ionicons name="ios-close" size={40} />
+                </TouchableOpacity>
+                <View><Text style={styles.headerText}>INSPECTIOIN HISTORY</Text></View>
+                <View />
+            </View>
+            <FlatList data={details.serviceList} renderItem={({ item }) => (<ServiceList ServiceName={item.serviceName} failedPart={item.partName} status={item.status} cost={item.cost} />)} />
+
         </View>
     );
 
@@ -56,9 +62,9 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     headerContainer: {
-        height:100,
-        width:'100%',
-        flexDirection:'row',
+        height: 100,
+        width: '100%',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
@@ -67,21 +73,21 @@ const styles = StyleSheet.create({
         fontSize: 20,
         letterSpacing: 2,
     },
-    
-    icon:{
-        marginRight:-20,
-        marginLeft:20
+
+    icon: {
+        marginRight: -20,
+        marginLeft: 20
     },
     ProcessContainer: {
         flexDirection: 'row',
         marginTop: 1,
-        marginBottom:1,
+        marginBottom: 1,
         height: 100,
         width: '100%',
         justifyContent: 'center',
-        backgroundColor:color.primaryWhite,
+        backgroundColor: color.primaryWhite,
 
-        borderBottomWidth:0.2
+        borderBottomWidth: 0.2
 
     },
     driverNameText: {

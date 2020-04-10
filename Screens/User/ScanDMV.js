@@ -22,7 +22,7 @@ class ScanDMV extends Component {
             uId: firebase.auth().currentUser.uid,
             loading: false,
             before80: false,
-            successfull: false,
+            successfull: true,
             flashMode: RNCamera.Constants.FlashMode.auto,
         };
 
@@ -204,6 +204,7 @@ const styles = StyleSheet.create({
     },
     headerTextContainer:{
         height:100,
+        zIndex:1,
         backgroundColor:color.primaryWhite,
         width:'100%',
         marginBottom:10,

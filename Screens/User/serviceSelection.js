@@ -8,7 +8,7 @@ import {
     FlatList,
 
 } from "react-native";
-import CheckBox from '@react-native-community/checkbox';
+import CheckBox from 'react-native-check-box'
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../../Assets/color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -23,7 +23,7 @@ function Service(props) {
                 <Text style={styles.serviceNameText}>{props.serviceYear}</Text>
             </View>
             <View style={{ flex: 0.25 }}>
-                <CheckBox onChange={props.onChange} value={props.Checked} />
+                <CheckBox onClick={props.onChange} isChecked={props.Checked} />
             </View>
         </View>
 
@@ -40,12 +40,12 @@ class ServiceSelection extends Component {
             checkAll: false,
             uid: null,
             selectedList: [],
-            totalTime:0,
+            totalTime: 0,
         }
 
     }
 
-    isEmpty=(list)=> {
+    isEmpty = (list) => {
         let x;
         for (x in list) {
             if (list[x]) return false
@@ -53,26 +53,26 @@ class ServiceSelection extends Component {
         return true
     }
     handleRequest = () => {
-        const list=this.state.check
+        const list = this.state.check
         if (!this.isEmpty(list)) {
             this.setState({ selectedList: [] });
-            let totalTime=0;
+            let totalTime = 0;
             for (const sId in this.state.check) {
                 if (this.state.check[sId]) {
-                    for(const service of this.state.serviceList){
-                        if(sId==service.serviceID){
-                            totalTime+=parseInt(service.averageTime)
+                    for (const service of this.state.serviceList) {
+                        if (sId == service.serviceID) {
+                            totalTime += parseInt(service.averageTime)
                         }
                     }
                     this.state.selectedList.push({ serviceID: sId })
                 }
             }
-            console.log("Time",totalTime)
-            console.log("TOTALTIME",new Date(new Date().getTime() + totalTime*60000).getHours())
-            if(new Date(new Date().getTime() + totalTime*60000).getHours()>=17){
+            console.log("Time", totalTime)
+            console.log("TOTALTIME", new Date(new Date().getTime() + totalTime * 60000).getHours())
+            if (new Date(new Date().getTime() + totalTime * 60000).getHours() >= 17) {
                 alert("Service Station Closes At 5 PM")
             }
-            else{
+            else {
                 this.props.navigation.navigate("ScanDMV", { serviceList: this.state.selectedList })
             }
         }
@@ -119,7 +119,14 @@ class ServiceSelection extends Component {
                         <Text style={styles.headerText}>SELECT SERVICES</Text>
                     </View>
                     <View style={styles.serviceListContainer}>
-                        <View style={styles.serviceContainer}><Text style={styles.selectAllText}>SELECT ALL</Text><CheckBox value={this.state.checkAll} onChange={this.CheckAll} /></View>
+                        <View style={styles.serviceContainer}>
+                            <View style={{ flex: 2 }}>
+                                <Text style={styles.selectAllText}>SELECT ALL</Text>
+                            </View>
+                            <View style={{ flex: 0.25 }}>
+                                <CheckBox isChecked={this.state.checkAll} onClick={this.CheckAll} />
+                            </View>
+                        </View>
                         <FlatList data={this.state.serviceList} renderItem={({ item }) => (<Service serviceName={item.serviceName} serviceYear={item.yearRange} Checked={this.state.check[item.serviceID]} onChange={() => this.checkBox_Test(item.serviceID)} />)} keyExtractor={item => item.serviceID} />
                     </View>
                     <TouchableOpacity onPress={this.handleRequest.bind(this)} style={styles.buttonContainer}><GradientButton style={styles.button} title="NEXT" /></TouchableOpacity>
