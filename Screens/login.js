@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
     View,
     Text,
@@ -6,7 +6,8 @@ import {
     TouchableOpacity,
     SafeAreaView,
     ActivityIndicator,
-    Keyboard
+    Keyboard,
+    TouchableWithoutFeedback
 } from "react-native";
 
 import LinearGradient from 'react-native-linear-gradient';
@@ -18,10 +19,10 @@ import TextBox from '../Components/textboxLogin';
 import firebase from 'react-native-firebase';
 
 async function authentication(username, password, navigation, setloading) {
-    
+
     firebase.auth().signInWithEmailAndPassword(username, password)
         .then((res) => {
-        
+
         })
         .catch((e) => {
             setloading(false)
@@ -41,7 +42,8 @@ function Login({ navigation }) {
     const [passwordError, setpasswordError] = useState(null)
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
-
+    const textBox1 = useRef(null)
+    const textBox2 = useRef(null)
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
@@ -68,33 +70,35 @@ function Login({ navigation }) {
                     <KeyboardAwareScrollView
                         contentContainerStyle={styles.container}
                     >
-                            <Text style={styles.watermarkText}>SMOGBUDDY</Text>
-                            {
-                                isKeyboardVisible ?
-                                    null :
+                        <Text style={styles.watermarkText}>SMOGBUDDY</Text>
+                        {
+                            isKeyboardVisible ?
+                                null :
 
-                                    <Logo style={styles.Logo} />
-                            }
-                            <View style={[styles.LoginForm,usernameError?{borderColor:color.failedRed,borderWidth:3}:null]}>
-                                <TextBox onFocus={() => setonFocus(true)} value={username} error={usernameError} onBlur={() => setonFocus(false)} onChangeText={text => {
+                                <Logo style={styles.Logo} />
+                        }
+                        <TouchableWithoutFeedback onPress={() => textBox1.current.focus()}>
+                            <View style={[styles.LoginForm, usernameError ? { borderColor: color.failedRed, borderWidth: 3 } : null]}>
+                                <TextBox sendref={textBox1} onFocus={() => setonFocus(true)} value={username} error={usernameError} onBlur={() => setonFocus(false)} onChangeText={text => {
                                     setusernameError(false)
                                     setusername(text);
-                                }} title="USERNAME" icon="md-person" /></View>
-                            <View style={[styles.LoginForm,passwordError?{borderColor:color.failedRed,borderWidth:3}:null]}><TextBox error={passwordError} value={password} onFocus={() => setonFocus(true)} onBlur={() => setonFocus(false)} onChangeText={text => {
+                                }} title="USERNAME" icon="md-person" /></View></TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={() => textBox2.current.focus()}><View style={[styles.LoginForm, passwordError ? { borderColor: color.failedRed, borderWidth: 3 } : null]}>
+                            <TextBox sendref={textBox2} error={passwordError} value={password} onFocus={() => setonFocus(true)} onBlur={() => setonFocus(false)} onChangeText={text => {
                                 setpasswordError(false)
                                 setpassword(text);
-                            }} title="PASSWORD" icon="md-key" /></View>
+                            }} title="PASSWORD" icon="md-key" /></View></TouchableWithoutFeedback>
                         <View style={styles.button}>
                             <TouchableOpacity style={styles.shadowButton} onPress={() => {
 
-                                
-                                if(username && password) {
+
+                                if (username && password) {
                                     setloading(true);
                                     authentication(username, password, navigation, setloading)
                                 }
                                 else {
-                                    if(!username)setusernameError("Username is empty")
-                                    if(!password)setpasswordError("Password is empty")
+                                    if (!username) setusernameError("Username is empty")
+                                    if (!password) setpasswordError("Password is empty")
                                 }
                             }}>
                                 <GradientButton title="LOGIN" />
@@ -103,15 +107,15 @@ function Login({ navigation }) {
                         {
                             isKeyboardVisible ?
                                 null :
-                                <View style={{  height:70 }}>
+                                <View style={{ height: 70 }}>
                                     <TouchableOpacity onPress={() => { navigation.navigate("NewUser") }} style={{ position: 'absolute', bottom: "5%" }}><Text style={styles.bottomText}>NEW ACCOUNT</Text></TouchableOpacity>
                                 </View>
                         }
 
                     </KeyboardAwareScrollView>
                     :
-                    <View style={{flex:1,justifyContent:'center'}}>
-                    <ActivityIndicator size={40} color={color.primaryBlack} />
+                    <View style={{ flex: 1, justifyContent: 'center' }}>
+                        <ActivityIndicator size={40} color={color.primaryBlack} />
                     </View>
                 }
             </SafeAreaView>
@@ -128,7 +132,7 @@ export default Login;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent:'space-between'
+        justifyContent: 'space-between'
     },
     Logo: {
         alignSelf: 'center',
@@ -169,7 +173,7 @@ const styles = StyleSheet.create({
     },
     shadowButton: {
         backgroundColor: 'transparent',
-        borderRadius:35,
+        borderRadius: 35,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -187,7 +191,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         backgroundColor: 'white',
         width: 300,
-        height: 100,
+        height: 80,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
