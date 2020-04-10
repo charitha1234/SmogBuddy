@@ -9,7 +9,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 function HomeDrawer({navigation},props){
-    const [imageUrl, setimageUrl] = useState(null)
+    const [imageUrl, setimageUrl] = useState("")
     useEffect(()=>{
         const user=firebase.auth().currentUser;
         fetch('https://smogbuddy.herokuapp.com/user/'+user.uid)

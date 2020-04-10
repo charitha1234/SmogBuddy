@@ -17,7 +17,7 @@ function Profile({ navigation }) {
     const [loading, setloading] = useState(true)
     const [name, setname] = useState(null)
     const [licenseNumber, setlicenseNumber] = useState(null)
-    const [imageUrl, setimageUrl] = useState(null)
+    const [imageUrl, setimageUrl] = useState("")
     useEffect(() => {
         const user = firebase.auth().currentUser;
         console.log(user.uid)

@@ -27,6 +27,7 @@ function OngoingProcesses(props) {
 
 class AdminHome extends Component {
     constructor(props) {
+        
         super(props);
         this.state = {
             processList: null,

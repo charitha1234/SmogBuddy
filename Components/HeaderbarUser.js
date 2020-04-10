@@ -13,7 +13,6 @@ function HeaderBar(props) {
 
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.lightBlue]} style={styles.container}>
-            <SafeAreaView style={{ flex: 1 }}>
                 <View style={styles.headerBar}>
                     <TouchableOpacity style={{flex:1}} onPress={()=>props.navigation.openDrawer()} >
                         <Ionicons style={{color:color.primaryWhite}}  name="ios-menu" size={30} />
@@ -23,7 +22,6 @@ function HeaderBar(props) {
     
                     </View>
                 </View>
-            </SafeAreaView>
         </LinearGradient>
     );
 
