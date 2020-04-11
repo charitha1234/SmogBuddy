@@ -11,6 +11,7 @@ import { color } from '../../Assets/color';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import UsersList from '../../data/Users';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { SearchBar } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import firebase from "react-native-firebase";
@@ -80,7 +81,7 @@ class Sales extends Component {
     };
     render() {
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <View style={styles.headerContainer}>
                     <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity>
                     <Text style={styles.headerText}>SALES</Text>
@@ -138,7 +139,7 @@ class Sales extends Component {
                     </View>
                 </Modal>
 
-            </View>
+            </SafeAreaView>
         );
     }
 }

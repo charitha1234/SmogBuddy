@@ -49,7 +49,6 @@ function Process({ navigation, route }) {
                 <View />
             </View>
             <FlatList data={details.serviceList} renderItem={({ item }) => (<ServiceList ServiceName={item.serviceName} failedPart={item.partName} status={item.status} cost={item.cost} />)} />
-
         </View>
     );
 

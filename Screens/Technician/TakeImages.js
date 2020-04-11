@@ -9,6 +9,7 @@ import {
 import { RNCamera } from 'react-native-camera';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { color } from '../../Assets/color';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import firebase from 'react-native-firebase';
 
 const uuidv1 = require('uuid/v1');
@@ -65,7 +66,7 @@ class TakeImages extends Component {
     render() {
 
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                         <View style={styles.headerTextContainer}>
                             <Text style={styles.headerText}>TAKE A PICTURES OF THE CONDITION</Text>
                         </View>
@@ -93,7 +94,7 @@ class TakeImages extends Component {
                                 :
                                 null
                         }
-            </View>
+            </SafeAreaView>
         );
     }
 

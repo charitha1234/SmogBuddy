@@ -9,6 +9,7 @@ import {
 import { color } from '../../Assets/color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
+import { SafeAreaView } from 'react-native-safe-area-context';
 function CheckList(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={[styles.ProcessContainer,props.status=="ONGOING"?{backgroundColor:color.lightGreen}:{backgroundColor:color.primaryWhite}]}>
@@ -42,11 +43,11 @@ function PreviousChecks(props) {
     },[])
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}><TouchableOpacity onPress={() => props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>ALL CHECKS</Text><View /></View>
             <FlatList data={previousChecks} renderItem={({item})=>(<CheckList onPress={()=>props.navigation.navigate("CheckDetails",{details:item})} status={item.status} date={item.date} cost={item.totalCost}/>)}/>
             
-        </View>
+        </SafeAreaView>
     );
 
 }

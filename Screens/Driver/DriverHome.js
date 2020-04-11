@@ -11,12 +11,13 @@ import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
 import firebase from 'react-native-firebase';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 async function notification() {
 
     const notificationOpen = await firebase.notifications().getInitialNotification();
     if (notificationOpen) {
-        
+
         return notificationOpen.notification['data'];
     }
 }
@@ -24,49 +25,36 @@ async function notification() {
 function Home({ navigation }, props) {
     useEffect(() => {
         const user = firebase.auth().currentUser;
-        fetch('https://smogbuddy.herokuapp.com/driver/status/'+user.uid)
-        .then((res)=>res.json())
-        .then((resJson)=>{
-            console.log("driver res",resJson)
-            if (resJson.isDriverAssign) {
+        fetch('https://smogbuddy.herokuapp.com/driver/status/' + user.uid)
+            .then((res) => res.json())
+            .then((resJson) => {
+                console.log("driver res", resJson)
+                if (resJson.isDriverAssign) {
 
-                navigation.navigate("DriverRequest", { userUid: resJson.userUid, userPickupLocation: resJson.pickupLocation,status:resJson.status,stationLocation:resJson.shopLocation });
-            }
-        })
+                    navigation.navigate("DriverRequest", { userUid: resJson.userUid, userPickupLocation: resJson.pickupLocation, status: resJson.status, stationLocation: resJson.shopLocation });
+                }
+            })
         notification().then(data => {
-            navigation.navigate("DriverRequest", { userUid: data.userUid, userPickupLocation: data.userPickupLocation,status:data.status,stationLocation:data.shopLocation });
-            
+            navigation.navigate("DriverRequest", { userUid: data.userUid, userPickupLocation: data.userPickupLocation, status: data.status, stationLocation: data.shopLocation });
+
         })
         firebase.notifications().onNotification((notification) => {
             if (notification.data.status == 'ASSIGN_CUSTOMER') {
-                const location=JSON.parse(notification.data.userPickupLocation)
-                navigation.navigate("DriverRequest", { userUid: notification.data.userUid,status:notification.data.status, userPickupLocation: location,stationLocation:notification.data.shopLocation });
+                const location = JSON.parse(notification.data.userPickupLocation)
+                navigation.navigate("DriverRequest", { userUid: notification.data.userUid, status: notification.data.status, userPickupLocation: location, stationLocation: notification.data.shopLocation });
             }
         });
-    
-    },[]);
 
-    
+    }, []);
+
+
     return (
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Header title="SMOGBUDDY" navigation={navigation} />
             <View style={styles.content}>
-                <View style={styles.process}>
-                    <View style={styles.processContent}>
-                        <Text style={styles.titleText}>DRIVER PROFILE</Text>
-
-                    </View>
-                    <TouchableOpacity onPress={() => navigation.navigate("DriverDriverProfile")} style={styles.button}><GradientButton title="VIEW" /></TouchableOpacity>
-                </View>
-                <View style={styles.process}>
-                    <View style={styles.processContent}>
-                        <Text style={styles.titleText}>VEHICLE PROFILE</Text>
-
-                    </View>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("DriverVehicleProfile")} ><GradientButton title="VIEW" /></TouchableOpacity>
-                </View>
+                <Text style={styles.titleText}>No Customer Has Assigned</Text>
             </View>
-        </LinearGradient>
+        </SafeAreaView>
     );
 
 }
@@ -88,13 +76,15 @@ const styles = StyleSheet.create({
     },
     process: {
         backgroundColor: color.primaryWhite,
-        height: 150,
+        height: 100,
         width: 300,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
             height: 6,
         },
+        borderRadius:50,
+
         shadowOpacity: .2,
         shadowRadius: 8.30,
         elevation: 5,
@@ -115,7 +105,10 @@ const styles = StyleSheet.create({
     },
     processContent: {
         flex: 1,
+        justifyContent:'center',
+        alignItems:'center',
         margin: 20,
+        
     },
     titleText: {
         fontFamily: 'Montserrat-SemiBold',

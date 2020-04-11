@@ -8,6 +8,7 @@ import {
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 function Process({navigation,route}) {
 const {details}=route.params;
@@ -35,7 +36,7 @@ useEffect(() => {
    
 })
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}><TouchableOpacity onPress={()=>navigation.goBack()} style={styles.icon}><Ionicons  name="ios-close" size={40}/></TouchableOpacity><Text style={styles.headerText}>PROCESS</Text><TouchableOpacity onPress={()=>navigation.navigate("TrackDriver",{userId:details.userId})}><Ionicons style={{marginRight:10}} name="md-navigate" size={40} color={color.primaryBlue}/></TouchableOpacity></View>
             <View style={styles.container}>
                 <View style={styles.formContainer}>
@@ -47,7 +48,7 @@ useEffect(() => {
                     <TextBox title="CUSTOMER TELEPHONE NO." value={customerTelephoneNo} disabled={true} />
                 </View>
             </View>
-        </View>
+        </SafeAreaView>
     );
 
 }

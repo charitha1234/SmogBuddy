@@ -14,6 +14,7 @@ import TextBox from '../../Components/textBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import firebase from 'react-native-firebase';
 class ScanDMV extends Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class ScanDMV extends Component {
             uId: firebase.auth().currentUser.uid,
             loading: false,
             before80: false,
-            successfull: true,
+            successfull: false,
             flashMode: RNCamera.Constants.FlashMode.auto,
         };
 
@@ -43,7 +44,7 @@ class ScanDMV extends Component {
                 }
             }
             if (before80) {
-                this.setState({loading:false})
+                this.setState({ loading: false })
                 let vin = scanResult.data.substr(2, 10);
                 let plate = scanResult.data.substr(20, 7);
                 console.log(vin);
@@ -55,22 +56,22 @@ class ScanDMV extends Component {
                 fetch('https://smogbuddy.herokuapp.com/vehicle/' + this.state.uId + '?plateNumber=' + plate + '&vin=' + vin)
                     .then((response) => response.json())
                     .then((responseJson) => {
-                            this.setState({
-                                loading: false,
-                                year: responseJson.year.toString(),
-                                make: responseJson.make,
-                                model:responseJson.model,
-                                engine:responseJson.enginCapacity,
-                            
+                        this.setState({
+                            loading: false,
+                            year: responseJson.year.toString(),
+                            make: responseJson.make,
+                            model: responseJson.model,
+                            engine: responseJson.enginCapacity,
 
 
-                            });
+
+                        });
 
                     })
                     .catch((error) => {
                         console.error(error);
                     });
-                
+
             }
 
         }
@@ -79,54 +80,56 @@ class ScanDMV extends Component {
     render() {
 
         return (
-            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-                {!this.state.successfull ?
-                <>
-                <View style={styles.headerTextContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-arrow-back" size={40} /></TouchableOpacity><Text style={styles.scanScreenMessage}>SCAN YOUR DMV</Text><View/></View>
-                    <RNCamera
-                        ref={ref => {
-                            this.camera = ref;
-                        }}
-                        defaultTouchToFocus
-                        mirrorImage={false}
-                        onBarCodeRead={this.onBarCodeRead.bind(this)}
-                        onFocusChanged={() => { }}
-                        onZoomChanged={() => { }}
-                        permissionDialogTitle={'Permission to use camera'}
-                        permissionDialogMessage={'We need your permission to use your camera phone'}
-                        style={styles.preview}
-                    ></RNCamera>
-                    </>
-                    :
-                    <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{alignItems:'center', height: 700 }}>
-                        <View style={styles.headerTextContainer}>
-                        <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-arrow-back" size={40} /></TouchableOpacity>
-
-                        <Text style={styles.headerText}>Vehicle Details</Text>
-                        </View>
-                        {!this.state.loading ?
+            <SafeAreaView style={{ flex: 1 }}>
+                <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
+                    {!this.state.successfull ?
                         <>
-                            {
-                                this.state.before80?<Text style={styles.before80Message}>Your vehicle is older than 1980 please fill below form</Text>:null
-                            }
-                            
-                            <View style={styles.formContainer}>
-                                <TextBox title="YEAR" underline={true} disable={true} value={this.state.year} />
-                                <TextBox title="MAKE" underline={true} disable={true} value={this.state.make} />
-                                <TextBox title="MODEL" underline={true} disable={true} value={this.state.model} />
-                                <TextBox title="ENGINE SIZE" underline={true} disable={true} value={this.state.engine} />
-                            </View>
-                            </>
-                            :
-                            <View style={styles.formContainer}>
-                                <ActivityIndicator size={40} color="black" />
-                            </View>
-                        }
-                        <TouchableOpacity onPress={() =>{!this.state.loading? this.props.navigation.navigate("OdometerRead",{serviceList:this.props.route.params.serviceList}):null}} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
-                    </KeyboardAwareScrollView>
-                }
+                            <View style={styles.headerTextContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-arrow-back" size={40} /></TouchableOpacity><Text style={styles.scanScreenMessage}>SCAN YOUR DMV</Text><View /></View>
+                            <RNCamera
+                                ref={ref => {
+                                    this.camera = ref;
+                                }}
+                                defaultTouchToFocus
+                                mirrorImage={false}
+                                onBarCodeRead={this.onBarCodeRead.bind(this)}
+                                onFocusChanged={() => { }}
+                                onZoomChanged={() => { }}
+                                permissionDialogTitle={'Permission to use camera'}
+                                permissionDialogMessage={'We need your permission to use your camera phone'}
+                                style={styles.preview}
+                            ></RNCamera>
+                        </>
+                        :
+                        <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ alignItems: 'center', height: 700 }}>
+                            <View style={styles.headerTextContainer}>
+                                <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-arrow-back" size={40} /></TouchableOpacity>
 
-            </LinearGradient>
+                                <Text style={styles.headerText}>Vehicle Details</Text>
+                            </View>
+                            {!this.state.loading ?
+                                <>
+                                    {
+                                        this.state.before80 ? <Text style={styles.before80Message}>Your vehicle is older than 1980 please fill below form</Text> : null
+                                    }
+
+                                    <View style={styles.formContainer}>
+                                        <TextBox title="YEAR" underline={true} disable={true} value={this.state.year} />
+                                        <TextBox title="MAKE" underline={true} disable={true} value={this.state.make} />
+                                        <TextBox title="MODEL" underline={true} disable={true} value={this.state.model} />
+                                        <TextBox title="ENGINE SIZE" underline={true} disable={true} value={this.state.engine} />
+                                    </View>
+                                </>
+                                :
+                                <View style={styles.formContainer}>
+                                    <ActivityIndicator size={40} color="black" />
+                                </View>
+                            }
+                            <TouchableOpacity onPress={() => { !this.state.loading ? this.props.navigation.navigate("OdometerRead", { serviceList: this.props.route.params.serviceList }) : null }} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
+                        </KeyboardAwareScrollView>
+                    }
+
+                </LinearGradient>
+            </SafeAreaView>
         );
     }
 
@@ -141,7 +144,7 @@ const styles = StyleSheet.create({
 
     },
     preview: {
-        height:'60%',
+        height: '60%',
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
@@ -161,13 +164,13 @@ const styles = StyleSheet.create({
 
         elevation: 5,
     },
-    before80Message:{
+    before80Message: {
         fontFamily: 'Montserrat-Regular',
         fontSize: 20,
-        textAlign:'center',
+        textAlign: 'center',
         letterSpacing: 2,
         color: color.primaryBlack,
-        marginBottom:10
+        marginBottom: 10
     },
     headerText: {
         margin: 30,
@@ -202,16 +205,16 @@ const styles = StyleSheet.create({
 
         elevation: 5,
     },
-    headerTextContainer:{
-        height:100,
-        zIndex:1,
-        backgroundColor:color.primaryWhite,
-        width:'100%',
-        marginBottom:10,
-        flexDirection:'row',
+    headerTextContainer: {
+        height: 100,
+        zIndex: 1,
+        backgroundColor: color.primaryWhite,
+        width: '100%',
+        marginBottom: 10,
+        flexDirection: 'row',
 
-        justifyContent:'space-evenly',
-        alignItems:'center'
+        justifyContent: 'space-evenly',
+        alignItems: 'center'
 
     }
 });

@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -8,6 +8,7 @@ import {
 import Header from '../../Components/HeaderbarUser';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { color } from '../../Assets/color';
 import firebase from 'react-native-firebase';
 import GradientButton from '../../Components/CustomButton';
@@ -27,33 +28,30 @@ function Home({ navigation }, props) {
 
             }
         })
-    },[]);
+    }, []);
 
     firebase.notifications().onNotification((notification) => {
         if (notification.data.status == 'ASSIGN_CUSTOMER') {
-            
+
         }
     });
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Header title="SMOGBUDDY" navigation={navigation} />
             <View style={styles.content}>
                 <View style={styles.process}>
-                    <View style={styles.processContent}>
+                    <TouchableOpacity onPress={() => navigation.navigate("RequestProcess")} style={styles.processContent}>
                         <Text style={styles.titleText}>SMOG CHECK REQUEST</Text>
-                    </View>
-                    <TouchableOpacity onPress={() => navigation.navigate("RequestProcess")} style={styles.button}><GradientButton title="REQUEST" /></TouchableOpacity>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.process}>
-                    <View style={styles.processContent}>
+                    <TouchableOpacity onPress={() => navigation.navigate("PreviousChecks")} style={styles.processContent}>
                         <Text style={styles.titleText}>PREVIOUS SMOG CHECK</Text>
-
-                    </View>
-                    <TouchableOpacity onPress={()=>navigation.navigate("PreviousChecks")} style={styles.button}><GradientButton title="VIEW" /></TouchableOpacity>
+                    </TouchableOpacity>
                 </View>
             </View>
-        </View>
+        </SafeAreaView>
     );
 
 }
@@ -75,7 +73,7 @@ const styles = StyleSheet.create({
     },
     process: {
         backgroundColor: color.primaryWhite,
-        height: 150,
+        height: 100,
         width: 300,
         shadowColor: "#000",
         shadowOffset: {
@@ -84,7 +82,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: .2,
         shadowRadius: 8.30,
-        borderRadius:40,
+        borderRadius: 50,
         elevation: 5,
     },
     button: {
@@ -102,12 +100,13 @@ const styles = StyleSheet.create({
     },
     processContent: {
         flex: 1,
-        margin:20,
+        justifyContent:'center',
+        alignItems:'center'
     },
     titleText: {
         fontFamily: 'Montserrat-SemiBold',
         fontSize: 15,
         letterSpacing: 3,
-        opacity:0.6
+        opacity: 0.6
     }
 });

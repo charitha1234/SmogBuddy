@@ -4,13 +4,13 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    SafeAreaView,
     FlatList,
 
 } from "react-native";
 import CheckBox from 'react-native-check-box'
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../../Assets/color';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import GradientButton from '../../Components/CustomButton';
 import firebase from 'react-native-firebase';
@@ -112,8 +112,8 @@ class ServiceSelection extends Component {
     }
     render() {
         return (
-            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-                <SafeAreaView style={styles.container}>
+            <SafeAreaView style={{ flex: 1 }}>
+                <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
                     <View style={styles.headerTextContainer}>
                         <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity>
                         <Text style={styles.headerText}>SELECT SERVICES</Text>
@@ -130,8 +130,8 @@ class ServiceSelection extends Component {
                         <FlatList data={this.state.serviceList} renderItem={({ item }) => (<Service serviceName={item.serviceName} serviceYear={item.yearRange} Checked={this.state.check[item.serviceID]} onChange={() => this.checkBox_Test(item.serviceID)} />)} keyExtractor={item => item.serviceID} />
                     </View>
                     <TouchableOpacity onPress={this.handleRequest.bind(this)} style={styles.buttonContainer}><GradientButton style={styles.button} title="NEXT" /></TouchableOpacity>
-                </SafeAreaView>
-            </LinearGradient>
+                </LinearGradient>
+            </SafeAreaView>
         );
     }
 }

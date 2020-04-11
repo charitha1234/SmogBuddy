@@ -7,6 +7,7 @@ import {
     TouchableOpacity
 } from "react-native";
 import { color } from '../../Assets/color';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import OngoingProcessList from '../../data/OngoingProcesses';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 function Request(props) {
@@ -53,13 +54,13 @@ class Requests extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                <View style={styles.headerContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>REQUESTS</Text><View /></View>
                <FlatList data={this.state.processList}
                 onRefresh={() => this.onRefresh()}
                 refreshing={this.state.isFetching} 
                 renderItem={({ item }) => item.status=="PENDING"? (<Request onPress={()=>this.props.navigation.navigate("AssignEmployees",{details:item})} status={item.status} fname={item.user.firstName} lname={item.user.lastName} time={item.totalServiceTime} />):null} keyExtractor={item => item.UserId} />
-            </View>
+            </SafeAreaView>
         );
     }
 }

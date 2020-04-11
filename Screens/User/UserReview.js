@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import firebase from 'react-native-firebase';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/longButton';
@@ -38,7 +39,7 @@ function Review(props) {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}><TouchableOpacity onPress={() => props.navigation.navigate("Home")} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity></View>
             <View style={styles.ratingContainer}>
 
@@ -55,7 +56,7 @@ function Review(props) {
             <TouchableOpacity onPress={()=>{
                 putReview()
             }} style={{ paddingBottom: 50, alignSelf: 'center' }} ><GradientButton title="SUBMIT" /></TouchableOpacity>
-        </View>
+        </SafeAreaView>
     );
 
 }

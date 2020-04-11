@@ -9,6 +9,7 @@ import {
 import Pdf from 'react-native-pdf';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RNFetchBlob from 'rn-fetch-blob'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {color} from '../../Assets/color';
 
 export default function PdfViewer({ navigation, route }) {
@@ -31,7 +32,7 @@ export default function PdfViewer({ navigation, route }) {
 
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity>
                 <Text style={styles.headerText}>TRANSACTION</Text>
@@ -52,7 +53,7 @@ export default function PdfViewer({ navigation, route }) {
                     console.log(`Link presse: ${uri}`)
                 }}
                 style={styles.pdf} />
-        </View>
+        </SafeAreaView>
     )
 }
 

@@ -9,6 +9,7 @@ import {
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 function ShopProfile({ navigation }) {
@@ -38,26 +39,28 @@ function ShopProfile({ navigation }) {
     })
 
     return (
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>SHOP PROFILE</Text><View /></View>
-            <View style={styles.container}>
-                <View style={styles.formContainer}>
-                    {loading ?
-                        <ActivityIndicator size={40} color={color.primaryBlack} />
-                        :
-                        <>  
-                            <TextBox title="BUSINESS NAME" value={name} disabled={true} />
-                            <TextBox title="ADDRESS" value={address} disabled={true} />
-                            <TextBox title="ARD" value={ard} disabled={true} />
-                            <TextBox title="STATION TYPE" value={stationType} disabled={true} />
-                            <TextBox title="OPTIONAL EPA" value={epa} disabled={true} />
-                            <TextBox title="TELEPHONE NUMBER" value={phone} disabled={true} />
-                            <TextBox title="EMAIL" value={email} disabled={true} />
-                        </>
-                    }
+        <SafeAreaView style={styles.container}>
+            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
+                <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>SHOP PROFILE</Text><View /></View>
+                <View style={styles.container}>
+                    <View style={styles.formContainer}>
+                        {loading ?
+                            <ActivityIndicator size={40} color={color.primaryBlack} />
+                            :
+                            <>
+                                <TextBox title="BUSINESS NAME" value={name} disabled={true} />
+                                <TextBox title="ADDRESS" value={address} disabled={true} />
+                                <TextBox title="ARD" value={ard} disabled={true} />
+                                <TextBox title="STATION TYPE" value={stationType} disabled={true} />
+                                <TextBox title="OPTIONAL EPA" value={epa} disabled={true} />
+                                <TextBox title="TELEPHONE NUMBER" value={phone} disabled={true} />
+                                <TextBox title="EMAIL" value={email} disabled={true} />
+                            </>
+                        }
+                    </View>
                 </View>
-            </View>
-        </LinearGradient>
+            </LinearGradient>
+        </SafeAreaView>
     );
 
 }
@@ -67,7 +70,6 @@ export default ShopProfile;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
 
     },
     headerContainer: {
@@ -84,8 +86,9 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         marginTop: 30,
-        height:'90%',
+        height: '90%',
         width: '90%',
+        alignSelf:'center',
         justifyContent: 'space-evenly',
         backgroundColor: color.primaryWhite,
         shadowColor: "#000",

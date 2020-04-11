@@ -4,15 +4,19 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity, ScrollView, KeyboardAvoidingView,
-    ActivityIndicator
+    ActivityIndicator,
+    Dimensions
 } from "react-native";
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextBox from '../../Components/textBox';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import GradientButton from '../../Components/longButton';
-function newService(name, yearRange, cost, averageTime, navigation,route) {
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+function newService(name, yearRange, cost, averageTime, navigation, route) {
     fetch('https://smogbuddy.herokuapp.com/service', {
         method: 'POST',
         headers: {
@@ -42,45 +46,47 @@ function AddServices({ navigation, route }) {
     const [loading, setloading] = useState(false)
 
     return (
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
-            <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: 650, justifyContent: 'space-between' }}>
-                {
-                    loading ?
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                            <ActivityIndicator size={50} color={color.primaryBlack} />
-                        </View>
-                        :
-                        <>
-                            <View style={styles.upperContainer}>
-                                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                                    <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
-                                </TouchableOpacity>
-                                <Text style={styles.HeaderText}>ADD SERVICE</Text>
-
+        <SafeAreaView style={styles.container}>
+            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
+                <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: windowHeight }}>
+                    {
+                        loading ?
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <ActivityIndicator size={50} color={color.primaryBlack} />
                             </View>
-                            <View style={styles.selection}>
-                                <View style={styles.insideArea}>
-                                    <TextBox title="SERVICE NAME" value={name} underline={true} onChangeText={text => setname(text)} />
-                                    <TextBox title="YEAR RANGE" value={yearRange} underline={true} onChangeText={text => setyearRange(text)} />
-                                    <TextBox title="COST" value={cost} underline={true} keyboardType='phone-pad' onChangeText={text => setcost(text)}/>
-                                    <TextBox title="AVERAGE TIME" value={averageTime} keyboardType='phone-pad' underline={true} onChangeText={text => setaverageTime(text)} />
-                                </View>
-                                <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
-                                    <Text style={styles.subText}></Text>
-                                    <TouchableOpacity style={styles.buttonContainer} onPress={() => {
-                                        setloading(true)
-                                        newService(name, yearRange, cost, averageTime, navigation,route)
-                                    }}
-                                    ><GradientButton title="ADD" style={styles.button} /></TouchableOpacity>
-                                </View>
-                            </View>
-                            <View />
-                        </>
+                            :
+                            <>
+                                <View style={styles.upperContainer}>
+                                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                                        <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
+                                    </TouchableOpacity>
+                                    <Text style={styles.HeaderText}>ADD SERVICE</Text>
 
-                }
+                                </View>
+                                <View style={styles.selection}>
+                                    <View style={styles.insideArea}>
+                                        <TextBox title="SERVICE NAME" value={name} underline={true} onChangeText={text => setname(text)} />
+                                        <TextBox title="YEAR RANGE" value={yearRange} underline={true} onChangeText={text => setyearRange(text)} />
+                                        <TextBox title="COST" value={cost} underline={true} keyboardType='phone-pad' onChangeText={text => setcost(text)} />
+                                        <TextBox title="AVERAGE TIME" value={averageTime} keyboardType='phone-pad' underline={true} onChangeText={text => setaverageTime(text)} />
+                                    </View>
+                                    <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
+                                        <Text style={styles.subText}></Text>
+                                        <TouchableOpacity style={styles.buttonContainer} onPress={() => {
+                                            setloading(true)
+                                            newService(name, yearRange, cost, averageTime, navigation, route)
+                                        }}
+                                        ><GradientButton title="ADD" style={styles.button} /></TouchableOpacity>
+                                    </View>
+                                </View>
+                                <View />
+                            </>
 
-            </KeyboardAwareScrollView>
-        </LinearGradient>
+                    }
+
+                </KeyboardAwareScrollView>
+            </LinearGradient>
+        </SafeAreaView>
 
     );
 
@@ -98,7 +104,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         backgroundColor: 'white',
         width: 300,
-        height: 500,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -133,18 +138,16 @@ const styles = StyleSheet.create({
 
     },
     insideArea: {
-        flex: 1,
         alignItems: 'stretch',
         justifyContent: 'space-between',
         margin: 20,
         zIndex: 0
     },
     upperContainer: {
-        height: 50,
+        height: 66,
         flexDirection: 'row',
         alignSelf: 'flex-start',
         alignItems: 'center',
-        marginVertical: 20,
         justifyContent: 'space-evenly'
     },
     button: {

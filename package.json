@@ -36,7 +36,7 @@
     "react-native-pdf": "^6.0.1",
     "react-native-ratings": "^6.5.0",
     "react-native-reanimated": "^1.7.0",
-    "react-native-safe-area-context": "^0.7.2",
+    "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.0.0-beta.2",
     "react-native-spinkit": "^1.5.0",
     "react-native-step-indicator": "0.0.11",

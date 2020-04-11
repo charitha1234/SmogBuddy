@@ -4,7 +4,8 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity, ScrollView, KeyboardAvoidingView,
-    ActivityIndicator
+    ActivityIndicator,
+    Dimensions
 } from "react-native";
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
@@ -12,7 +13,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextBox from '../../Components/textBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import GradientButton from '../../Components/longButton';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import firebase from 'react-native-firebase';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 const uuidv1 = require('uuid/v1');
 function formatDate() {
     let d = new Date(),
@@ -56,7 +60,7 @@ function newUser(username, password, firstName, lastName, imageUrl, address, sta
                             email: username,
                             role: "CUSTOMER"
                         }),
-                    }).then((res)=>res.json())
+                    }).then((res) => res.json())
                         .then((responseJson) => {
                             setloading(false)
                             firebase.auth().signOut()
@@ -87,7 +91,7 @@ function newUser(username, password, firstName, lastName, imageUrl, address, sta
             console.log("USER NOT created")
             alert(e)
         }
-    )
+        )
 
 }
 function UserRegistration_2({ navigation, route }) {
@@ -102,89 +106,91 @@ function UserRegistration_2({ navigation, route }) {
     const [serverError, setserverError] = useState(false)
 
     return (
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
-            <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: 650, justifyContent: 'space-between' }}>
-                {
-                    loading ?
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                            <ActivityIndicator size={50} color={color.primaryBlack} />
-                        </View>
-                        :
-                        <>
-                            <View style={styles.upperContainer}>
-                                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                                    <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
-                                </TouchableOpacity>
-                                <Text style={styles.waterMarkText}>SMOGBUDDY </Text>
-                                <Text style={styles.smallText}>|</Text>
-                                <Text style={styles.smallText}> CUSTOMER</Text>
+        <SafeAreaView style={styles.container}>
+            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
+                <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height:windowHeight, }}>
+                    {
+                        loading ?
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <ActivityIndicator size={50} color={color.primaryBlack} />
                             </View>
-                            <View style={[styles.selection, (error || isMissmatched || serverError) ? { borderWidth: 3, borderColor: color.failedRed } : null]}>
-                                <View style={styles.insideArea}>
-                                    <TextBox title="ZIP CODE" value={zipcode} error={error} underline={true} onChangeText={text => {
-                                        setisMissmatched(false)
-                                        setserverError(false)
-                                        seterror(false)
-                                        setzipcode(text)
-                                    }} keyboardType='phone-pad' />
-                                    <TextBox title="PHONE NO" value={phoneNo} error={error} underline={true} onChangeText={text => {
-                                        setisMissmatched(false)
-                                        setserverError(false)
-                                        seterror(false)
-                                        setphoneNo(text)
-                                    }} keyboardType='phone-pad' />
-                                    <TextBox title="EMAIL" value={username} error={error} underline={true} onChangeText={text => {
-                                        setisMissmatched(false)
-                                        setserverError(false)
-                                        seterror(false)
-                                        setusername(text)
-                                    }} disabled={false} keyboardType='email-address' />
-                                    <TextBox title="PASSWORD" value={password} error={error} underline={true} onChangeText={text => {
-                                        setisMissmatched(false)
-                                        setserverError(false)
-                                        seterror(false)
-                                        setpassword(text)
-                                    }} disabled={false} />
-                                    <TextBox title="RETYPE PASSWORD" value={retypePassword} isMissmatched={isMissmatched} error={error ? error : isMissmatched ? isMissmatched : null} underline={true} onChangeText={text => {
-                                        setisMissmatched(false)
-                                        setserverError(false)
-                                        seterror(false)
-                                        setretypePassword(text)
-                                    }} disabled={false} />
+                            :
+                            <>
+                                <View style={styles.upperContainer}>
+                                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                                        <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
+                                    </TouchableOpacity>
+                                    <Text style={styles.waterMarkText}>SMOGBUDDY </Text>
+                                    <Text style={styles.smallText}>|</Text>
+                                    <Text style={styles.smallText}> CUSTOMER</Text>
                                 </View>
-                                <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
-                                    <Text style={styles.subText}>2/2</Text>
-                                    <TouchableOpacity style={styles.buttonContainer} onPress={() => {
-                                        if (username &&
-                                            password &&
-                                            retypePassword &&
-                                            zipcode &&
-                                            phoneNo
-                                        ) {
-                                            if (password == retypePassword) {
-                                                setloading(true)
-                                                newUser(username, password, route.params.firstName, route.params.lastName, route.params.imageUrl, route.params.address, route.params.state, zipcode, phoneNo, navigation, setloading, setserverError)
+                                <View style={[styles.selection, (error || isMissmatched || serverError) ? { borderWidth: 3, borderColor: color.failedRed } : null]}>
+                                    <View style={styles.insideArea}>
+                                        <TextBox title="ZIP CODE" value={zipcode} error={error} underline={true} onChangeText={text => {
+                                            setisMissmatched(false)
+                                            setserverError(false)
+                                            seterror(false)
+                                            setzipcode(text)
+                                        }} keyboardType='phone-pad' />
+                                        <TextBox title="PHONE NO" value={phoneNo} error={error} underline={true} onChangeText={text => {
+                                            setisMissmatched(false)
+                                            setserverError(false)
+                                            seterror(false)
+                                            setphoneNo(text)
+                                        }} keyboardType='phone-pad' />
+                                        <TextBox title="EMAIL" value={username} error={error} underline={true} onChangeText={text => {
+                                            setisMissmatched(false)
+                                            setserverError(false)
+                                            seterror(false)
+                                            setusername(text)
+                                        }} disabled={false} keyboardType='email-address' />
+                                        <TextBox title="PASSWORD" value={password} error={error} underline={true} onChangeText={text => {
+                                            setisMissmatched(false)
+                                            setserverError(false)
+                                            seterror(false)
+                                            setpassword(text)
+                                        }} disabled={false} />
+                                        <TextBox title="RETYPE PASSWORD" value={retypePassword} isMissmatched={isMissmatched} error={error ? error : isMissmatched ? isMissmatched : null} underline={true} onChangeText={text => {
+                                            setisMissmatched(false)
+                                            setserverError(false)
+                                            seterror(false)
+                                            setretypePassword(text)
+                                        }} disabled={false} />
+                                    </View>
+                                    <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
+                                        <Text style={styles.subText}>2/2</Text>
+                                        <TouchableOpacity style={styles.buttonContainer} onPress={() => {
+                                            if (username &&
+                                                password &&
+                                                retypePassword &&
+                                                zipcode &&
+                                                phoneNo
+                                            ) {
+                                                if (password == retypePassword) {
+                                                    setloading(true)
+                                                    newUser(username, password, route.params.firstName, route.params.lastName, route.params.imageUrl, route.params.address, route.params.state, zipcode, phoneNo, navigation, setloading, setserverError)
+                                                }
+                                                else {
+                                                    setisMissmatched("Password is not matched")
+                                                }
+
                                             }
                                             else {
-                                                setisMissmatched("Password is not matched")
+                                                seterror("Please fill these requirements")
                                             }
 
-                                        }
-                                        else {
-                                            seterror("Please fill these requirements")
-                                        }
-
-                                    }}
-                                    ><GradientButton style={styles.button} /></TouchableOpacity>
+                                        }}
+                                        ><GradientButton style={styles.button} /></TouchableOpacity>
+                                    </View>
                                 </View>
-                            </View>
-                            <View />
-                        </>
+                                <View />
+                            </>
 
-                }
+                    }
 
-            </KeyboardAwareScrollView>
-        </LinearGradient>
+                </KeyboardAwareScrollView>
+            </LinearGradient>
+        </SafeAreaView>
 
     );
 
@@ -202,7 +208,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         backgroundColor: 'white',
         width: 300,
-        height: 500,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -237,18 +242,16 @@ const styles = StyleSheet.create({
 
     },
     insideArea: {
-        flex: 1,
         alignItems: 'stretch',
         justifyContent: 'space-between',
         margin: 20,
         zIndex: 0
     },
     upperContainer: {
-        height: 50,
+        height: 66,
         flexDirection: 'row',
         alignSelf: 'flex-start',
         alignItems: 'center',
-        marginVertical: 20,
         justifyContent: 'space-evenly'
     },
     button: {

@@ -12,6 +12,7 @@ import firebase from 'react-native-firebase';
 import { color } from '../../Assets/color';
 import Header from '../../Components/HeaderBarTechnician';
 import StepIndicator from 'react-native-step-indicator';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import ImagePicker from 'react-native-image-picker';
@@ -278,7 +279,7 @@ class SmogTests extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <Header title="SMOGBUDDY" navigation={this.props.navigation} />
                 {this.state.vehicleAssigned ?
                     <>
@@ -359,7 +360,7 @@ class SmogTests extends Component {
                     <Dialog.Description>
                         Please Enter Failed Part Name
                     </Dialog.Description>
-                    <Dialog.Input label="Type Here" onChangeText={(text) => this.setState({ failedPart: text })} />
+                    <Dialog.Input label="Type Here" style={{borderWidth:1}} onChangeText={(text) => this.setState({ failedPart: text })} />
                     <Dialog.Button onPress={() => { this.setState({ dialogBoxvisible: false }) }} label="Cancel" />
                     <Dialog.Button disabled={!this.state.failedPart} onPress={() => {
                         this.setState({ dialogBoxvisible: false })
@@ -367,7 +368,7 @@ class SmogTests extends Component {
 
                     }} label="Next" />
                 </Dialog.Container>
-            </View>
+            </SafeAreaView>
         );
     }
 }
@@ -376,7 +377,6 @@ export default SmogTests;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'stretch',
         backgroundColor: color.primaryWhite
 
     },

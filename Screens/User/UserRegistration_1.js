@@ -3,7 +3,8 @@ import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity, ScrollView, KeyboardAvoidingView
+    Dimensions,
+    TouchableOpacity,
 } from "react-native";
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
@@ -11,7 +12,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextBox from '../../Components/textBox';
 import ImagePicker from 'react-native-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import GradientButton from '../../Components/longButton';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 function UserRegistration({ navigation }) {
     const [firstName, setfirstName] = useState("");
     const [lastName, setlastName] = useState("")
@@ -48,53 +52,55 @@ function UserRegistration({ navigation }) {
 
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
-            <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: 650, justifyContent: 'space-between' }}>
-                <View style={styles.upperContainer}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                        <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
-                    </TouchableOpacity>
-                    <Text style={styles.waterMarkText}>SMOGBUDDY </Text>
-                    <Text style={styles.smallText}>|</Text>
-                    <Text style={styles.smallText}> CUSTOMER</Text>
-                </View>
-                <View style={[styles.selection, (error||imageError) ? { borderColor: color.failedRed, borderWidth: 3 } : null]}>
-                    <View style={styles.insideArea}>
-                        <TextBox title="First NAME" error={error} underline={true} value={firstName} onChangeText={text => {
-                            seterror(false)
-                            setfirstName(text)
-                        }} />
-                        <TextBox title="Last NAME" error={error} underline={true} value={lastName} onChangeText={text => {
-                            seterror(false)
-                            setlastName(text)
-                        }} />
-                        <TextBox title="ADDRESS" error={error} underline={true} value={address} onChangeText={text => {
-                            seterror(false)
-                            setaddress(text)
-                        }} />
-                        <TextBox title="STATE" error={error} underline={true} value={state} onChangeText={text => {
-                            seterror(false)
-                            setstate(text)
-                        }} />
-                        <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity onPress={chooseFile} style={[styles.imageContainer,imageError?{borderColor: color.failedRed, borderWidth: 3}:filePath?{borderColor: color.primaryBlue, borderWidth: 3}:null]}>
-                                <Ionicons name="ios-camera" size={30} />
-                            </TouchableOpacity>
+            <SafeAreaView style={styles.container}>
+                <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height:windowHeight }}>
+                    <View style={styles.upperContainer}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                            <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
+                        </TouchableOpacity>
+                        <Text style={styles.waterMarkText}>SMOGBUDDY </Text>
+                        <Text style={styles.smallText}>|</Text>
+                        <Text style={styles.smallText}> CUSTOMER</Text>
+                    </View>
+                    <View style={[styles.selection, (error || imageError) ? { borderColor: color.failedRed, borderWidth: 3 } : null]}>
+                        <View style={styles.insideArea}>
+                            <TextBox title="First NAME" error={error} underline={true} value={firstName} onChangeText={text => {
+                                seterror(false)
+                                setfirstName(text)
+                            }} />
+                            <TextBox title="Last NAME" error={error} underline={true} value={lastName} onChangeText={text => {
+                                seterror(false)
+                                setlastName(text)
+                            }} />
+                            <TextBox title="ADDRESS" error={error} underline={true} value={address} onChangeText={text => {
+                                seterror(false)
+                                setaddress(text)
+                            }} />
+                            <TextBox title="STATE" error={error} underline={true} value={state} onChangeText={text => {
+                                seterror(false)
+                                setstate(text)
+                            }} />
+                            <View style={{ flexDirection: 'row' }}>
+                                <TouchableOpacity onPress={chooseFile} style={[styles.imageContainer, imageError ? { borderColor: color.failedRed, borderWidth: 3 } : filePath ? { borderColor: color.primaryBlue, borderWidth: 3 } : null]}>
+                                    <Ionicons name="ios-camera" size={30} />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
+                            <Text style={styles.subText}>1/2</Text>
+                            <TouchableOpacity style={styles.buttonContainer} onPress={() => {
+                                if (firstName == "" || lastName == "" || address == "" || state == "") seterror("Please Fill All Requires")
+                                else if (!filePath) {
+                                    setimageError(true)
+                                    alert("Please upload an image")
+                                }
+                                else navigation.navigate("UserRegistration_2", { firstName: firstName, lastName: lastName, address: address, state: state, imageUrl: filePath })
+                            }}><GradientButton style={styles.button} /></TouchableOpacity>
                         </View>
                     </View>
-                    <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
-                        <Text style={styles.subText}>1/2</Text>
-                        <TouchableOpacity style={styles.buttonContainer} onPress={() => {
-                            if (firstName == "" || lastName == "" || address == "" || state == "") seterror("Please Fill All Requires")
-                            else if (!filePath){
-                                setimageError(true)
-                                alert("Please upload an image")
-                            }
-                            else navigation.navigate("UserRegistration_2", { firstName: firstName, lastName: lastName, address: address, state: state ,imageUrl:filePath})
-                        }}><GradientButton style={styles.button} /></TouchableOpacity>
-                    </View>
-                </View>
-                <View />
-            </KeyboardAwareScrollView>
+                    <View />
+                </KeyboardAwareScrollView>
+            </SafeAreaView>
         </LinearGradient>
 
     );
@@ -113,7 +119,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         backgroundColor: 'white',
         width: 300,
-        height: 500,
+        
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -167,18 +173,16 @@ const styles = StyleSheet.create({
 
     },
     insideArea: {
-        flex: 1,
         alignItems: 'stretch',
         justifyContent: 'space-between',
         margin: 20,
         zIndex: 0
     },
     upperContainer: {
-        height: 50,
+        height: 66,
         flexDirection: 'row',
         alignSelf: 'flex-start',
         alignItems: 'center',
-        marginVertical: 20,
         justifyContent: 'space-evenly'
     },
     button: {

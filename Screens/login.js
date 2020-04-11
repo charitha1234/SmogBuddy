@@ -4,12 +4,11 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    SafeAreaView,
     ActivityIndicator,
     Keyboard,
     TouchableWithoutFeedback
 } from "react-native";
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../Assets/color';
 import Logo from '../Assets/logo';
@@ -64,8 +63,9 @@ function Login({ navigation }) {
         };
     }, []);
     return (
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
-            <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container}>
+            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
+
                 {!loading ?
                     <KeyboardAwareScrollView
                         contentContainerStyle={styles.container}
@@ -108,7 +108,7 @@ function Login({ navigation }) {
                             isKeyboardVisible ?
                                 null :
                                 <View style={{ height: 70 }}>
-                                    <TouchableOpacity onPress={() => { navigation.navigate("NewUser") }} style={{ position: 'absolute', bottom: "5%" }}><Text style={styles.bottomText}>NEW ACCOUNT</Text></TouchableOpacity>
+                                    <TouchableOpacity onPress={() => { navigation.navigate("NewUser") }}><Text style={styles.bottomText}>NEW ACCOUNT</Text></TouchableOpacity>
                                 </View>
                         }
 
@@ -118,8 +118,9 @@ function Login({ navigation }) {
                         <ActivityIndicator size={40} color={color.primaryBlack} />
                     </View>
                 }
-            </SafeAreaView>
-        </LinearGradient>
+
+            </LinearGradient>
+        </SafeAreaView>
 
 
 
@@ -190,6 +191,7 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
         justifyContent: 'flex-end',
         backgroundColor: 'white',
+        borderRadius: 40,
         width: 300,
         height: 80,
         shadowColor: "#000",

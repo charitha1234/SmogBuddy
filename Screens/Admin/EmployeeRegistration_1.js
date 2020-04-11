@@ -11,13 +11,14 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import ImagePicker from 'react-native-image-picker';
 
 import TextBox from '../../Components/textBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import GradientButton from '../../Components/longButton';
 function EmployeeRegistration({ navigation, route }) {
-    console.log("ROUTE>>",route)
+    console.log("ROUTE>>", route)
     const { role } = route.params
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
@@ -30,33 +31,33 @@ function EmployeeRegistration({ navigation, route }) {
     const [state, setstate] = useState("");
     const chooseFile = () => {
         var options = {
-          title: 'Select Image',
-          quality:0.5,
-          customButtons: [
-          ],
-          storageOptions: {
-            skipBackup: true,
-            path: 'images',
-          },
+            title: 'Select Image',
+            quality: 0.5,
+            customButtons: [
+            ],
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
         };
         ImagePicker.showImagePicker(options, response => {
-          console.log('Response = ', response);
-    
-          if (response.didCancel) {
-            console.log('User cancelled image picker');
-          } else if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
-          } else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
-            alert(response.customButton);
-          } else {
-            let source = response;
-            // You can also display the image using data:
-            // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-            setfilePath(source);
-          }
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+                alert(response.customButton);
+            } else {
+                let source = response;
+                // You can also display the image using data:
+                // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+                setfilePath(source);
+            }
         });
-      };
+    };
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
@@ -74,53 +75,55 @@ function EmployeeRegistration({ navigation, route }) {
 
 
     return (
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
-            <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: 650 }}>
-                <View style={styles.upperContainer}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                        <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
-                    </TouchableOpacity>
-                    <Text style={styles.waterMarkText}>SMOGBUDDY </Text>
-                    <Text style={styles.smallText}>|</Text>
-                    <Text style={styles.smallText}> {role}</Text>
-                </View>
-                <View style={styles.selection}>
-                    <View style={styles.insideArea}>
-                        <TextBox title="First NAME" underline={true} onChangeText={text => setfirstName(text)} />
-                        <TextBox title="Last NAME" underline={true} onChangeText={text => setlastName(text)} />
-                        <TextBox title="EMAIL" underline={true} onChangeText={text => setemail(text)} />
-                        <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity onPress={chooseFile} style={styles.imageContainer}>
-                                <Ionicons name="ios-camera" size={30} />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={showDatepicker} style={styles.dateContainer}>
-                                <Text style={styles.dateLabel}>PICK DATE</Text>
-                                <Text style={styles.dateText}>{date.toLocaleDateString()}</Text>
-                                {show && (
-                                    <DateTimePicker
-                                        testID="dateTimePicker"
-                                        timeZoneOffsetInMinutes={0}
-                                        value={date}
-                                        mode={mode}
-                                        is24Hour={true}
-                                        display="default"
-                                        onChange={onChange}
-                                    />
-                                )}
-                            </TouchableOpacity>
+        <SafeAreaView style={styles.container}>
+            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
+                <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: 650 }}>
+                    <View style={styles.upperContainer}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                            <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
+                        </TouchableOpacity>
+                        <Text style={styles.waterMarkText}>SMOGBUDDY </Text>
+                        <Text style={styles.smallText}>|</Text>
+                        <Text style={styles.smallText}> {role}</Text>
+                    </View>
+                    <View style={styles.selection}>
+                        <View style={styles.insideArea}>
+                            <TextBox title="First NAME" underline={true} onChangeText={text => setfirstName(text)} />
+                            <TextBox title="Last NAME" underline={true} onChangeText={text => setlastName(text)} />
+                            <TextBox title="EMAIL" underline={true} onChangeText={text => setemail(text)} />
+                            <View style={{ flexDirection: 'row' }}>
+                                <TouchableOpacity onPress={chooseFile} style={styles.imageContainer}>
+                                    <Ionicons name="ios-camera" size={30} />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={showDatepicker} style={styles.dateContainer}>
+                                    <Text style={styles.dateLabel}>PICK DATE</Text>
+                                    <Text style={styles.dateText}>{date.toLocaleDateString()}</Text>
+                                    {show && (
+                                        <DateTimePicker
+                                            testID="dateTimePicker"
+                                            timeZoneOffsetInMinutes={0}
+                                            value={date}
+                                            mode={mode}
+                                            is24Hour={true}
+                                            display="default"
+                                            onChange={onChange}
+                                        />
+                                    )}
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
+                            <Text style={styles.subText}>1/2</Text>
+                            <TouchableOpacity style={styles.buttonContainer} onPress={() => {
+                                if (firstName == "" || lastName == "" || email == "" || !filePath) alert("Please Fill All Requires")
+                                else navigation.navigate("EmployeeRegistration_2", { firstName: firstName, lastName: lastName, email: email, role: role, date: date, imageUri: filePath.uri })
+                            }}><GradientButton style={styles.button} /></TouchableOpacity>
                         </View>
                     </View>
-                    <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
-                        <Text style={styles.subText}>1/2</Text>
-                        <TouchableOpacity style={styles.buttonContainer} onPress={() => {
-                            if (firstName == "" || lastName == "" || email == ""|| !filePath) alert("Please Fill All Requires")
-                            else navigation.navigate("EmployeeRegistration_2", { firstName: firstName, lastName: lastName, email: email, role: role, date: date,imageUri:filePath.uri })
-                        }}><GradientButton style={styles.button} /></TouchableOpacity>
-                    </View>
-                </View>
-                <View />
-            </KeyboardAwareScrollView>
-        </LinearGradient>
+                    <View />
+                </KeyboardAwareScrollView>
+            </LinearGradient>
+        </SafeAreaView>
 
     );
 
@@ -138,7 +141,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         backgroundColor: 'white',
         width: '90%',
-        height:Dimensions.get('window').height*0.7,
+        height: Dimensions.get('window').height * 0.7,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

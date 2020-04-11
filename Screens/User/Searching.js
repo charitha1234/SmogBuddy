@@ -13,6 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { color } from '../../Assets/color';
 import firebase from 'react-native-firebase';
 import MapView, { Marker } from 'react-native-maps';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import GradientButton from '../../Components/CustomButton';
 Geolocation.setRNConfiguration({ authorizationLevel: "always" });
 class Searching extends Component {
@@ -81,70 +82,72 @@ class Searching extends Component {
 
     render() {
         return (
-            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-                <View style={styles.headerTextContainer}>
+            <SafeAreaView style={{ flex: 1 }}>
+                <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
+                    <View style={styles.headerTextContainer}>
+                        {
+                            this.state.locationSelected ?
+                                !this.state.placed ?
+                                    <Text style={styles.headerText}>REQUESTING DRIVER</Text>
+                                    :
+                                    <Text style={styles.headerText}>REQUEST COMPLETED</Text>
+                                :
+                                <Text style={styles.headerText}>SELECT PICKUP LOCATION</Text>
+                        }
+                    </View>
                     {
                         this.state.locationSelected ?
                             !this.state.placed ?
-                                <Text style={styles.headerText}>REQUESTING DRIVER</Text>
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                    <Spinner style={styles.spinner} isVisible={true} size={200} type='Bounce' color={color.primaryBlack} />
+                                </View>
                                 :
-                                <Text style={styles.headerText}>REQUEST COMPLETED</Text>
-                            :
-                            <Text style={styles.headerText}>SELECT PICKUP LOCATION</Text>
-                    }
-                </View>
-                {
-                    this.state.locationSelected ?
-                        !this.state.placed ?
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Spinner style={styles.spinner} isVisible={true} size={200} type='Bounce' color={color.primaryBlack} />
-                            </View>
-                            :
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <View style={styles.messageContainer}>
-                                    <View style={styles.TextContainer}>
-                                        <Text style={styles.bodyText}>Your Request Is Placed. Total Service Time is {this.time_convert(this.state.totalServiceTime)} and Total Amount is ${this.state.totalCost}. We Will Notify You In A Moment</Text>
-                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("UserHomeScreen")} style={styles.button}><GradientButton title="GO TO HOME" /></TouchableOpacity>
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                    <View style={styles.messageContainer}>
+                                        <View style={styles.TextContainer}>
+                                            <Text style={styles.bodyText}>Your Request Is Placed. Total Service Time is {this.time_convert(this.state.totalServiceTime)} and Total Amount is ${this.state.totalCost}. We Will Notify You In A Moment</Text>
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("UserHomeScreen")} style={styles.button}><GradientButton title="GO TO HOME" /></TouchableOpacity>
+                                        </View>
                                     </View>
                                 </View>
-                            </View>
-                        :
-                        <>
-                            {
-                                (this.state.lat && this.state.lng) ?
-                                    <MapView
-                                        onRegionChange={(info) => {
-                                            this.state.locationSelected ?
-                                                null :
-                                                this.setState({
-                                                    midlat: info.latitude,
-                                                    midlng: info.longitude
-                                                })
-                                        }}
-                                        showsUserLocation={true}
-                                        style={{ flex: 1 }}
-                                        initialRegion={{
-                                            latitude: this.state.lat,
-                                            longitude: this.state.lng,
-                                            latitudeDelta: 0.0922,
-                                            longitudeDelta: 0.0421,
-                                        }}
-                                    />
-                                    :
-                                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                        <ActivityIndicator size={40} color={color.primaryBlack} />
+                            :
+                            <>
+                                {
+                                    (this.state.lat && this.state.lng) ?
+                                        <MapView
+                                            onRegionChange={(info) => {
+                                                this.state.locationSelected ?
+                                                    null :
+                                                    this.setState({
+                                                        midlat: info.latitude,
+                                                        midlng: info.longitude
+                                                    })
+                                            }}
+                                            showsUserLocation={true}
+                                            style={{ flex: 1 }}
+                                            initialRegion={{
+                                                latitude: this.state.lat,
+                                                longitude: this.state.lng,
+                                                latitudeDelta: 0.0922,
+                                                longitudeDelta: 0.0421,
+                                            }}
+                                        />
+                                        :
+                                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                            <ActivityIndicator size={40} color={color.primaryBlack} />
 
-                                    </View>
-
-
-                            }
+                                        </View>
 
 
-                            <Ionicons style={styles.startIcon} name="md-pin" size={30} />
-                            <TouchableOpacity onPress={this.requestingDriver.bind(this)} style={styles.doneButton}><Text>SELECT</Text></TouchableOpacity>
-                        </>
-                }
-            </LinearGradient>
+                                }
+
+
+                                <Ionicons style={styles.startIcon} name="md-pin" size={30} />
+                                <TouchableOpacity onPress={this.requestingDriver.bind(this)} style={styles.doneButton}><Text>SELECT</Text></TouchableOpacity>
+                            </>
+                    }
+                </LinearGradient>
+            </SafeAreaView>
         );
     }
 }

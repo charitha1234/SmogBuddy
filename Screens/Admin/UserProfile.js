@@ -11,6 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Dialog from "react-native-dialog";
 function deleteProfile() {
 
@@ -40,7 +41,7 @@ function EmployeeProfile({ navigation, route }) {
                 setzipCode(resJson.zipCode);
             })
     }, [])
-    const sendMessage=()=>{
+    const sendMessage = () => {
         fetch('https://smogbuddy.herokuapp.com/admin/notification', {
             method: 'POST',
             headers: {
@@ -53,45 +54,47 @@ function EmployeeProfile({ navigation, route }) {
                 body: body
             }),
         })
-        .then((res)=>res.json())
-        .then((resJson)=>console.log("RES",resJson))
-        .catch((e)=>alert(e))
+            .then((res) => res.json())
+            .then((resJson) => console.log("RES", resJson))
+            .catch((e) => alert(e))
     }
 
     return (
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>PROFILE</Text>
-                <TouchableOpacity onPress={() => setdialogboxVisible(true)} style={{ marginLeft: -40, marginRight: 20 }}><Ionicons name="ios-mail" size={40} /></TouchableOpacity></View>
-            <View style={styles.container}>
-                <View style={styles.formContainer}>
-                    {
-                        loading ?
-                            <ActivityIndicator size="large" color={color.primaryBlack} />
-                            :
-                            <>
-                                <TextBox title="FIRST NAME" value={firstName} disabled={true} />
-                                <TextBox title="LAST NAME" value={lastName} disabled={true} />
-                                <TextBox title="ADDRESS" value={address} disabled={true} />
-                                <TextBox title="STATE" value={state} disabled={true} />
-                                <TextBox title="ZIPCODE" value={zipCode} disabled={true} />
-                            </>
+        <SafeAreaView style={styles.container}>
+            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
+                <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>PROFILE</Text>
+                    <TouchableOpacity onPress={() => setdialogboxVisible(true)} style={{ marginLeft: -40, marginRight: 20 }}><Ionicons name="ios-mail" size={40} /></TouchableOpacity></View>
+                <View style={styles.container}>
+                    <View style={styles.formContainer}>
+                        {
+                            loading ?
+                                <ActivityIndicator size="large" color={color.primaryBlack} />
+                                :
+                                <>
+                                    <TextBox title="FIRST NAME" value={firstName} disabled={true} />
+                                    <TextBox title="LAST NAME" value={lastName} disabled={true} />
+                                    <TextBox title="ADDRESS" value={address} disabled={true} />
+                                    <TextBox title="STATE" value={state} disabled={true} />
+                                    <TextBox title="ZIPCODE" value={zipCode} disabled={true} />
+                                </>
 
-                    }
+                        }
 
+                    </View>
                 </View>
-            </View>
-            <Dialog.Container visible={dialogboxVisible}>
-                <Dialog.Title>Please Enter Message</Dialog.Title>
-                <Dialog.Input wrapperStyle={{borderBottomWidth:1}} label="Type Title" onChangeText={(text) => settitle(text)} />
-                <Dialog.Input  wrapperStyle={{borderBottomWidth:1}} label="Type Body" onChangeText={(text) => setbody(text)} />
-                <Dialog.Button onPress={() => { setdialogboxVisible(false)}} label="Cancel" />
-                <Dialog.Button onPress={() => {
-                    setdialogboxVisible(false)
-                    sendMessage()
-                }} label="SEND" />
-            </Dialog.Container>
-            <TouchableOpacity onPress={() => deleteProfile()} style={styles.deleteButton}><Text style={styles.deleteText}>DELETE PROFILE</Text></TouchableOpacity>
-        </LinearGradient>
+                <Dialog.Container visible={dialogboxVisible}>
+                    <Dialog.Title>Please Enter Message</Dialog.Title>
+                    <Dialog.Input wrapperStyle={{ borderBottomWidth: 1 }} label="Type Title" onChangeText={(text) => settitle(text)} />
+                    <Dialog.Input wrapperStyle={{ borderBottomWidth: 1 }} label="Type Body" onChangeText={(text) => setbody(text)} />
+                    <Dialog.Button onPress={() => { setdialogboxVisible(false) }} label="Cancel" />
+                    <Dialog.Button onPress={() => {
+                        setdialogboxVisible(false)
+                        sendMessage()
+                    }} label="SEND" />
+                </Dialog.Container>
+                <TouchableOpacity onPress={() => deleteProfile()} style={styles.deleteButton}><Text style={styles.deleteText}>DELETE PROFILE</Text></TouchableOpacity>
+            </LinearGradient>
+        </SafeAreaView>
     );
 
 }
@@ -101,7 +104,6 @@ export default EmployeeProfile;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
 
     },
     headerContainer: {
@@ -120,6 +122,7 @@ const styles = StyleSheet.create({
         marginTop: 30,
         height: '90%',
         width: '90%',
+        alignSelf:'center',
         justifyContent: 'center',
         backgroundColor: color.primaryWhite,
         shadowColor: "#000",

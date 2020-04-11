@@ -7,6 +7,7 @@ import {
     FlatList
 } from "react-native";
 import { color } from '../../Assets/color';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 function Service(props) {
@@ -58,14 +59,14 @@ class Services extends Component {
     };
     render() {
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <View style={styles.headerContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>SERVICES</Text><TouchableOpacity style={{ marginRight: 20, marginLeft: -20 }} onPress={() => this.props.navigation.navigate("AddService")}><Ionicons  name="ios-add" size={50} /></TouchableOpacity></View>
                 <FlatList data={this.state.serviceList} 
                 onRefresh={() => this.onRefresh()}
                 refreshing={this.state.isFetching}
                 renderItem={({ item }) => (<Service onPress={() => this.props.navigation.navigate("ServiceInfo",{info:item})} name={item.serviceName} yearRange={item.yearRange} />)} keyExtractor={item => item.UserId} />
 
-            </View>
+            </SafeAreaView>
         );
     }
 }

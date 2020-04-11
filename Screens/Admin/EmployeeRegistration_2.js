@@ -8,6 +8,7 @@ import {
     Dimensions
 } from "react-native";
 import { color } from '../../Assets/color';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CheckBox from '@react-native-community/checkbox';
@@ -17,9 +18,9 @@ import GradientButton from '../../Components/longButton';
 import firebase from 'react-native-firebase';
 
 const uuidv1 = require('uuid/v1');
-function newUser(firstName, lastName, email, date, employNo, phoneNo, imageUri,licenceNo, role, position,navigation, setloading) {
-    const isAdmin=false
-    if(role=="MANAGER")isAdmin=true
+function newUser(firstName, lastName, email, date, employNo, phoneNo, imageUri, licenceNo, role, position, navigation, setloading) {
+    const isAdmin = false
+    if (role == "MANAGER") isAdmin = true
     firebase
         .storage()
         .ref('employee/' + uuidv1() + '.jpeg')
@@ -49,7 +50,7 @@ function newUser(firstName, lastName, email, date, employNo, phoneNo, imageUri,l
                 .then((responseJson) => {
                     setloading(false)
                     navigation.popToTop()
-                    
+
                 })
                 .catch((error) => {
                     console.error(error);
@@ -69,51 +70,53 @@ function EmployeeRegistration_2({ navigation, route }) {
     const [isAdmin, setisAdmin] = useState(false);
 
     return (
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
-            <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: 650 }}>
-                {
-                    loading ?
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                            <ActivityIndicator size={50} color={color.primaryBlack} />
-                        </View>
-                        :
-                        <>
-                            <View style={styles.upperContainer}>
-                                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                                    <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
-                                </TouchableOpacity>
-                                <Text style={styles.waterMarkText}>SMOGBUDDY </Text>
-                                <Text style={styles.smallText}>|</Text>
-                                <Text style={styles.smallText}> {role}</Text>
+        <SafeAreaView style={styles.container}>
+            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
+                <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height: 650 }}>
+                    {
+                        loading ?
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <ActivityIndicator size={50} color={color.primaryBlack} />
                             </View>
-                            <View style={styles.selection}>
-                                <View style={styles.insideArea}>
-                                    <TextBox title="POSITION" underline={true} onChangeText={text => setposition(text)} />
-                                    <TextBox title="PHONE NO" underline={true} onChangeText={text => setphoneNo(text)} />
-                                    <TextBox title="EMPLOY NO" underline={true} onChangeText={text => setemployNo(text)} />
-                                    {
-                                        role == "DRIVER" ?
-                                            <TextBox title="LICENCE NO" underline={true} onChangeText={text => setlicenceNo(text)} />
-                                            :
-                                            null
-                                    }
+                            :
+                            <>
+                                <View style={styles.upperContainer}>
+                                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                                        <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
+                                    </TouchableOpacity>
+                                    <Text style={styles.waterMarkText}>SMOGBUDDY </Text>
+                                    <Text style={styles.smallText}>|</Text>
+                                    <Text style={styles.smallText}> {role}</Text>
                                 </View>
-                                <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
-                                    <Text style={styles.subText}>2/2</Text>
-                                    <TouchableOpacity style={styles.buttonContainer} onPress={() => {
-                                        setloading(true)
-                                        newUser(firstName, lastName, email, date, employNo, phoneNo, imageUri,licenceNo, role, position, navigation,setloading)
-                                    }}
-                                    ><GradientButton title="SUBMIT" style={styles.button} /></TouchableOpacity>
+                                <View style={styles.selection}>
+                                    <View style={styles.insideArea}>
+                                        <TextBox title="POSITION" underline={true} onChangeText={text => setposition(text)} />
+                                        <TextBox title="PHONE NO" underline={true} onChangeText={text => setphoneNo(text)} />
+                                        <TextBox title="EMPLOY NO" underline={true} onChangeText={text => setemployNo(text)} />
+                                        {
+                                            role == "DRIVER" ?
+                                                <TextBox title="LICENCE NO" underline={true} onChangeText={text => setlicenceNo(text)} />
+                                                :
+                                                null
+                                        }
+                                    </View>
+                                    <View style={{ flexDirection: 'row', zIndex: 1, marginHorizontal: 20, justifyContent: 'space-between' }}>
+                                        <Text style={styles.subText}>2/2</Text>
+                                        <TouchableOpacity style={styles.buttonContainer} onPress={() => {
+                                            setloading(true)
+                                            newUser(firstName, lastName, email, date, employNo, phoneNo, imageUri, licenceNo, role, position, navigation, setloading)
+                                        }}
+                                        ><GradientButton title="SUBMIT" style={styles.button} /></TouchableOpacity>
+                                    </View>
                                 </View>
-                            </View>
-                            <View />
-                        </>
+                                <View />
+                            </>
 
-                }
+                    }
 
-            </KeyboardAwareScrollView>
-        </LinearGradient>
+                </KeyboardAwareScrollView>
+            </LinearGradient>
+        </SafeAreaView>
 
     );
 
@@ -131,7 +134,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         backgroundColor: 'white',
         width: '90%',
-        height: Dimensions.get('window').height*0.7,
+        height: Dimensions.get('window').height * 0.7,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

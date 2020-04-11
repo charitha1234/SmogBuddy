@@ -10,6 +10,7 @@ import {
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 function Profile({ navigation }) {
@@ -43,27 +44,28 @@ function Profile({ navigation }) {
             .catch((e) => alert(e))
     }, [])
     return (
-
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>DRIVER</Text><View /></View>
-            {
-                loading ?
-                    <View style={{ flex: 1, justifyContent: 'center' }}><ActivityIndicator size={40} color={color.primaryBlack} /></View>
-                    :
-                    driverAssigned ?
-                        <View style={styles.container}>
-                            <View style={styles.formContainer}>
-                                <Image style={styles.imageContainer} resizeMode='cover' source={{uri:imageUrl}}/>
-                                <TextBox title="FIRST NAME" value={name} disabled={true} />
-                                <TextBox title="LICENCE NUMBER" value={licenseNumber} disabled={true} />
-                            </View>
-                        </View>
+        <SafeAreaView style={{flex:1}}>
+            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
+                <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>DRIVER</Text><View /></View>
+                {
+                    loading ?
+                        <View style={{ flex: 1, justifyContent: 'center' }}><ActivityIndicator size={40} color={color.primaryBlack} /></View>
                         :
-                        <View style={styles.container}>
-                            <Text style={styles.subText}>Driver Is Not Assigned yet</Text>
-                        </View>
-            }
-        </LinearGradient>
+                        driverAssigned ?
+                            <View style={styles.container}>
+                                <View style={styles.formContainer}>
+                                    <Image style={styles.imageContainer} resizeMode='cover' source={{ uri: imageUrl }} />
+                                    <TextBox title="FIRST NAME" value={name} disabled={true} />
+                                    <TextBox title="LICENCE NUMBER" value={licenseNumber} disabled={true} />
+                                </View>
+                            </View>
+                            :
+                            <View style={styles.container}>
+                                <Text style={styles.subText}>Driver Is Not Assigned yet</Text>
+                            </View>
+                }
+            </LinearGradient>
+        </SafeAreaView>
     );
 
 }

@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import Header from '../../Components/HeaderBarAdmin';
 import { color } from '../../Assets/color';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import OngoingProcessList from '../../data/OngoingProcesses';
 
 function OngoingProcesses(props) {
@@ -56,7 +57,7 @@ class AdminHome extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <Header title="SMOGBUDDY" navigation={this.props.navigation} />
                 <View style={styles.HeaderTextContainer}><Text style={styles.HeaderText}>Ongoing Processes</Text></View>
                 {
@@ -69,7 +70,7 @@ class AdminHome extends Component {
                         <Text style={styles.processNameText}>No Ongoing Processes</Text>
                 }
 
-            </View>
+            </SafeAreaView>
         );
     }
 }

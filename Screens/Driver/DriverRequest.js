@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import MapTheme from '../../Assets/mapsStyle';
 import { color } from '../../Assets/color';
 import Geolocation from '@react-native-community/geolocation';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import MapViewDirections from 'react-native-maps-directions';
 import LinearGradient from 'react-native-linear-gradient';
 import Header from '../../Components/HederBarNavigation';
@@ -389,7 +390,7 @@ function DriverRequest({ navigation, route }) {
     });
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Header lat={lat} lng={lng} title="SMOGBUDDY" navigationEnabled={started} navigation={navigation} onPressRightIcon={() => turnOnMaps(location.lat, location.lng)} />
             {!started ?
                 <View style={styles.DetailsContainer}><Text style={styles.headerText}>USER REQUEST</Text></View>
@@ -467,7 +468,7 @@ function DriverRequest({ navigation, route }) {
                     }
                 </View>
             }
-        </View>
+        </SafeAreaView>
 
     );
 

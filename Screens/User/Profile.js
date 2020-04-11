@@ -9,6 +9,7 @@ import {
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 
@@ -31,30 +32,32 @@ function Profile({ navigation }) {
                 setstate(resJson.state);
                 setzipCode(resJson.zipCode);
             })
-    },[]);
+    }, []);
 
     return (
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>PROFILE</Text><View /></View>
-            <View style={styles.container}>
-                <View style={styles.formContainer}>
-                    {
-                        loading ?
-                            <ActivityIndicator size="large" color={color.primaryBlack} />
-                            :
-                            <>
-                                <TextBox title="FIRST NAME" value={firstName} disabled={true} />
-                                <TextBox title="LAST NAME" value={lastName} disabled={true} />
-                                <TextBox title="ADDRESS" value={address} disabled={true} />
-                                <TextBox title="STATE" value={state} disabled={true} />
-                                <TextBox title="ZIPCODE" value={zipCode} disabled={true} />
-                            </>
+        <SafeAreaView style={{flex:1}}>
+            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
+                <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>PROFILE</Text><View /></View>
+                <View style={styles.container}>
+                    <View style={styles.formContainer}>
+                        {
+                            loading ?
+                                <ActivityIndicator size="large" color={color.primaryBlack} />
+                                :
+                                <>
+                                    <TextBox title="FIRST NAME" value={firstName} disabled={true} />
+                                    <TextBox title="LAST NAME" value={lastName} disabled={true} />
+                                    <TextBox title="ADDRESS" value={address} disabled={true} />
+                                    <TextBox title="STATE" value={state} disabled={true} />
+                                    <TextBox title="ZIPCODE" value={zipCode} disabled={true} />
+                                </>
 
-                    }
+                        }
 
+                    </View>
                 </View>
-            </View>
-        </LinearGradient>
+            </LinearGradient>
+        </SafeAreaView>
     );
 
 }
@@ -68,7 +71,7 @@ const styles = StyleSheet.create({
 
     },
     headerContainer: {
-        height:100,
+        height: 100,
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
