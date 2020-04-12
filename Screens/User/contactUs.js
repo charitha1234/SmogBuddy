@@ -1,5 +1,5 @@
 import React from "react";
-import { 
+import {
     View,
     Text,
     StyleSheet,
@@ -9,12 +9,13 @@ import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-function ContactUs({navigation}){
+import { SafeAreaView } from "react-native-safe-area-context";
+function ContactUs({ navigation }) {
 
-return(
-    <View style={styles.container}>
-        <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>CONTACT US</Text><View /></View>
-    </View>
+    return (
+        <SafeAreaView style={styles.container}>
+            <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>CONTACT US</Text><View /></View>
+        </SafeAreaView>
     );
 
 }
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor:color.primaryWhite
+        backgroundColor: color.primaryWhite
     },
     container: {
         flex: 1,
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
 
     },
     headerContainer: {
-        height:100,
+        height: 100,
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
