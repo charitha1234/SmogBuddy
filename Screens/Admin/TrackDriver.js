@@ -149,12 +149,11 @@ function DriverTrack({ navigation, route }, props) {
                     driverAssigned ?
                         <>
                             <MapView
-
                                 showsUserLocation={true}
                                 style={{ flex: 1 }}
                                 initialRegion={{
-                                    latitude: origin.latitude,
-                                    longitude: origin.longitude,
+                                    latitude: origin.latitude || 0,
+                                    longitude: origin.longitude || 0,
                                     latitudeDelta: 0.0922,
                                     longitudeDelta: 0.0421,
                                 }}
