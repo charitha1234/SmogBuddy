@@ -13,9 +13,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Dialog from "react-native-dialog";
-function deleteProfile() {
-
-}
 
 function EmployeeProfile({ navigation, route }) {
     const [firstName, setfirstName] = useState("")
@@ -41,6 +38,23 @@ function EmployeeProfile({ navigation, route }) {
                 setzipCode(resJson.zipCode);
             })
     }, [])
+
+    const deleteUser = () => {
+        setloading(true)
+        fetch('https://smogbuddy.herokuapp.com/driver/' + userId, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then((res) => res.json())
+            .then((resJson) => {
+                navigation.goBack()
+                console.log("resdele", resJson)
+            })
+            .catch((e) => console.log("deete error", e))
+        setloading(false)
+    }
     const sendMessage = () => {
         fetch('https://smogbuddy.herokuapp.com/admin/notification', {
             method: 'POST',
@@ -92,7 +106,7 @@ function EmployeeProfile({ navigation, route }) {
                         sendMessage()
                     }} label="SEND" />
                 </Dialog.Container>
-                <TouchableOpacity onPress={() => deleteProfile()} style={styles.deleteButton}><Text style={styles.deleteText}>DELETE PROFILE</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => deleteUser()} style={styles.deleteButton}><Text style={styles.deleteText}>DELETE PROFILE</Text></TouchableOpacity>
             </LinearGradient>
         </SafeAreaView>
     );

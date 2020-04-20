@@ -194,6 +194,7 @@ function ManageUsersStack({ route }) {
         <Stack.Navigator initialRouteName="ManageUsers" screenOptions={{ animationEnabled: false, headerShown: false }}>
             <Stack.Screen name="ManageUsers" component={ManageUsers} />
             <Stack.Screen name="InterfaceSelection" component={InterfaceSelection} />
+            <Stack.Screen name="AdminUserProfile" component={AdminUserProfile}/>
             <Stack.Screen name="EmployeeProfile" component={EmployeeProfile} />
             <Stack.Screen name="EmployeeRegistration_1" component={EmployeeRegistration_1} />
             <Stack.Screen name="EmployeeRegistration_2" component={EmployeeRegistration_2} />
@@ -222,7 +223,7 @@ function AdminScreens() {
             <Drawer.Screen name="Sales" component={Sales} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="RequestStack" component={RequestStack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="PdfViewer" component={PdfViewer} options={{ gestureEnabled: false }}/>
-            <Drawer.Screen name="AdminUserProfile" component={AdminUserProfile} options={{ gestureEnabled: false }}/>
+           
         </Drawer.Navigator>
     );
 }

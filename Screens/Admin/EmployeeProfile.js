@@ -10,12 +10,9 @@ import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import firebase from 'react-native-firebase';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Dialog from "react-native-dialog";
-function deleteProfile() {
 
-}
 
 function EmployeeProfile({ navigation, route }) {
     const [firstName, setfirstName] = useState("")
@@ -29,6 +26,24 @@ function EmployeeProfile({ navigation, route }) {
     const [body, setbody] = useState("")
     const [dialogboxVisible, setdialogboxVisible] = useState(false)
     const { userId } = route.params
+
+    const deleteUser = () => {
+        setloading(true)
+        fetch('https://smogbuddy.herokuapp.com/driver/' + userId, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then((res) => res.json())
+            .then((resJson) => {
+                navigation.goBack()
+                console.log("resdele", resJson)
+            })
+            .catch((e) => console.log("deete error", e))
+        setloading(false)
+    }
+
     useEffect(() => {
         fetch('https://smogbuddy.herokuapp.com/user/' + userId)
             .then((res) => res.json())
@@ -103,7 +118,7 @@ function EmployeeProfile({ navigation, route }) {
                         sendMessage()
                     }} label="SEND" />
                 </Dialog.Container>
-                <TouchableOpacity onPress={() => deleteProfile()} style={styles.deleteButton}><Text style={styles.deleteText}>DELETE PROFILE</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => deleteUser()} style={styles.deleteButton}><Text style={styles.deleteText}>DELETE PROFILE</Text></TouchableOpacity>
             </LinearGradient>
         </SafeAreaView>
     );
@@ -133,7 +148,7 @@ const styles = StyleSheet.create({
         marginTop: 30,
         height: '90%',
         width: '90%',
-        alignSelf:'center',
+        alignSelf: 'center',
         justifyContent: 'center',
         backgroundColor: color.primaryWhite,
         shadowColor: "#000",

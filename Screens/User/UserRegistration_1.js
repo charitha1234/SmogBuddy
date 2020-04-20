@@ -53,7 +53,7 @@ function UserRegistration({ navigation }) {
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
             <SafeAreaView style={styles.container}>
-                <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height:windowHeight }}>
+                <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height:windowHeight,justifyContent:'space-between' }}>
                     <View style={styles.upperContainer}>
                         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                             <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignSelf: 'flex-start',
         alignItems: 'center',
-        justifyContent: 'space-evenly'
+        justifyContent: 'space-evenly',
     },
     button: {
 

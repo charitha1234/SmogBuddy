@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import {
     View,
     Text,
@@ -7,6 +7,7 @@ import {
     FlatList
 } from "react-native";
 import { color } from '../../Assets/color';
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import UsersList from '../../data/Users';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -27,68 +28,72 @@ function Users(props) {
     );
 }
 
-class ManageUsers extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            search: '',
-            searched: false,
-            totalUserArr: null,
-            filteredList:[],
-        };
-    }
-    componentDidMount() {
+function ManageUsers({ navigation }) {
+    const [search, setsearch] = useState(null)
+    const [data, setdata] = useState([])
+    const [filteredList, setfilteredList] = useState([])
+    const getApidata = () => {
         fetch('https://smogbuddy.herokuapp.com/admin/users')
             .then((res) => res.json())
             .then((resJson) => {
-                this.setState({ totalUserArr: resJson })
-                console.log("RES", resJson)
+                setdata(resJson)
             })
-            .catch((e) => console.log("error", e))
+            .catch((e) => { })
     }
-    search() {
-        this.setState({ searched: true })
-    }
-
-    updateSearch = search => {
-        this.setState({ search: search, searched: false });
+    useFocusEffect(
+        React.useCallback(() => {
+            console.log("FOCUS")
+            getApidata()
+        }, [])
+    );
+    useEffect(() => {
+        console.log("updating")
         let user;
-        let tempFilteredList=[]
-        for(user of this.state.totalUserArr){
-            
-            if(user.keyword.toLowerCase().includes(search.toLowerCase())){
-                console.log("KEYWORD",user.keyword)
+        let tempFilteredList = []
+        for (user of data) {
+            if (user.keyword.toLowerCase().includes(search.toLowerCase())) {
                 tempFilteredList.push(user)
             }
         }
-        this.setState({filteredList:tempFilteredList})
+
+        console.log("INFINITE")
+        setfilteredList(tempFilteredList)
+
+    })
+
+
+    const updateSearch = search => {
+        setsearch(search)
     };
-    render() {
-        return (
-            <SafeAreaView style={styles.container}>
-                <View style={styles.headerContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>MANAGE USERS</Text><View /></View>
-                <SearchBar
-                    placeholder="Type Here..."
-                    onChangeText={this.updateSearch}
-                    value={this.state.search}
-                    showCancel
-                    containerStyle={styles.SearchBarStyles}
-                    lightTheme
-                    inputContainerStyle={{ backgroundColor: color.primaryWhite }}
-                />
-                {this.state.search == "" ?
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate("InterfaceSelection")} style={styles.AddUserContainer}><Text style={styles.AddUserText}>ADD USER</Text></TouchableOpacity>
-                    :
-                    <FlatList data={this.state.filteredList} renderItem={({ item }) => (<Users onPress={() => this.props.navigation.navigate(item.role=="CUSTOMER"?"AdminUserProfile":"EmployeeProfile",{userId:item.uid})} Fname={item.firstName} Lname={item.lastName} Role={item.role} />)} keyExtractor={item => item.UserId} />
 
 
-                }
+    return (
+        <SafeAreaView style={styles.container}>
+            <View style={styles.headerContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>MANAGE USERS</Text><View /></View>
+            <SearchBar
+                placeholder="Type Here..."
+                onChangeText={updateSearch}
+                value={search}
+                showCancel
+                containerStyle={styles.SearchBarStyles}
+                lightTheme
+                inputContainerStyle={{ backgroundColor: color.primaryWhite }}
+            />
+            {search == "" ?
+                <TouchableOpacity onPress={() => navigation.navigate("InterfaceSelection")} style={styles.AddUserContainer}><Text style={styles.AddUserText}>ADD USER</Text></TouchableOpacity>
+                :
+                <FlatList data={filteredList} renderItem={({ item }) => (<Users onPress={() => navigation.navigate(item.role == "CUSTOMER" ? "AdminUserProfile" : "EmployeeProfile", { userId: item.uid })} Fname={item.firstName} Lname={item.lastName} Role={item.role} />)} keyExtractor={item => item.UserId} />
 
-            </SafeAreaView>
-        );
-    }
+
+            }
+
+        </SafeAreaView>
+    );
+
 }
+
 export default ManageUsers;
+
 
 const styles = StyleSheet.create({
     container: {
@@ -114,7 +119,7 @@ const styles = StyleSheet.create({
     UserContainer: {
         flexDirection: 'row',
         marginTop: 10,
-        marginBottom:10,
+        marginBottom: 10,
         height: 100,
         width: '100%',
         justifyContent: 'center',
