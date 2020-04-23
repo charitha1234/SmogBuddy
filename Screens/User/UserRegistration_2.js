@@ -15,6 +15,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import GradientButton from '../../Components/longButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import firebase from 'react-native-firebase';
+import BaseUrl from '../../Config'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const uuidv1 = require('uuid/v1');
@@ -42,7 +43,7 @@ function newUser(username, password, firstName, lastName, imageUrl, address, sta
                 .ref(formatDate() + '/' + res.user.uid + '/' + uuidv1() + '.jpeg')
                 .putFile(imageUrl.uri)
                 .then((imageRes) => {
-                    fetch('https://smogbuddy.herokuapp.com/user/', {
+                    fetch(BaseUrl.Url+'/user/', {
                         method: 'POST',
                         headers: {
                             Accept: 'application/json',

@@ -16,7 +16,7 @@ import { SearchBar } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import firebase from "react-native-firebase";
 import Header from '../../Components/TwoButtonHeader'
-
+import BaseUrl from '../../Config'
 
 
 function CheckList(props) {
@@ -68,7 +68,7 @@ class Sales extends Component {
         console.log("UID",user.uid)
         console.log("STARTING",this.state.startingDate.toLocaleDateString())
         console.log("ENDING",this.state.endDate.toLocaleDateString())
-        fetch('https://smogbuddy.herokuapp.com/admin/sales?startAt='+this.state.startingDate.toLocaleDateString()+'&endAt='+this.state.endDate.toLocaleDateString())
+        fetch(BaseUrl.Url+'/admin/sales?startAt='+this.state.startingDate.toLocaleDateString()+'&endAt='+this.state.endDate.toLocaleDateString())
         .then((res)=>res.json())
         .then((resJson)=>this.setState({transactionList:resJson,loading:false}))
         .catch((e)=>alert(e))

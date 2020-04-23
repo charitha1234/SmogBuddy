@@ -13,6 +13,7 @@ import UsersList from '../../data/Users';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SearchBar } from 'react-native-elements';
 import Header from '../../Components/NormalHeader';
+import BaseUrl from '../../Config'
 function Users(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={styles.UserContainer}>
@@ -33,7 +34,7 @@ function ManageUsers({ navigation }) {
     const [data, setdata] = useState([])
     const [filteredList, setfilteredList] = useState([])
     const getApidata = (adjust) => {
-        fetch('https://smogbuddy.herokuapp.com/admin/users')
+        fetch(BaseUrl.Url+'/admin/users')
             .then((res) => res.json())
             .then((resJson) => {
 

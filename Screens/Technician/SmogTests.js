@@ -17,6 +17,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import ImagePicker from 'react-native-image-picker';
 import Dialog from "react-native-dialog";
+import BaseUrl from '../../Config'
 const uuidv1 = require('uuid/v1');
 function Services(props) {
     return (
@@ -167,7 +168,7 @@ class SmogTests extends Component {
     completeChecks() {
 
         const user = firebase.auth().currentUser
-        fetch("https://smogbuddy.herokuapp.com/technician/complete/" + user.uid,
+        fetch(BaseUrl.Url+"/technician/complete/" + user.uid,
             {
                 method: 'POST',
                 headers: {
@@ -192,7 +193,7 @@ class SmogTests extends Component {
         this.setState({ capLoading: true })
         const user = firebase.auth().currentUser
         console.log("JHJH", this.state.failedPart)
-        fetch("https://smogbuddy.herokuapp.com/technician/assign/service/" + user.uid)
+        fetch(BaseUrl.Url+"/technician/assign/service/" + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 console.log(resJson)
@@ -206,7 +207,7 @@ class SmogTests extends Component {
     }
     sendCap(capUrl) {
         const user = firebase.auth().currentUser
-        fetch('https://smogbuddy.herokuapp.com/technician/request/fuelcap', {
+        fetch(BaseUrl.Url+'/technician/request/fuelcap', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -233,7 +234,7 @@ class SmogTests extends Component {
     }
     sendpart(status, serviceId, imageUrl) {
         const user = firebase.auth().currentUser
-        fetch('https://smogbuddy.herokuapp.com/technician/result', {
+        fetch(BaseUrl.Url+'/technician/result', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',

@@ -17,6 +17,7 @@ import Geolocation from '@react-native-community/geolocation';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StepIndicator from 'react-native-step-indicator';
 import MapViewDirections from 'react-native-maps-directions';
+import BaseUrl from '../../Config'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 Geolocation.setRNConfiguration({ authorizationLevel: 'always' });
@@ -99,7 +100,7 @@ function DriverTrack({ navigation }, props) {
     const getApiData = () => {
         if (fetching) {
             const user = firebase.auth().currentUser;
-            fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + user.uid)
+            fetch(BaseUrl.Url+'/user/assign/driver/' + user.uid)
                 .then((res) => res.json())
                 .then((responseJson) => {
                     console.log("RESSSSS", responseJson)

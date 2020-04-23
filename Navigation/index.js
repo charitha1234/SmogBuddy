@@ -53,6 +53,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import PdfViewer from '../Screens/Admin/checkDetails';
 import AdminUserProfile from '../Screens/Admin/UserProfile';
 import Settings from '../Screens/Admin/Settings';
+import BaseUrl from '../Config'
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -89,7 +90,7 @@ function UserHomeScreen() {
     const [payable, setpayable] = useState(false)
     useEffect(() => {
         const user = firebase.auth().currentUser;
-        fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + user.uid)
+        fetch(BaseUrl.Url+'/user/assign/driver/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 if (resJson.isDriverAssigned) {
@@ -103,7 +104,7 @@ function UserHomeScreen() {
 
 
         if (currentState == 7) {
-            fetch('https://smogbuddy.herokuapp.com/user/amount/' + user.uid)
+            fetch(BaseUrl.Url+'/user/amount/' + user.uid)
                 .then((res) => res.json())
                 .then((resJson) => {
                     console.log("ISPAID>>", resJson)
@@ -246,12 +247,12 @@ function WelcomeScreen() {
 
     const datafetch = async (user) => {
         let fcmToken = await AsyncStorage.getItem('fcmToken');
-        console.log("uid",user.uid,"fcm",fcmToken)
-        fetch(`https://smogbuddy.herokuapp.com/user/${user.uid}`)
+        console.log("BASEURL",BaseUrl.Url)
+        fetch(BaseUrl.Url+`/user/${user.uid}`)
             .then((response) => response.json())
             .then((Json)=>{
                 console.log("REyvvvvvvvvvvvvvvvvS",Json)
-                fetch('https://smogbuddy.herokuapp.com/user/fcm/' +user.uid, {
+                fetch(BaseUrl.Url+'/user/fcm/' +user.uid, {
                     method: 'PUT',
                     headers: {
                         Accept: 'application/json',

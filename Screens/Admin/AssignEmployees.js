@@ -13,12 +13,13 @@ import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import GradientButton from '../../Components/longButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BaseUrl from '../../Config'
 function deleteProfile() {
 
 }
 function Assign(pickUp, technician, driver, userId, setloading, navigation) {
     console.log(pickUp, ":", technician, ":", driver, ":", userId, ":", setloading)
-    fetch('https://smogbuddy.herokuapp.com/admin/assign/driver', {
+    fetch(BaseUrl.Url+'/admin/assign/driver', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -58,7 +59,7 @@ function AssignEmployees({ navigation, route }) {
         }
     }
     const getApiData = () => {
-        fetch('https://smogbuddy.herokuapp.com/driver/available-list')
+        fetch(BaseUrl.Url+'/driver/available-list')
             .then((res) => res.json())
             .then((resJson) => {
                 console.log("RESJSON>>", resJson)

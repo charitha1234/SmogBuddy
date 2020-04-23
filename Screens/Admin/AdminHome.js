@@ -10,6 +10,7 @@ import Header from '../../Components/HeaderBarAdmin';
 import { color } from '../../Assets/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import OngoingProcessList from '../../data/OngoingProcesses';
+import BaseUrl from '../../Config'
 
 function OngoingProcesses(props) {
     return (
@@ -38,7 +39,7 @@ class AdminHome extends Component {
 
     getApiData() {
 
-        fetch('https://smogbuddy.herokuapp.com/admin/process')
+        fetch(BaseUrl.Url+'/admin/process')
             .then((res) => res.json())
             .then((resJson) => {
                 console.log("proccess",resJson)

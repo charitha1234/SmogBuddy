@@ -12,6 +12,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BaseUrl from '../../Config'
 import Dialog from "react-native-dialog";
 
 
@@ -31,7 +32,7 @@ function EmployeeProfile({ navigation, route }) {
 
     const deleteUser = () => {
         setloading(true)
-        fetch('https://smogbuddy.herokuapp.com/driver/' + userId, {
+        fetch(BaseUrl.Url+'/driver/' + userId, {
             method: 'DELETE',
             headers: {
                 Accept: 'application/json',
@@ -47,7 +48,7 @@ function EmployeeProfile({ navigation, route }) {
     }
 
     useEffect(() => {
-        fetch('https://smogbuddy.herokuapp.com/user/' + userId)
+        fetch(BaseUrl.Url+'/user/' + userId)
             .then((res) => res.json())
             .then((resJson) => {
                 console.log(resJson)
@@ -63,7 +64,7 @@ function EmployeeProfile({ navigation, route }) {
     }, [])
 
     const sendMessage = () => {
-        fetch('https://smogbuddy.herokuapp.com/admin/notification', {
+        fetch(BaseUrl.Url+'/admin/notification', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',

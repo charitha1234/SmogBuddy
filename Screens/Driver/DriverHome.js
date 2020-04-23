@@ -12,6 +12,7 @@ import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
 import firebase from 'react-native-firebase';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BaseUrl from '../../Config'
 
 async function notification() {
 
@@ -25,7 +26,7 @@ async function notification() {
 function Home({ navigation }, props) {
     useEffect(() => {
         const user = firebase.auth().currentUser;
-        fetch('https://smogbuddy.herokuapp.com/driver/status/' + user.uid)
+        fetch(BaseUrl.Url+'/driver/status/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 console.log("driver res", resJson)

@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import OngoingProcessList from '../../data/OngoingProcesses';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Header from '../../Components/NormalHeader'
+import BaseUrl from '../../Config'
 function Request(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={styles.ProcessContainer}>
@@ -35,7 +36,7 @@ class Requests extends Component {
     }
     getApiData(){
 
-        fetch('https://smogbuddy.herokuapp.com/admin/process')
+        fetch(BaseUrl.Url+'/admin/process')
         .then((res) => res.json())
         .then((resJson) => {
             this.setState({processList:resJson})

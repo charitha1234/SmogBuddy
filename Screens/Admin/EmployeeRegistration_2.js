@@ -16,6 +16,7 @@ import TextBox from '../../Components/textBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import GradientButton from '../../Components/longButton';
 import firebase from 'react-native-firebase';
+import BaseUrl from '../../Config'
 
 const uuidv1 = require('uuid/v1');
 function newUser(firstName, lastName, email, date, employNo, phoneNo, imageUri, licenceNo, role, position, navigation, setloading) {
@@ -26,7 +27,7 @@ function newUser(firstName, lastName, email, date, employNo, phoneNo, imageUri, 
         .ref('employee/' + uuidv1() + '.jpeg')
         .putFile(imageUri)
         .then((res) => {
-            fetch('https://smogbuddy.herokuapp.com/driver/', {
+            fetch(BaseUrl.Url+'/driver/', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

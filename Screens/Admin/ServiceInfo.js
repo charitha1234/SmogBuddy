@@ -11,9 +11,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import BaseUrl from '../../Config'
 function deleteService(serviceID, setloading, navigation) {
     setloading(true)
-    fetch("https://smogbuddy.herokuapp.com/service/" + serviceID,
+    fetch(BaseUrl.Url+"/service/" + serviceID,
         {
             method: 'DELETE',
             headers: {

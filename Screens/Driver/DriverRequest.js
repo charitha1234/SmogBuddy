@@ -24,6 +24,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import BottomSheet from 'reanimated-bottom-sheet'
 import firebase from 'react-native-firebase';
 import StepIndicator from 'react-native-step-indicator';
+import BaseUrl from '../../Config'
 
 const labels = ["Driver Is On The Way", "Driver Arrived", "PickedUp The Car", "Arrived To The Service Center", "Completed Service", "Driver Is On The Way", "Driver Arrived", "Finished"];
 const buttonLabels = ["IM ON THE WAY", "I've ARRIVED", "CAR IS PICKED UP", "ARRIVED TO THE STATION", "SERVICE COMPLETED", "IM ON THE WAY", "I've ARRIVED", "FINISHED"]
@@ -55,7 +56,7 @@ const customStyles = {
 }
 Geolocation.setRNConfiguration({ authorizationLevel: 'always' });
 function feedback(navigation, request, uid, userPickupLocation, distance, duration, setaccepted) {
-    fetch('https://smogbuddy.herokuapp.com/driver/confirmation', {
+    fetch(BaseUrl.Url+'/driver/confirmation', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -86,7 +87,7 @@ function feedback(navigation, request, uid, userPickupLocation, distance, durati
 
 function navigationStart(userId) {
     const user = firebase.auth().currentUser;
-    fetch('https://smogbuddy.herokuapp.com/driver/start',
+    fetch(BaseUrl.Url+'/driver/start',
         {
             method: 'POST',
             headers: {
@@ -166,7 +167,7 @@ function RenderContent(props) {
     }
     const getServiceList = () => {
         setmodalVisible(true)
-        fetch('https://smogbuddy.herokuapp.com/driver/assign/service/' + user.uid)
+        fetch(BaseUrl.Url+'/driver/assign/service/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 setserviceList(resJson.services)
@@ -239,7 +240,7 @@ function RenderContent(props) {
                                                 setloading(true)
                                                 const user = firebase.auth().currentUser;
 
-                                                fetch('https://smogbuddy.herokuapp.com/driver/status',
+                                                fetch(BaseUrl.Url+'/driver/status',
                                                     {
                                                         method: 'PUT',
                                                         headers: {
@@ -294,7 +295,7 @@ function RenderContent(props) {
                                         const user = firebase.auth().currentUser;
                                         setloading(true)
                                         console.log("STAGE", cases[currentStage])
-                                        fetch('https://smogbuddy.herokuapp.com/driver/status',
+                                        fetch(BaseUrl.Url+'/driver/status',
                                             {
                                                 method: 'PUT',
                                                 headers: {

@@ -10,6 +10,7 @@ import { color } from '../../Assets/color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BaseUrl from '../../Config'
 function CheckList(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={[styles.ProcessContainer,props.status=="ONGOING"?{backgroundColor:color.lightGreen}:{backgroundColor:color.primaryWhite}]}>
@@ -35,7 +36,7 @@ function PreviousChecks(props) {
     const [previousChecks, setpreviousChecks] = useState(null)
     useEffect(()=>{
         const user=firebase.auth().currentUser
-        fetch('https://smogbuddy.herokuapp.com/user/inspection/history/' + user.uid)
+        fetch(BaseUrl.Url+'/user/inspection/history/' + user.uid)
         .then((res)=>res.json())
         .then((resJson)=>{
             setpreviousChecks(resJson)

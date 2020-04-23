@@ -1,4 +1,4 @@
-export const Config = {
-    API_URL: "https://smogbuddy.herokuapp.com",
-  }
-  
+const BaseUrl = {
+    Url:"https://smogbuddy.herokuapp.com"
+};
+module.exports=BaseUrl

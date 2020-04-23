@@ -16,6 +16,7 @@ import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import firebase from 'react-native-firebase';
+import BaseUrl from '../../Config'
 class ScanDMV extends Component {
     constructor(props) {
         super(props);
@@ -53,7 +54,7 @@ class ScanDMV extends Component {
             else {
                 let vin = scanResult.data.substr(2, 17);
                 let plate = scanResult.data.substr(20, 7);
-                fetch('https://smogbuddy.herokuapp.com/vehicle/' + this.state.uId + '?plateNumber=' + plate + '&vin=' + vin)
+                fetch(BaseUrl.Url+'/vehicle/' + this.state.uId + '?plateNumber=' + plate + '&vin=' + vin)
                     .then((response) => response.json())
                     .then((responseJson) => {
                         this.setState({

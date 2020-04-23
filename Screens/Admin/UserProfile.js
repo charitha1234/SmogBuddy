@@ -15,6 +15,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Dialog from "react-native-dialog";
+import BaseUrl from '../../Config'
 
 function EmployeeProfile({ navigation, route }) {
     const [firstName, setfirstName] = useState("")
@@ -29,7 +30,7 @@ function EmployeeProfile({ navigation, route }) {
     const [dialogboxVisible, setdialogboxVisible] = useState(false)
     const { userId } = route.params
     useEffect(() => {
-        fetch('https://smogbuddy.herokuapp.com/user/' + userId)
+        fetch(BaseUrl.Url+'/user/' + userId)
             .then((res) => res.json())
             .then((resJson) => {
                 console.log(resJson)
@@ -44,7 +45,7 @@ function EmployeeProfile({ navigation, route }) {
 
     const deleteUser = () => {
         setloading(true)
-        fetch('https://smogbuddy.herokuapp.com/driver/' + userId, {
+        fetch(BaseUrl.Url+'/driver/' + userId, {
             method: 'DELETE',
             headers: {
                 Accept: 'application/json',
@@ -59,7 +60,7 @@ function EmployeeProfile({ navigation, route }) {
         setloading(false)
     }
     const sendMessage = () => {
-        fetch('https://smogbuddy.herokuapp.com/admin/notification', {
+        fetch(BaseUrl.Url+'/admin/notification', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',

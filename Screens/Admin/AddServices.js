@@ -13,11 +13,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextBox from '../../Components/textBox';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import BaseUrl from '../../Config'
 import GradientButton from '../../Components/longButton';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 function newService(name, yearRange, cost, averageTime, navigation, route) {
-    fetch('https://smogbuddy.herokuapp.com/service', {
+    fetch(BaseUrl.Url+'/service', {
         method: 'POST',
         headers: {
             Accept: 'application/json',

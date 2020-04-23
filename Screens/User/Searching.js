@@ -15,6 +15,7 @@ import firebase from 'react-native-firebase';
 import MapView, { Marker } from 'react-native-maps';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GradientButton from '../../Components/CustomButton';
+import BaseUrl from '../../Config'
 Geolocation.setRNConfiguration({ authorizationLevel: "always" });
 class Searching extends Component {
     constructor(props) {
@@ -50,7 +51,7 @@ class Searching extends Component {
         const user = firebase.auth().currentUser;
         console.log("HERE>>>>", this.state.lat, this.state.lng)
         if (this.state.lat && this.state.lng) {
-            fetch('https://smogbuddy.herokuapp.com/user/request', {
+            fetch(BaseUrl.Url+'/user/request', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

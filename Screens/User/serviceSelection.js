@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import GradientButton from '../../Components/CustomButton';
 import firebase from 'react-native-firebase';
+import BaseUrl from '../../Config'
 
 function Service(props) {
     return (
@@ -103,7 +104,7 @@ class ServiceSelection extends Component {
     componentDidMount() {
         const user = firebase.auth().currentUser;
         this.setState({ uid: user });
-        fetch('https://smogbuddy.herokuapp.com/service')
+        fetch(BaseUrl.Url+'/service')
             .then((res) => res.json())
             .then((resJson) => {
                 this.setState({ serviceList: resJson });

@@ -13,6 +13,7 @@ import firebase from 'react-native-firebase';
 import {Alert, AppState} from 'react-native';
 import Dialog from "react-native-dialog";
 import AsyncStorage from '@react-native-community/async-storage';
+import BaseUrl from './Config'
 
 class  App extends Component {
   constructor(props){
@@ -45,7 +46,7 @@ class  App extends Component {
         try {
           const userId= await AsyncStorage.getItem('userId')
           if(userId !== null) {
-            fetch("https://smogbuddy.herokuapp.com/user/fuelcap/" + userId)
+            fetch(BaseUrl.Url+"/user/fuelcap/" + userId)
             .then((res)=>res.json())
             .then((resJson)=>console.log("FUELCAP",resJson))
             .catch((e)=>console.log("FUEL ERROR",e))
@@ -172,7 +173,7 @@ class  App extends Component {
                 text: 'Yes', onPress: () => {
                   this.setState({dialogboxVisible:false})
                   const user=firebase.auth().currentUser;
-                  fetch('https://smogbuddy.herokuapp.com/user/fuelcap/confirmation', {
+                  fetch(BaseUrl.Url+'/user/fuelcap/confirmation', {
                     method: 'PUT',
                     headers: {
                         Accept: 'application/json',

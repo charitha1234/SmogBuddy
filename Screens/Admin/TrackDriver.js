@@ -17,6 +17,7 @@ import StepIndicator from 'react-native-step-indicator';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapViewDirections from 'react-native-maps-directions';
 import Header from '../../Components/NormalHeader'
+import BaseUrl from '../../Config'
 Geolocation.setRNConfiguration({ authorizationLevel: 'always' });
 const labels = ["Driver Is On The Way", "Driver Arrived", "PickedUp The Car", "Arrived To The Service Center", "Completed Service", "Driver Is On The Way", "Driver Arrived", "Finished"];
 const buttonLabels = ["IM ON THE WAY", "I've ARRIVED", "CAR IS PICKED UP", "ARRIVED TO THE STATION", "SERVICE COMPLETED", "IM ON THE WAY", "I've ARRIVED", "FINISHED"]
@@ -91,7 +92,7 @@ function DriverTrack({ navigation, route }, props) {
     const destination = { latitude: customerLat, longitude: customerLng }
     const { userId } = route.params
     const getApiData = () => {
-        fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + userId)
+        fetch(BaseUrl.Url+'/user/assign/driver/' + userId)
             .then((res) => res.json())
             .then((responseJson) => {
                 if (responseJson.isDriverAssigned) setdriverAssigned(true);

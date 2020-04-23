@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 import Header from '../../Components/NormalHeader'
+import BaseUrl from '../../Config'
 function ShopProfile({ navigation }) {
     const user = firebase.auth().currentUser
     const [name, setname] = useState(null)
@@ -26,7 +27,7 @@ function ShopProfile({ navigation }) {
     const [loading, setloading] = useState(true)
     const [editing, setediting] = useState(false)
     useEffect(() => {
-        fetch("https://smogbuddy.herokuapp.com/admin/shop?adminUid=" + user.uid)
+        fetch(BaseUrl.Url+"/admin/shop?adminUid=" + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 setname(resJson[0].name)
