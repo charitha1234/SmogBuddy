@@ -246,11 +246,11 @@ function WelcomeScreen() {
 
     const datafetch = async (user) => {
         let fcmToken = await AsyncStorage.getItem('fcmToken');
-        console.log(user.uid)
-        fetch('https://smogbuddy.herokuapp.com/user/' + user.uid)
+        console.log("uid",user.uid,"fcm",fcmToken)
+        fetch(`https://smogbuddy.herokuapp.com/user/${user.uid}`)
             .then((response) => response.json())
             .then((Json)=>{
-                console.log("RES",Json)
+                console.log("REyvvvvvvvvvvvvvvvvS",Json)
                 fetch('https://smogbuddy.herokuapp.com/user/fcm/' +user.uid, {
                     method: 'PUT',
                     headers: {
@@ -287,6 +287,8 @@ function WelcomeScreen() {
             })
             .catch((e) => {
                 console.log("INDEX ERROR",e)
+                alert("Something has wrong")
+                firebase.auth().signOut();
                 setappOpened(true);
             });
 

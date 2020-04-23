@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { SearchBar } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import firebase from "react-native-firebase";
+import Header from '../../Components/TwoButtonHeader'
 
 
 
@@ -41,13 +42,14 @@ class Sales extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            isDateVisible: false,
-            startingDate: new Date(),
-            endDate: new Date(),
+            isDateVisible: true,
+            startingDate: null,
+            endDate:null,
             showEnding:false,
             showStarting:false,
             transactionList:null,
             loading:false,
+            date:new Date()
         }
     }
     onChangeStart = (event, selectedDate) => {
@@ -82,11 +84,7 @@ class Sales extends Component {
     render() {
         return (
             <SafeAreaView style={styles.container}>
-                <View style={styles.headerContainer}>
-                    <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity>
-                    <Text style={styles.headerText}>SALES</Text>
-                    <TouchableOpacity style={{ marginRight: 20, marginLeft: -40 }} onPress={() => this.setState({ isDateVisible: true })}><Ionicons name="ios-calendar" size={40} /></TouchableOpacity>
-                </View>
+                <Header title="SALES" navigation={this.props.navigation} onPress={() => this.setState({ isDateVisible: true })} icon="ios-calendar" />
                 {this.state.loading?
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}} >
                 <ActivityIndicator size={40} color={color.primaryBlack}/>
@@ -95,45 +93,46 @@ class Sales extends Component {
                 <FlatList data={this.state.transactionList} renderItem={({item})=>(<CheckList onPress={()=>this.props.navigation.navigate("PdfViewer")}  name={item.user} date={item.timestamp} cost={item.totalCost}/>)}/>
                 }
                 
-                <Modal useNativeDriver={true} isVisible={this.state.isDateVisible}>
+                <Modal useNativeDriver={true} isVisible={this.state.isDateVisible} onBackdropPress={()=>this.setState({isDateVisible:false})}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={styles.modalContainer}>
-                            <View style={styles.modalheaderContainer}>
-                                <TouchableOpacity onPress={() => this.setState({ isDateVisible: false })} style={styles.modalIcon}><Ionicons name="ios-close" size={40} /></TouchableOpacity>
-                                <View style={{ flex: 2 }}><Text style={styles.modalHeader}>Choose starting and ending dates</Text></View>
-                            </View>
-                            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
-                                <TouchableOpacity onPress={()=>this.setState({showStarting:true})} style={styles.calenderIcon}><Ionicons name="ios-calendar" size={40} /></TouchableOpacity>
-                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={styles.dateText}>{this.state.startingDate.toLocaleDateString()}</Text>
-                                {this.state.showStarting && (
+                    <View style={{ backgroundColor: color.primaryWhite, alignSelf: 'center', height: '50%', width: '90%', borderRadius: 20 }}>
+                    <TouchableOpacity onPress={() => this.setState({ showStarting: true })} style={{ flex: 1, margin: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Text style={styles.settingText}>Select Starting Date:</Text>
+                        {this.state.startingDate ?
+                            <Text>{this.state.startingDate.toLocaleDateString()}</Text>
+                            :
+                            <Ionicons name='ios-calendar' size={30} />}
+                    </TouchableOpacity>
+                    {this.state.showStarting && (
                                     <DateTimePicker
                                         testID="dateTimePicker"
                                         timeZoneOffsetInMinutes={0}
-                                        value={this.state.startingDate}
+                                        value={this.state.startingDate?this.state.startingDate:this.state.date}
                                         mode={'date'}
                                         is24Hour={true}
                                         display="default"
                                         onChange={this.onChangeStart}
                                     />
                                 )}
-                                </View>
-                            </View>
-                            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
-                                <TouchableOpacity onPress={()=>this.setState({showEnding:true})} style={styles.calenderIcon}><Ionicons name="ios-calendar" size={40} /></TouchableOpacity>
-                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={styles.dateText}>{this.state.endDate.toLocaleDateString()}</Text>
-                                {this.state.showEnding && (
+                    <TouchableOpacity onPress={()=>this.setState({showEnding:true})} style={{ flex: 1, margin: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Text style={styles.settingText}>Select Ending Date:</Text>
+                        {this.state.endDate ?
+                            <Text>{this.state.endDate.toLocaleDateString()}</Text>
+                            :
+                            <Ionicons name='ios-calendar' size={30} />}
+                    </TouchableOpacity>
+                    {this.state.showEnding && (
                                     <DateTimePicker
                                         testID="dateTimePicker"
                                         timeZoneOffsetInMinutes={0}
-                                        value={this.state.endDate}
+                                        value={this.state.endDate?this.state.endDate:this.state.date}
                                         mode={'date'}
                                         is24Hour={true}
                                         display="default"
                                         onChange={this.onChangeEnd}
                                     />
                                 )}
-                                </View>
-                            </View>
+                    
                             <TouchableOpacity onPress={this.getTransactionList.bind(this)} style={styles.buttonContainer}><Text style={styles.buttonText}>SEARCH</Text></TouchableOpacity>
                         </View>
                     </View>
@@ -151,11 +150,19 @@ const styles = StyleSheet.create({
 
     },
     headerContainer: {
-        height: 100,
+        height: 66,
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        backgroundColor:color.primaryWhite,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: .2,
+        shadowRadius: 8.30,
+        elevation: 3,
     },
     modalheaderContainer: {
         width: '100%',
@@ -173,6 +180,7 @@ const styles = StyleSheet.create({
         height: 40,
         width: 200,
         margin: 20,
+        alignSelf:'center',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 20,
@@ -214,8 +222,10 @@ const styles = StyleSheet.create({
         color: color.primaryBlack
     },
     icon: {
-        marginRight: -20,
-        marginLeft: 20
+        alignItems:'center',
+        justifyContent:'center',
+        flex:0.5,
+
     },
     modalIcon: {
         flex: 0.5,

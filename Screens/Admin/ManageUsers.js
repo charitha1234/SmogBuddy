@@ -12,7 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import UsersList from '../../data/Users';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SearchBar } from 'react-native-elements';
-
+import Header from '../../Components/NormalHeader';
 function Users(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={styles.UserContainer}>
@@ -73,7 +73,7 @@ function ManageUsers({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>MANAGE USERS</Text><View /></View>
+            <Header title="Manage Users" navigation={navigation} />
             <SearchBar
                 placeholder="Type Here..."
                 onChangeText={updateSearch}

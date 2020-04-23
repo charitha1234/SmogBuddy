@@ -21,10 +21,10 @@ async function authentication(username, password, navigation, setloading) {
 
     firebase.auth().signInWithEmailAndPassword(username, password)
         .then((res) => {
-
+            console.log("RES",res)
+            setloading(false)
         })
         .catch((e) => {
-            setloading(false)
             alert(e)
         }
         );

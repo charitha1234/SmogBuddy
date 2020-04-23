@@ -41,6 +41,7 @@ class AdminHome extends Component {
         fetch('https://smogbuddy.herokuapp.com/admin/process')
             .then((res) => res.json())
             .then((resJson) => {
+                console.log("proccess",resJson)
                 this.setState({ processList: resJson })
                 this.setState({ isFetching: false });
 
@@ -112,12 +113,12 @@ const styles = StyleSheet.create({
     },
     processStatusText: {
         fontFamily: 'Montserrat-Light',
-        fontSize: 15,
+        fontSize: 10,
 
     },
     processNameText: {
         fontFamily: 'Montserrat-Regular',
-        fontSize: 20,
+        fontSize: 15,
         letterSpacing: 2,
     },
     statusContainer: {
@@ -132,9 +133,11 @@ const styles = StyleSheet.create({
     },
     EstimatedTimeText: {
         fontFamily: 'Montserrat-Regular',
-        fontSize: 20,
+        textAlign:'center',
+        fontSize: 15,
     },
     EstimatedTimelabel: {
+        textAlign:'center',
         fontFamily: 'Montserrat-Regular',
         fontSize: 15,
     }

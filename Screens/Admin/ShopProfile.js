@@ -4,7 +4,8 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    ActivityIndicator
+    ActivityIndicator,
+    ScrollView
 } from "react-native";
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
@@ -12,6 +13,7 @@ import TextBox from '../../Components/textBox';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
+import Header from '../../Components/NormalHeader'
 function ShopProfile({ navigation }) {
     const user = firebase.auth().currentUser
     const [name, setname] = useState(null)
@@ -22,6 +24,7 @@ function ShopProfile({ navigation }) {
     const [phone, setphone] = useState(null)
     const [email, setemail] = useState(null)
     const [loading, setloading] = useState(true)
+    const [editing, setediting] = useState(false)
     useEffect(() => {
         fetch("https://smogbuddy.herokuapp.com/admin/shop?adminUid=" + user.uid)
             .then((res) => res.json())
@@ -40,26 +43,38 @@ function ShopProfile({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-                <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>SHOP PROFILE</Text><View /></View>
-                <View style={styles.container}>
-                    <View style={styles.formContainer}>
-                        {loading ?
-                            <ActivityIndicator size={40} color={color.primaryBlack} />
-                            :
-                            <>
-                                <TextBox title="BUSINESS NAME" value={name} disabled={true} />
-                                <TextBox title="ADDRESS" value={address} disabled={true} />
-                                <TextBox title="ARD" value={ard} disabled={true} />
-                                <TextBox title="STATION TYPE" value={stationType} disabled={true} />
-                                <TextBox title="OPTIONAL EPA" value={epa} disabled={true} />
-                                <TextBox title="TELEPHONE NUMBER" value={phone} disabled={true} />
-                                <TextBox title="EMAIL" value={email} disabled={true} />
-                            </>
-                        }
+            <View style={styles.container}>
+                <Header title="SHOP PROFILE" navigation={navigation} letterSize={20} />
+                <ScrollView style={styles.container}>
+                    <View style={styles.container}>
+                        <View style={styles.formContainer}>
+                            {loading ?
+                                <ActivityIndicator size={40} color={color.primaryBlack} />
+                                :
+                                <>
+                                    <TouchableOpacity onPress={() => setediting(prev => !prev)} style={{ zIndex: 100, position: "absolute", top: 0, right: 0, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }}>
+                                        {
+                                            editing ?
+                                                <Text style={styles.saveText}>Save</Text>
+                                                :
+                                                <Ionicons name="md-create" size={20} />
+                                        }
+
+
+                                    </TouchableOpacity>
+                                    <TextBox title="BUSINESS NAME" value={name} disabled={editing ? false : true} />
+                                    <TextBox title="ADDRESS" value={address} disabled={editing ? false : true} />
+                                    <TextBox title="ARD" value={ard} disabled={editing ? false : true} />
+                                    <TextBox title="STATION TYPE" value={stationType} disabled={editing ? false : true} />
+                                    <TextBox title="OPTIONAL EPA" value={epa} disabled={editing ? false : true} />
+                                    <TextBox title="TELEPHONE NUMBER" value={phone} disabled={editing ? false : true} />
+                                    <TextBox title="EMAIL" value={email} disabled={editing ? false : true} />
+                                </>
+                            }
+                        </View>
                     </View>
-                </View>
-            </LinearGradient>
+                </ScrollView>
+            </View>
         </SafeAreaView>
     );
 
@@ -88,7 +103,7 @@ const styles = StyleSheet.create({
         marginTop: 30,
         height: '90%',
         width: '90%',
-        alignSelf:'center',
+        alignSelf: 'center',
         justifyContent: 'space-evenly',
         backgroundColor: color.primaryWhite,
         shadowColor: "#000",
@@ -104,5 +119,11 @@ const styles = StyleSheet.create({
     icon: {
         marginRight: -20,
         marginLeft: 20
+    },
+    saveText: {
+        fontFamily: 'Montserrat-Bold',
+        fontSize: 12,
+        letterSpacing: 2,
+        color: color.primaryBlue
     }
 });
