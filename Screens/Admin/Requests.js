@@ -55,7 +55,7 @@ class Requests extends Component {
     render() {
         return (
             <SafeAreaView style={styles.container}>
-               <View style={styles.headerContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>REQUESTS</Text><View /></View>
+               <View style={styles.headerContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>REQUESTS</Text></View>
                <FlatList data={this.state.processList}
                 onRefresh={() => this.onRefresh()}
                 refreshing={this.state.isFetching} 
@@ -74,17 +74,20 @@ const styles = StyleSheet.create({
        height: 100,
         width: '100%',
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
     },
     headerText: {
         fontFamily: 'Montserrat-Bold',
-        fontSize: 30,
+        fontSize: 25,
         letterSpacing: 2,
     },
     icon: {
-        marginRight: -20,
-        marginLeft: 20
+        height:50,
+        width:50,
+        marginRight:20,
+        justifyContent:'center',
+        alignItems:'center',
+
     },
     ProcessContainer: {
         flexDirection: 'row',

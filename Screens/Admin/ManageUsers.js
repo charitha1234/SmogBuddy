@@ -32,34 +32,38 @@ function ManageUsers({ navigation }) {
     const [search, setsearch] = useState(null)
     const [data, setdata] = useState([])
     const [filteredList, setfilteredList] = useState([])
-    const getApidata = () => {
+    const getApidata = (adjust) => {
         fetch('https://smogbuddy.herokuapp.com/admin/users')
             .then((res) => res.json())
             .then((resJson) => {
+
+
+                console.log("res", resJson)
                 setdata(resJson)
             })
             .catch((e) => { })
+
     }
+
     useFocusEffect(
         React.useCallback(() => {
-            console.log("FOCUS")
             getApidata()
         }, [])
     );
     useEffect(() => {
-        console.log("updating")
-        let user;
-        let tempFilteredList = []
-        for (user of data) {
-            if (user.keyword.toLowerCase().includes(search.toLowerCase())) {
-                tempFilteredList.push(user)
+        if (search) {
+            let user;
+            let tempFilteredList = []
+            for (user of data) {
+                if (user.keyword.toLowerCase().includes(search.toLowerCase())) {
+                    tempFilteredList.push(user)
+                }
             }
+            setfilteredList(tempFilteredList)
         }
 
-        console.log("INFINITE")
-        setfilteredList(tempFilteredList)
 
-    })
+    }, [search, data])
 
 
     const updateSearch = search => {
@@ -69,7 +73,7 @@ function ManageUsers({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>MANAGE USERS</Text><View /></View>
+            <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>MANAGE USERS</Text><View /></View>
             <SearchBar
                 placeholder="Type Here..."
                 onChangeText={updateSearch}

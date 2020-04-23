@@ -4,7 +4,9 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    ActivityIndicator
+    ActivityIndicator,
+    Alert,
+    ScrollView
 } from "react-native";
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
@@ -23,6 +25,7 @@ function EmployeeProfile({ navigation, route }) {
     const [loading, setloading] = useState(true)
     const [title, settitle] = useState("")
     const [body, setbody] = useState("")
+    const [editing, setediting] = useState(false)
     const [dialogboxVisible, setdialogboxVisible] = useState(false)
     const { userId } = route.params
     useEffect(() => {
@@ -78,35 +81,58 @@ function EmployeeProfile({ navigation, route }) {
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
                 <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>PROFILE</Text>
                     <TouchableOpacity onPress={() => setdialogboxVisible(true)} style={{ marginLeft: -40, marginRight: 20 }}><Ionicons name="ios-mail" size={40} /></TouchableOpacity></View>
-                <View style={styles.container}>
-                    <View style={styles.formContainer}>
-                        {
-                            loading ?
-                                <ActivityIndicator size="large" color={color.primaryBlack} />
-                                :
-                                <>
-                                    <TextBox title="FIRST NAME" value={firstName} disabled={true} />
-                                    <TextBox title="LAST NAME" value={lastName} disabled={true} />
-                                    <TextBox title="ADDRESS" value={address} disabled={true} />
-                                    <TextBox title="STATE" value={state} disabled={true} />
-                                    <TextBox title="ZIPCODE" value={zipCode} disabled={true} />
-                                </>
+                <ScrollView style={styles.container}>
+                    <View style={styles.container}>
+                        <View style={styles.formContainer}>
+                            <TouchableOpacity onPress={() => setediting(prev => !prev)} style={{ zIndex: 100, position: "absolute", top: 0, right: 0, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }}>
+                                {
+                                    editing ?
+                                        <Text style={styles.saveText}>Save</Text>
+                                        :
+                                        <Ionicons name="md-create" size={20} />
+                                }
 
-                        }
 
+                            </TouchableOpacity>
+                            {
+                                loading ?
+                                    <ActivityIndicator size="large" color={color.primaryBlack} />
+                                    :
+                                    <>
+                                        <TextBox title="FIRST NAME" value={firstName} disabled={editing ? false : true}  onChangeText={(text)=>setfirstName(text)} />
+                                        <TextBox title="LAST NAME" value={lastName} disabled={editing ? false : true} onChangeText={(text)=>setlastName(text)} />
+                                        <TextBox title="ADDRESS" value={address} disabled={editing ? false : true} onChangeText={(text)=>setaddress(text)} />
+                                        <TextBox title="STATE" value={state} disabled={editing ? false : true} onChangeText={(text)=>setstate(text)} />
+                                        <TextBox title="ZIPCODE" value={zipCode} disabled={editing ? false : true} onChangeText={(text)=>setzipCode(text)} />
+                                    </>
+
+                            }
+
+                        </View>
                     </View>
-                </View>
-                <Dialog.Container visible={dialogboxVisible}>
-                    <Dialog.Title>Please Enter Message</Dialog.Title>
-                    <Dialog.Input wrapperStyle={{ borderBottomWidth: 1 }} label="Type Title" onChangeText={(text) => settitle(text)} />
-                    <Dialog.Input wrapperStyle={{ borderBottomWidth: 1 }} label="Type Body" onChangeText={(text) => setbody(text)} />
-                    <Dialog.Button onPress={() => { setdialogboxVisible(false) }} label="Cancel" />
-                    <Dialog.Button onPress={() => {
-                        setdialogboxVisible(false)
-                        sendMessage()
-                    }} label="SEND" />
-                </Dialog.Container>
-                <TouchableOpacity onPress={() => deleteUser()} style={styles.deleteButton}><Text style={styles.deleteText}>DELETE PROFILE</Text></TouchableOpacity>
+                    <Dialog.Container visible={dialogboxVisible}>
+                        <Dialog.Title>Please Enter Message</Dialog.Title>
+                        <Dialog.Input wrapperStyle={{ borderBottomWidth: 1 }} label="Type Title" onChangeText={(text) => settitle(text)} />
+                        <Dialog.Input wrapperStyle={{ borderBottomWidth: 1 }} label="Type Body" onChangeText={(text) => setbody(text)} />
+                        <Dialog.Button onPress={() => { setdialogboxVisible(false) }} label="Cancel" />
+                        <Dialog.Button onPress={() => {
+                            setdialogboxVisible(false)
+                            sendMessage()
+                        }} label="SEND" />
+                    </Dialog.Container>
+                    <TouchableOpacity onPress={() => {
+                        Alert.alert(
+                            '',
+                            'Are you sure you want to delete?',  
+                            [
+                               {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+                               {text: 'OK', onPress: () => deleteUser()},
+                            ],
+                            { cancelable: false }
+                       )
+                        
+                        }} style={styles.deleteButton}><Text style={styles.deleteText}>DELETE PROFILE</Text></TouchableOpacity>
+                </ScrollView>
             </LinearGradient>
         </SafeAreaView>
     );
@@ -136,7 +162,7 @@ const styles = StyleSheet.create({
         marginTop: 30,
         height: '90%',
         width: '90%',
-        alignSelf:'center',
+        alignSelf: 'center',
         justifyContent: 'center',
         backgroundColor: color.primaryWhite,
         shadowColor: "#000",
@@ -177,5 +203,11 @@ const styles = StyleSheet.create({
         fontSize: 12,
         letterSpacing: 2,
         color: color.primaryWhite
+    },
+    saveText: {
+        fontFamily: 'Montserrat-Bold',
+        fontSize: 12,
+        letterSpacing: 2,
+        color: color.primaryBlue
     }
 });

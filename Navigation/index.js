@@ -52,6 +52,7 @@ import PaypalScreen from "../Screens/User/PaypalScreen";
 import AsyncStorage from '@react-native-community/async-storage';
 import PdfViewer from '../Screens/Admin/checkDetails';
 import AdminUserProfile from '../Screens/Admin/UserProfile';
+import Settings from '../Screens/Admin/Settings';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -218,6 +219,7 @@ function AdminScreens() {
         <Drawer.Navigator initialRouteName="AdminMenu" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <AdminDrawerContent {...props} />}>
             <Drawer.Screen name="AdminMenu" component={AdminMenu} />
             <Drawer.Screen name="ShopProfile" component={ShopProfile} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="Settings" component={Settings} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="ServicesStack" component={ServicesStack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="ManageUsersStack" component={ManageUsersStack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="Sales" component={Sales} options={{ gestureEnabled: false }} />

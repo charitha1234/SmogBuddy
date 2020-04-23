@@ -220,7 +220,6 @@ class SmogTests extends Component {
         })
             .then((res) => res.json())
             .then((resJson) => {
-                console.log("RESSSS", resJson)
                 this.setState({ capLoading: false })
                 this.setState({ fuelCapRequested: true })
 
