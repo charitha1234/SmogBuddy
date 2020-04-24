@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { 
     View,
     Text,
@@ -10,14 +10,17 @@ import firebase from 'react-native-firebase';
 import { color } from '../Assets/color';
 function HomeDrawer({navigation},props){
 
+
 return(
     <View style={styles.container}>
-        <View style={styles.headerContainer}><TouchableOpacity onPress={()=>navigation.closeDrawer()} style={styles.icon}><Ionicons  name="md-arrow-back" size={40}/></TouchableOpacity><View style={styles.imageContainer}></View><View/></View>
-        <TouchableOpacity onPress={()=>navigation.navigate("RequestStack")} style={styles.content}><Ionicons name="ios-mail-unread" color={color.failedRed} size={30}/><Text style={[styles.contentText,{color:color.failedRed}]}>REQUESTS</Text></TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("ShopProfile")} style={styles.content}><Ionicons name="ios-business" size={30}/><Text style={styles.contentText}>SHOP PROFILE</Text></TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("ManageUsersStack")} style={styles.content}><Ionicons name="ios-people" size={30}/><Text style={styles.contentText}>MANAGE USERS</Text></TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("ServicesStack")} style={styles.content}><Ionicons name="ios-list" size={30}/><Text style={styles.contentText}>SERVICES</Text></TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("Sales")} style={styles.content}><Ionicons name="ios-trending-up" size={30}/><Text style={styles.contentText}>SALES</Text></TouchableOpacity>
+        <View style={styles.headerContainer}><TouchableOpacity onPress={()=>navigation.closeDrawer()} style={styles.icon}><Ionicons  name="md-arrow-back" size={40}/></TouchableOpacity><View style={styles.imageContainer}></View></View>
+        <TouchableOpacity onPress={()=>navigation.navigate("RequestStack")} style={styles.content}><Ionicons name="ios-mail-unread" color={color.failedRed} size={20}/><Text style={[styles.contentText,{color:color.failedRed}]}>REQUESTS</Text></TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("ShopProfile")} style={styles.content}><Ionicons name="ios-business" size={20}/><Text style={styles.contentText}>SHOP PROFILE</Text></TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("ManageUsersStack")} style={styles.content}><Ionicons name="ios-people" size={20}/><Text style={styles.contentText}>MANAGE USERS</Text></TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("ServicesStack")} style={styles.content}><Ionicons name="ios-list" size={20}/><Text style={styles.contentText}>SERVICES</Text></TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("Sales")} style={styles.content}><Ionicons name="ios-trending-up" size={20}/><Text style={styles.contentText}>SALES</Text></TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("Settings")} style={styles.content}><Ionicons name="ios-settings" size={20}/><Text style={styles.contentText}>SETTINGS</Text></TouchableOpacity>
+        <View style={styles.content}/>
         <View style={styles.content}/>
         <TouchableOpacity onPress={()=>{
             firebase.auth().signOut();}}
@@ -36,29 +39,26 @@ const styles = StyleSheet.create({
     imageContainer:{
         width:100,
         height:100,
-        backgroundColor:'black',
         borderRadius:50,
-        margin:30,
+        marginLeft:30,
         alignSelf:'center'
 
     },
     headerContainer: {
         marginTop:10,
         height:150,
-        width:'100%',
         flexDirection:'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
     },
     content:{
-        margin:30,
         flex:1,
+        marginLeft:30,
         flexDirection:'row',
         alignItems:'center'
     },
     contentText:{
         fontFamily: 'Montserrat-Regular',
-        fontSize: 15,
+        fontSize: 12,
         letterSpacing: 2,
         opacity:0.6,
         marginLeft:20,
@@ -81,7 +81,9 @@ const styles = StyleSheet.create({
         letterSpacing: 2,
     },
     icon:{
-        marginRight:-20,
-        marginLeft:20
+        height:50,
+        width:50,
+        justifyContent:'center',
+        alignItems:"center"
     }
 });

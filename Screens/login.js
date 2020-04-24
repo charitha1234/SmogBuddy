@@ -24,8 +24,8 @@ async function authentication(username, password, navigation, setloading) {
 
         })
         .catch((e) => {
-            setloading(false)
             alert(e)
+            setloading(false)
         }
         );
 
@@ -107,9 +107,7 @@ function Login({ navigation }) {
                         {
                             isKeyboardVisible ?
                                 null :
-                                <View style={{ height: 70 }}>
-                                    <TouchableOpacity onPress={() => { navigation.navigate("NewUser") }}><Text style={styles.bottomText}>NEW ACCOUNT</Text></TouchableOpacity>
-                                </View>
+                                <TouchableOpacity  onPress={() => { navigation.navigate("NewUser") }}><Text style={styles.bottomText}>NEW ACCOUNT</Text></TouchableOpacity>
                         }
 
                     </KeyboardAwareScrollView>
@@ -139,7 +137,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     bottomText: {
-        flex: 1,
         fontFamily: 'Montserrat-Bold',
         fontSize: 10,
         letterSpacing: 6,

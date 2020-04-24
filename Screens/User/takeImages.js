@@ -59,8 +59,8 @@ class OdometerRead extends Component {
             .ref(this.formatDate() + '/' + user.uid + '/' + uuidv1() + '.jpeg')
             .putFile(this.state.picture)
             .then((res) => {
-                if (this.state.images.length == 0) this.state.images.push({ imageUrl: res.downloadURL, imagePath: res.ref, isOdometer: true })
-                else this.state.images.push({ imageUrl: res.downloadURL, imagePath: res.ref, isOdometer: false })
+                if (this.state.images.length == 0) this.state.images.push({ imageUrl: res.downloadURL,status:'Request Service',isOdometer: true })
+                else this.state.images.push({ imageUrl: res.downloadURL,status:'Request Service',isOdometer: false })
                 this.setState({ loading: false, picture: null });
 
             })

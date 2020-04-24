@@ -13,6 +13,7 @@ import { WebView } from 'react-native-webview';
 import VerifiedsSvg from '../../Assets/verified';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import firebase from 'react-native-firebase';
+import BaseUrl from '../../Config'
 class PaypalScreen extends Component {
     constructor(props) {
         super(props);
@@ -26,7 +27,7 @@ class PaypalScreen extends Component {
     componentDidMount() {
         const user = firebase.auth().currentUser
 
-        fetch('https://smogbuddy.herokuapp.com/user/amount/' + user.uid)
+        fetch(BaseUrl.Url+'/user/amount/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
 
@@ -54,7 +55,7 @@ class PaypalScreen extends Component {
                         {
                             this.state.amount && this.state.uid ?
                                 <WebView
-                                    source={{ uri: 'https://smogbuddy.herokuapp.com/admin/pay?amount=' + this.state.amount.toString() + '&uid=' + this.state.uid.toString() }}
+                                    source={{ uri: BaseUrl.Url+'/admin/pay?amount=' + this.state.amount.toString() + '&uid=' + this.state.uid.toString() }}
                                     onNavigationStateChange={(data) => this.handlepayment(data)}
                                 /> : null
                         }

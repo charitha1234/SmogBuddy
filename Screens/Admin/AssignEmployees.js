@@ -13,12 +13,14 @@ import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import GradientButton from '../../Components/longButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BaseUrl from '../../Config'
+import Header from '../../Components/NormalHeader'
 function deleteProfile() {
 
 }
 function Assign(pickUp, technician, driver, userId, setloading, navigation) {
     console.log(pickUp, ":", technician, ":", driver, ":", userId, ":", setloading)
-    fetch('https://smogbuddy.herokuapp.com/admin/assign/driver', {
+    fetch(BaseUrl.Url + '/admin/assign/driver', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -58,7 +60,7 @@ function AssignEmployees({ navigation, route }) {
         }
     }
     const getApiData = () => {
-        fetch('https://smogbuddy.herokuapp.com/driver/available-list')
+        fetch(BaseUrl.Url + '/driver/available-list')
             .then((res) => res.json())
             .then((resJson) => {
                 console.log("RESJSON>>", resJson)
@@ -67,7 +69,10 @@ function AssignEmployees({ navigation, route }) {
                 setloading(false);
                 setName(details.user.firstName + " " + details.user.lastName);
             })
-            .catch((e) => alert(e))
+            .catch((e) => {
+                console.log("EMPLOYEE ERR", e)
+                alert(e)
+            })
     }
     useEffect(() => {
         if (fetching) getApiData();
@@ -77,7 +82,7 @@ function AssignEmployees({ navigation, route }) {
     return (
         <SafeAreaView style={styles.container}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-                <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>ASSIGN EMPLOYEES</Text><View /></View>
+                <Header navigation={navigation} title="ASSIGN EMPLOYEES" />
                 <View style={styles.container}>
                     <View style={styles.formContainer}>
                         {
@@ -92,6 +97,7 @@ function AssignEmployees({ navigation, route }) {
                                             handleDriver(itemValue)
                                         }>
                                         <Picker.Item label='Select a Driver' value='0' />
+
                                         {employeeList.drivers.map(element => {
                                             return (
                                                 <Picker.Item label={element.firstName + " " + element.lastName} value={element.uid} />
@@ -181,8 +187,11 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     icon: {
-        marginRight: -20,
-        marginLeft: 20
+        height: 50,
+        width: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+
     },
 
     picker: {

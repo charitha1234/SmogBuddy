@@ -52,6 +52,8 @@ import PaypalScreen from "../Screens/User/PaypalScreen";
 import AsyncStorage from '@react-native-community/async-storage';
 import PdfViewer from '../Screens/Admin/checkDetails';
 import AdminUserProfile from '../Screens/Admin/UserProfile';
+import Settings from '../Screens/Admin/Settings';
+import BaseUrl from '../Config'
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -88,7 +90,7 @@ function UserHomeScreen() {
     const [payable, setpayable] = useState(false)
     useEffect(() => {
         const user = firebase.auth().currentUser;
-        fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + user.uid)
+        fetch(BaseUrl.Url+'/user/assign/driver/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 if (resJson.isDriverAssigned) {
@@ -102,7 +104,7 @@ function UserHomeScreen() {
 
 
         if (currentState == 7) {
-            fetch('https://smogbuddy.herokuapp.com/user/amount/' + user.uid)
+            fetch(BaseUrl.Url+'/user/amount/' + user.uid)
                 .then((res) => res.json())
                 .then((resJson) => {
                     console.log("ISPAID>>", resJson)
@@ -111,7 +113,7 @@ function UserHomeScreen() {
                 })
                 .catch((e) => { })
         }
-    })
+    },[])
     return (
         <Drawer.Navigator initialRouteName="Home" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <HomeDrawerContent {...props} />}>
             {
@@ -194,6 +196,7 @@ function ManageUsersStack({ route }) {
         <Stack.Navigator initialRouteName="ManageUsers" screenOptions={{ animationEnabled: false, headerShown: false }}>
             <Stack.Screen name="ManageUsers" component={ManageUsers} />
             <Stack.Screen name="InterfaceSelection" component={InterfaceSelection} />
+            <Stack.Screen name="AdminUserProfile" component={AdminUserProfile}/>
             <Stack.Screen name="EmployeeProfile" component={EmployeeProfile} />
             <Stack.Screen name="EmployeeRegistration_1" component={EmployeeRegistration_1} />
             <Stack.Screen name="EmployeeRegistration_2" component={EmployeeRegistration_2} />
@@ -217,12 +220,13 @@ function AdminScreens() {
         <Drawer.Navigator initialRouteName="AdminMenu" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <AdminDrawerContent {...props} />}>
             <Drawer.Screen name="AdminMenu" component={AdminMenu} />
             <Drawer.Screen name="ShopProfile" component={ShopProfile} options={{ gestureEnabled: false }} />
+            <Drawer.Screen name="Settings" component={Settings} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="ServicesStack" component={ServicesStack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="ManageUsersStack" component={ManageUsersStack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="Sales" component={Sales} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="RequestStack" component={RequestStack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="PdfViewer" component={PdfViewer} options={{ gestureEnabled: false }}/>
-            <Drawer.Screen name="AdminUserProfile" component={AdminUserProfile} options={{ gestureEnabled: false }}/>
+           
         </Drawer.Navigator>
     );
 }
@@ -243,12 +247,11 @@ function WelcomeScreen() {
 
     const datafetch = async (user) => {
         let fcmToken = await AsyncStorage.getItem('fcmToken');
-        console.log(user.uid)
-        fetch('https://smogbuddy.herokuapp.com/user/' + user.uid)
+        console.log("BASEURL",BaseUrl.Url)
+        fetch(BaseUrl.Url+`/user/${user.uid}`)
             .then((response) => response.json())
             .then((Json)=>{
-                console.log("RES",Json)
-                fetch('https://smogbuddy.herokuapp.com/user/fcm/' +user.uid, {
+                fetch(BaseUrl.Url+'/user/fcm/' +user.uid, {
                     method: 'PUT',
                     headers: {
                         Accept: 'application/json',
@@ -260,7 +263,6 @@ function WelcomeScreen() {
                 })
                     .then((resJson) => {
                         if (resJson.status == 200) {
-                                console.log("reeponseparse",Json)
                                 setrole(Json.role);
                                 setUid(user)
                                 setLoggedIn(true);
@@ -284,6 +286,8 @@ function WelcomeScreen() {
             })
             .catch((e) => {
                 console.log("INDEX ERROR",e)
+                alert("Something has wrong")
+                firebase.auth().signOut();
                 setappOpened(true);
             });
 

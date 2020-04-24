@@ -11,6 +11,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import RNFetchBlob from 'rn-fetch-blob'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {color} from '../../Assets/color';
+import Header from '../../Components/TwoButtonHeader'
 
 export default function PdfViewer({ navigation, route }) {
     const download = () => {
@@ -33,11 +34,8 @@ export default function PdfViewer({ navigation, route }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.headerContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity>
-                <Text style={styles.headerText}>TRANSACTION</Text>
-                <TouchableOpacity style={{ marginRight: 20, marginLeft: -40 }} onPress={() => download()}><Ionicons name="ios-download" size={40} /></TouchableOpacity>
-            </View>
+            <Header navigation={navigation} icon="ios-download" title="TRANSACTION" onPress={() => download()}/>
+
             <Pdf
                 source={{ uri: 'https://storage.googleapis.com/smog-buddy-dev.appspot.com/reports/aaa.pdf', cache: true }}
                 onLoadComplete={(numberOfPages, filePath) => {

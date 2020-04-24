@@ -11,14 +11,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/longButton';
-
+import BaseUrl from '../../Config'
 
 
 function Review(props) {
     const [Rating, setRating] = useState(0)
     const putReview=()=>{
         const user = firebase.auth().currentUser;
-        fetch('https://smogbuddy.herokuapp.com/user/review',
+        fetch(BaseUrl.Url+'/user/review',
         {
             method: 'PUT',
             headers: {

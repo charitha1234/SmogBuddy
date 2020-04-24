@@ -9,7 +9,8 @@ import {
 import { color } from '../../Assets/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import Header from '../../Components/TwoButtonHeader'
+import BaseUrl from '../../Config'
 function Service(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={styles.UserContainer}>
@@ -30,25 +31,25 @@ class Services extends Component {
         super(props);
         this.state = {
             search: '',
-            serviceList:null,
+            serviceList: null,
             isFetching: false,
         };
     }
 
-    getApiData(){
-        fetch('https://smogbuddy.herokuapp.com/service')
-        .then((res) => res.json())
-        .then((resJson) => {
-            this.setState({ serviceList: resJson });
-            this.setState({ isFetching: false });
-        }
-        
-    )
+    getApiData() {
+        fetch(BaseUrl.Url+'/service')
+            .then((res) => res.json())
+            .then((resJson) => {
+                this.setState({ serviceList: resJson });
+                this.setState({ isFetching: false });
+            }
+
+            )
     }
     onRefresh() {
-        this.setState({ isFetching: true }, function() { this.getApiData() });
-     }
-    
+        this.setState({ isFetching: true }, function () { this.getApiData() });
+    }
+
 
     componentDidMount() {
         this.getApiData()
@@ -60,11 +61,11 @@ class Services extends Component {
     render() {
         return (
             <SafeAreaView style={styles.container}>
-                <View style={styles.headerContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>SERVICES</Text><TouchableOpacity style={{ marginRight: 20, marginLeft: -20 }} onPress={() => this.props.navigation.navigate("AddService")}><Ionicons  name="ios-add" size={50} /></TouchableOpacity></View>
-                <FlatList data={this.state.serviceList} 
-                onRefresh={() => this.onRefresh()}
-                refreshing={this.state.isFetching}
-                renderItem={({ item }) => (<Service onPress={() => this.props.navigation.navigate("ServiceInfo",{info:item})} name={item.serviceName} yearRange={item.yearRange} />)} keyExtractor={item => item.UserId} />
+                <Header navigation={this.props.navigation} title="SERVICES" onPress={() => this.props.navigation.navigate("AddService")} icon="ios-add" />
+                <FlatList data={this.state.serviceList}
+                    onRefresh={() => this.onRefresh()}
+                    refreshing={this.state.isFetching}
+                    renderItem={({ item }) => (<Service onPress={() => this.props.navigation.navigate("ServiceInfo", { info: item })} name={item.serviceName} yearRange={item.yearRange} />)} keyExtractor={item => item.UserId} />
 
             </SafeAreaView>
         );
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
     UserContainer: {
         flexDirection: 'row',
         marginTop: 20,
-        marginBottom:10,
+        marginBottom: 10,
         height: 100,
         width: '100%',
         justifyContent: 'center',
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
     YearRangeLabel: {
         fontFamily: 'Montserrat-Regular',
         fontSize: 15,
-        marginRight:5,
+        marginRight: 5,
     },
     YearRangeText: {
         fontFamily: 'Montserrat-Regular',

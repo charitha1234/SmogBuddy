@@ -13,6 +13,7 @@ import TextBox from '../../Components/textBox';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
+import BaseUrl from '../../Config'
 function Profile({ navigation }) {
     const [driverAssigned, setdriverAssigned] = useState(false)
     const [loading, setloading] = useState(true)
@@ -22,12 +23,12 @@ function Profile({ navigation }) {
     useEffect(() => {
         const user = firebase.auth().currentUser;
         console.log(user.uid)
-        fetch('https://smogbuddy.herokuapp.com/user/assign/driver/' + user.uid)
+        fetch(BaseUrl.Url+'/user/assign/driver/' + user.uid)
             .then((res) => res.json())
             .then((responseJson) => {
                 if (responseJson.isDriverAssigned) {
                     setdriverAssigned(true);
-                    fetch('https://smogbuddy.herokuapp.com/user/' + responseJson.assignedDriver)
+                    fetch(BaseUrl.Url+'/user/' + responseJson.assignedDriver)
                         .then((res) => res.json())
                         .then((responseJson) => {
                             setname(responseJson.firstName)

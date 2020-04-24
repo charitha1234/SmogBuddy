@@ -10,6 +10,8 @@ import { color } from '../../Assets/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import OngoingProcessList from '../../data/OngoingProcesses';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Header from '../../Components/NormalHeader'
+import BaseUrl from '../../Config'
 function Request(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={styles.ProcessContainer}>
@@ -34,7 +36,7 @@ class Requests extends Component {
     }
     getApiData(){
 
-        fetch('https://smogbuddy.herokuapp.com/admin/process')
+        fetch(BaseUrl.Url+'/admin/process')
         .then((res) => res.json())
         .then((resJson) => {
             this.setState({processList:resJson})
@@ -55,7 +57,7 @@ class Requests extends Component {
     render() {
         return (
             <SafeAreaView style={styles.container}>
-               <View style={styles.headerContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>REQUESTS</Text><View /></View>
+              <Header title="REQUESTS" navigation={this.props.navigation}/>
                <FlatList data={this.state.processList}
                 onRefresh={() => this.onRefresh()}
                 refreshing={this.state.isFetching} 
@@ -74,17 +76,20 @@ const styles = StyleSheet.create({
        height: 100,
         width: '100%',
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
     },
     headerText: {
         fontFamily: 'Montserrat-Bold',
-        fontSize: 30,
+        fontSize: 25,
         letterSpacing: 2,
     },
     icon: {
-        marginRight: -20,
-        marginLeft: 20
+        height:50,
+        width:50,
+        marginRight:20,
+        justifyContent:'center',
+        alignItems:'center',
+
     },
     ProcessContainer: {
         flexDirection: 'row',

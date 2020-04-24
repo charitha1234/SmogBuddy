@@ -12,6 +12,7 @@ import TextBox from '../../Components/textBox';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
+import BaseUrl from '../../Config'
 
 function Profile({ navigation }) {
     const [firstName, setfirstName] = useState("")
@@ -22,7 +23,7 @@ function Profile({ navigation }) {
     const [loading, setloading] = useState(true)
     useEffect(() => {
         const user = firebase.auth().currentUser;
-        fetch('https://smogbuddy.herokuapp.com/user/' + user.uid)
+        fetch(BaseUrl.Url+'/user/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 setloading(false);

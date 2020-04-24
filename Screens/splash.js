@@ -15,7 +15,7 @@ function Splash({ navigation }) {
         //         navigation.navigate('Login')
         //     }
         //     else {
-        //         fetch('https://smogbuddy.herokuapp.com/user/' + user.uid)
+        //         fetch(BaseUrl.Url+'/user/' + user.uid)
         //             .then((response) => response.json())
         //             .then((responseJson) => {
         //                 if (responseJson.role == 'CUSTOMER') navigation.navigate('UserMenuScreens');

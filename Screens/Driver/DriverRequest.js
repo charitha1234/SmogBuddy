@@ -24,6 +24,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import BottomSheet from 'reanimated-bottom-sheet'
 import firebase from 'react-native-firebase';
 import StepIndicator from 'react-native-step-indicator';
+import BaseUrl from '../../Config'
 
 const labels = ["Driver Is On The Way", "Driver Arrived", "PickedUp The Car", "Arrived To The Service Center", "Completed Service", "Driver Is On The Way", "Driver Arrived", "Finished"];
 const buttonLabels = ["IM ON THE WAY", "I've ARRIVED", "CAR IS PICKED UP", "ARRIVED TO THE STATION", "SERVICE COMPLETED", "IM ON THE WAY", "I've ARRIVED", "FINISHED"]
@@ -55,7 +56,7 @@ const customStyles = {
 }
 Geolocation.setRNConfiguration({ authorizationLevel: 'always' });
 function feedback(navigation, request, uid, userPickupLocation, distance, duration, setaccepted) {
-    fetch('https://smogbuddy.herokuapp.com/driver/confirmation', {
+    fetch(BaseUrl.Url+'/driver/confirmation', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -86,7 +87,7 @@ function feedback(navigation, request, uid, userPickupLocation, distance, durati
 
 function navigationStart(userId) {
     const user = firebase.auth().currentUser;
-    fetch('https://smogbuddy.herokuapp.com/driver/start',
+    fetch(BaseUrl.Url+'/driver/start',
         {
             method: 'POST',
             headers: {
@@ -159,14 +160,13 @@ function RenderContent(props) {
     const user = firebase.auth().currentUser;
     const fetchFirebaseStart = () => {
         firebase.database().ref('location/' + user.uid).once('value', snapshot => {
-            console.log("FIREBASE UPDATED ERROR", snapshot.val().currentStage)
             if (snapshot.val().currentStage) setcurrentStage(snapshot.val().currentStage)
             setfetching(false)
         })
     }
     const getServiceList = () => {
         setmodalVisible(true)
-        fetch('https://smogbuddy.herokuapp.com/driver/assign/service/' + user.uid)
+        fetch(BaseUrl.Url+'/driver/assign/service/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 setserviceList(resJson.services)
@@ -181,13 +181,13 @@ function RenderContent(props) {
         else props.setreturnToStation(false)
         if (currentStage == 8) props.navigation.navigate("DriverHomeScreen")
         console.log("CURRENTSTAGE", currentStage)
-        if (!fetching || !currentStage == 8) {
+        if (!fetching && currentStage != 8) {
             console.log("fetching")
             firebase.database().ref('location/' + user.uid).update({
                 currentStage
             });
         }
-    },[]);
+    },[currentStage]);
     return (
         <View style={styles.detailsContainer}>
             <Ionicons name="ios-remove" size={50} style={styles.bottomsheetMoreIcon} />
@@ -239,7 +239,7 @@ function RenderContent(props) {
                                                 setloading(true)
                                                 const user = firebase.auth().currentUser;
 
-                                                fetch('https://smogbuddy.herokuapp.com/driver/status',
+                                                fetch(BaseUrl.Url+'/driver/status',
                                                     {
                                                         method: 'PUT',
                                                         headers: {
@@ -294,7 +294,7 @@ function RenderContent(props) {
                                         const user = firebase.auth().currentUser;
                                         setloading(true)
                                         console.log("STAGE", cases[currentStage])
-                                        fetch('https://smogbuddy.herokuapp.com/driver/status',
+                                        fetch(BaseUrl.Url+'/driver/status',
                                             {
                                                 method: 'PUT',
                                                 headers: {
@@ -359,6 +359,7 @@ function DriverRequest({ navigation, route }) {
     const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
     const destination = { latitude: location.lat, longitude: location.lng }
     const user = firebase.auth().currentUser;
+
     useEffect(() => {
 
         if (status == "DRIVER_ASSIGN") { }
@@ -383,11 +384,14 @@ function DriverRequest({ navigation, route }) {
             setlat(info.coords.latitude);
             setlng(info.coords.longitude);
         }, e => console.log(e), { distanceFilter: 0 });
+        
+    },[]);
+    useEffect(()=>{
         firebase.database().ref('location/' + user.uid).update({
             lat,
             lng,
         });
-    });
+    },[lat,lng])
 
     return (
         <SafeAreaView style={styles.container}>

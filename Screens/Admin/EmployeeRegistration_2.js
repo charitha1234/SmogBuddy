@@ -16,17 +16,19 @@ import TextBox from '../../Components/textBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import GradientButton from '../../Components/longButton';
 import firebase from 'react-native-firebase';
+import BaseUrl from '../../Config'
 
 const uuidv1 = require('uuid/v1');
 function newUser(firstName, lastName, email, date, employNo, phoneNo, imageUri, licenceNo, role, position, navigation, setloading) {
     const isAdmin = false
+    const user=firebase.auth().currentUser
     if (role == "MANAGER") isAdmin = true
     firebase
         .storage()
         .ref('employee/' + uuidv1() + '.jpeg')
         .putFile(imageUri)
         .then((res) => {
-            fetch('https://smogbuddy.herokuapp.com/driver/', {
+            fetch(BaseUrl.Url+'/driver/', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -43,17 +45,20 @@ function newUser(firstName, lastName, email, date, employNo, phoneNo, imageUri, 
                     isAdmin: isAdmin,
                     licenseNumber: licenceNo,
                     role: role,
-                    position: position
+                    position: position,
+                    adminUid:user.uid
                 }),
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
                     setloading(false)
-                    navigation.popToTop()
+                    console.log("ERR",responseJson)
+                     navigation.popToTop()
 
                 })
                 .catch((error) => {
                     console.error(error);
+                    alert("something has wrong")
                 });
 
         })
@@ -90,9 +95,9 @@ function EmployeeRegistration_2({ navigation, route }) {
                                 </View>
                                 <View style={styles.selection}>
                                     <View style={styles.insideArea}>
-                                        <TextBox title="POSITION" underline={true} onChangeText={text => setposition(text)} />
-                                        <TextBox title="PHONE NO" underline={true} onChangeText={text => setphoneNo(text)} />
-                                        <TextBox title="EMPLOY NO" underline={true} onChangeText={text => setemployNo(text)} />
+                                        <TextBox title="POSITION" underline={true}  value={position}  onChangeText={text => setposition(text)} />
+                                        <TextBox title="PHONE NO" underline={true} value={phoneNo}  onChangeText={text => setphoneNo(text)} />
+                                        <TextBox title="EMPLOY NO" underline={true}  value={employNo} onChangeText={text => setemployNo(text)} />
                                         {
                                             role == "DRIVER" ?
                                                 <TextBox title="LICENCE NO" underline={true} onChangeText={text => setlicenceNo(text)} />

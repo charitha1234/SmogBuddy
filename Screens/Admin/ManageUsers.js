@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import {
     View,
     Text,
@@ -7,11 +7,13 @@ import {
     FlatList
 } from "react-native";
 import { color } from '../../Assets/color';
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import UsersList from '../../data/Users';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SearchBar } from 'react-native-elements';
-
+import Header from '../../Components/NormalHeader';
+import BaseUrl from '../../Config'
 function Users(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={styles.UserContainer}>
@@ -27,68 +29,76 @@ function Users(props) {
     );
 }
 
-class ManageUsers extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            search: '',
-            searched: false,
-            totalUserArr: null,
-            filteredList:[],
-        };
-    }
-    componentDidMount() {
-        fetch('https://smogbuddy.herokuapp.com/admin/users')
+function ManageUsers({ navigation }) {
+    const [search, setsearch] = useState(null)
+    const [data, setdata] = useState([])
+    const [filteredList, setfilteredList] = useState([])
+    const getApidata = (adjust) => {
+        fetch(BaseUrl.Url+'/admin/users')
             .then((res) => res.json())
             .then((resJson) => {
-                this.setState({ totalUserArr: resJson })
-                console.log("RES", resJson)
+
+
+                console.log("res", resJson)
+                setdata(resJson)
             })
-            .catch((e) => console.log("error", e))
-    }
-    search() {
-        this.setState({ searched: true })
+            .catch((e) => { })
+
     }
 
-    updateSearch = search => {
-        this.setState({ search: search, searched: false });
-        let user;
-        let tempFilteredList=[]
-        for(user of this.state.totalUserArr){
-            
-            if(user.keyword.toLowerCase().includes(search.toLowerCase())){
-                console.log("KEYWORD",user.keyword)
-                tempFilteredList.push(user)
-            }
-        }
-        this.setState({filteredList:tempFilteredList})
-    };
-    render() {
-        return (
-            <SafeAreaView style={styles.container}>
-                <View style={styles.headerContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>MANAGE USERS</Text><View /></View>
-                <SearchBar
-                    placeholder="Type Here..."
-                    onChangeText={this.updateSearch}
-                    value={this.state.search}
-                    showCancel
-                    containerStyle={styles.SearchBarStyles}
-                    lightTheme
-                    inputContainerStyle={{ backgroundColor: color.primaryWhite }}
-                />
-                {this.state.search == "" ?
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate("InterfaceSelection")} style={styles.AddUserContainer}><Text style={styles.AddUserText}>ADD USER</Text></TouchableOpacity>
-                    :
-                    <FlatList data={this.state.filteredList} renderItem={({ item }) => (<Users onPress={() => this.props.navigation.navigate(item.role=="CUSTOMER"?"AdminUserProfile":"EmployeeProfile",{userId:item.uid})} Fname={item.firstName} Lname={item.lastName} Role={item.role} />)} keyExtractor={item => item.UserId} />
-
-
+    useFocusEffect(
+        React.useCallback(() => {
+            getApidata()
+        }, [])
+    );
+    useEffect(() => {
+        if (search) {
+            let user;
+            let tempFilteredList = []
+            for (user of data) {
+                if (user.keyword.toLowerCase().includes(search.toLowerCase())) {
+                    tempFilteredList.push(user)
                 }
+            }
+            setfilteredList(tempFilteredList)
+        }
 
-            </SafeAreaView>
-        );
-    }
+
+    }, [search, data])
+
+
+    const updateSearch = search => {
+        setsearch(search)
+    };
+
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <Header title="Manage Users" navigation={navigation} />
+            <SearchBar
+                placeholder="Type Here..."
+                onChangeText={updateSearch}
+                value={search}
+                showCancel
+                containerStyle={styles.SearchBarStyles}
+                lightTheme
+                inputContainerStyle={{ backgroundColor: color.primaryWhite }}
+            />
+            {search == "" ?
+                <TouchableOpacity onPress={() => navigation.navigate("InterfaceSelection")} style={styles.AddUserContainer}><Text style={styles.AddUserText}>ADD USER</Text></TouchableOpacity>
+                :
+                <FlatList data={filteredList} renderItem={({ item }) => (<Users onPress={() => navigation.navigate(item.role == "CUSTOMER" ? "AdminUserProfile" : "EmployeeProfile", { userId: item.uid })} Fname={item.firstName} Lname={item.lastName} Role={item.role} />)} keyExtractor={item => item.UserId} />
+
+
+            }
+
+        </SafeAreaView>
+    );
+
 }
+
 export default ManageUsers;
+
 
 const styles = StyleSheet.create({
     container: {
@@ -114,7 +124,7 @@ const styles = StyleSheet.create({
     UserContainer: {
         flexDirection: 'row',
         marginTop: 10,
-        marginBottom:10,
+        marginBottom: 10,
         height: 100,
         width: '100%',
         justifyContent: 'center',
@@ -136,7 +146,7 @@ const styles = StyleSheet.create({
     },
     NameLabel: {
         fontFamily: 'Montserrat-Regular',
-        fontSize: 20,
+        fontSize: 15,
         letterSpacing: 2,
     },
     statusContainer: {
@@ -151,11 +161,11 @@ const styles = StyleSheet.create({
     },
     RoleLabel: {
         fontFamily: 'Montserrat-Regular',
-        fontSize: 20,
+        fontSize: 15,
     },
     RoleText: {
         fontFamily: 'Montserrat-Regular',
-        fontSize: 15,
+        fontSize: 10,
     },
     SearchBarStyles: {
         borderWidth: 0,
