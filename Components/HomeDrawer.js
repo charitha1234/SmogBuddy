@@ -1,5 +1,5 @@
-import React,{useState,useEffect} from "react";
-import { 
+import React, { useState, useEffect } from "react";
+import {
     View,
     Text,
     StyleSheet,
@@ -30,6 +30,7 @@ return(
             firebase.auth().signOut();}}
              style={styles.logout}><Text style={styles.logoutText}>LOGOUT</Text></TouchableOpacity>
     </View>
+
     );
 
 }
@@ -40,54 +41,54 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    imageContainer:{
-        width:100,
-        height:100,
-        borderRadius:50,
-        margin:30,
-        alignSelf:'center'
+    imageContainer: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        margin: 30,
+        alignSelf: 'center'
 
     },
     headerContainer: {
-        marginTop:10,
-        height:50,
-        width:'100%',
-        flexDirection:'row',
+        marginTop: 10,
+        height: 50,
+        width: '100%',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-    content:{
-        flex:1,
-        marginLeft:30,
-        flexDirection:'row',
-        alignItems:'center'
+    content: {
+        flex: 1,
+        marginLeft: 30,
+        flexDirection: 'row',
+        alignItems: 'center'
     },
-    contentText:{
+    contentText: {
         fontFamily: 'Montserrat-Regular',
         fontSize: 15,
         letterSpacing: 2,
-        opacity:0.6,
-        marginLeft:20,
+        opacity: 0.6,
+        marginLeft: 20,
 
 
     },
-    logout:{
-        position:'absolute',
-        bottom:20,
-        borderWidth:2,
-        width:150,
-        height:50,
-        alignSelf:'center',
-        justifyContent:'center',
-        alignItems:'center'
+    logout: {
+        position: 'absolute',
+        bottom: 20,
+        borderWidth: 2,
+        width: 150,
+        height: 50,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
-    logoutText:{
+    logoutText: {
         fontFamily: 'Montserrat-Regular',
         fontSize: 15,
         letterSpacing: 2,
     },
-    icon:{
-        marginRight:-20,
-        marginLeft:20
+    icon: {
+        marginRight: -20,
+        marginLeft: 20
     }
 });
