@@ -16,17 +16,33 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Header from '../../Components/TwoButtonHeader';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper'
+import BaseUrl from '../../Config'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 function Process({ navigation, route }) {
     const { details } = route.params;
     const [isModalVisible, setisModalVisible] = useState(false)
+    const [userId, setuserId] = useState(null)
     const [Name, setName] = useState("")
+    const [images, setimages] = useState(null)
     const [status, setstatus] = useState("")
     const [assignedDriver, setassignedDriver] = useState("")
     const [estimatedTime, setestimatedTime] = useState("")
     const [customerTelephoneNo, setcustomerTelephoneNo] = useState("")
     const [assignedTechnician, setassignedTechnician] = useState("")
+    console.log('details', details)
+    const getImages = () => {
+        console.log("USERID",userId)
+        fetch(BaseUrl.Url + '/user/images/' + details.userId)
+            .then((res) => res.json())
+            .then((resJson) => {
+                console.log("response", resJson)
+                setimages(resJson)
+            })
+            .catch((e) => { console.log("errr", e) })
+    }
+
+
     useEffect(() => {
         console.log(details)
         setName(details.user.firstName + " " + details.user.lastName);
@@ -43,8 +59,9 @@ function Process({ navigation, route }) {
             setassignedTechnician("_")
         }
         setcustomerTelephoneNo(details.user.phoneNumber)
+        getImages()
 
-    })
+    }, [])
     return (
         <SafeAreaView style={styles.container}>
             <Header title="PROCESS" navigation={navigation} icon='ios-map' onPress={() => navigation.navigate("TrackDriver", { userId: details.userId })} />
@@ -67,28 +84,36 @@ function Process({ navigation, route }) {
                         <Text style={[styles.buttonText]}>DELETE</Text>
                     </TouchableOpacity>
                 </View>
-                <Modal  style={{margin: 0}} deviceHeight={windowHeight} deviceWidth={windowWidth} isVisible={isModalVisible} onBackdropPress={() => setisModalVisible(false)} useNativeDriver={true} backdropOpacity={0.9} >
+                <Modal style={{ margin: 0 }} deviceHeight={windowHeight} deviceWidth={windowWidth} isVisible={isModalVisible} onBackdropPress={() => setisModalVisible(false)} useNativeDriver={true} backdropOpacity={0.9} >
                     <View style={{ flex: 1 }}>
-                        <View style={{zIndex:10, position: 'absolute', top: 0, width: '100%', height: 50,backgroundColor: 'rgba(0,0,0,0.5)'}}>
+                        <View style={{ zIndex: 10, position: 'absolute', top: 0, width: '100%', height: 50, backgroundColor: 'rgba(0,0,0,0.5)' }}>
                             <TouchableOpacity onPress={() => setisModalVisible(false)} style={{ height: 50, width: 50, alignItems: 'center', justifyContent: 'center' }}>
                                 <Ionicons name="ios-close" color={color.primaryWhite} size={30} />
                             </TouchableOpacity>
 
                         </View>
-                        <Swiper dotColor={'rgba(255,255,255,0.5)'}  showsButtons={true} loop={false}>
-                            <View style={{ flex: 1 }}>
-                                <Image source={require('../../Assets/53.jpg')} resizeMode="contain" style={{ height: '100%', width: '100%' }} />
-                            </View>
-                            <View style={{ flex: 1 }}>
-                                <Image source={require('../../Assets/1_hBjkx7i_I11mLGSkDBTZsw.jpeg')} resizeMode="contain" style={{ height: '100%', width: '100%' }} />
-                            </View>
-                            <View style={{ flex: 1 }}>
-                                <Image source={require('../../Assets/AndroidMobile–1.jpg')} resizeMode="contain" style={{ height: '100%', width: '100%' }} />
-                            </View>
-                            <View style={{ flex: 1 }}>
-                                <Image source={require('../../Assets/image.jpg')} resizeMode="contain" style={{ height: '100%', width: '100%' }} />
-                            </View>
-                        </Swiper>
+                        {
+                            images ?
+                                <Swiper dotColor={'rgba(255,255,255,0.5)'} showsButtons={true} loop={false}>
+                                    {
+                                        images.map((data) => {
+                                            return (
+                                                <View style={{ flex: 1 }}>
+                                                    <Image source={{ uri: data.imageUrl }} resizeMode="contain" style={{ height: '100%', width: '100%' }} />
+                                                    <View style={{ position:'absolute',bottom:50, height: 100, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                                                        <Text style={styles.statusText}>{data.status}</Text>
+                                                        <Text style={styles.dateText}>{data.date}</Text>
+                                                    </View>
+                                                </View>
+                                            )
+                                        }
+                                        )
+                                    }
+                                </Swiper>
+                                :
+                                null
+                        }
+
                     </View>
                 </Modal>
             </ScrollView>
@@ -146,6 +171,18 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontFamily: 'Montserrat-Bold',
+        color: color.primaryWhite,
+        fontSize: 15,
+        letterSpacing: 2,
+    },
+    statusText: {
+        fontFamily: 'Montserrat-Bold',
+        color: color.primaryWhite,
+        fontSize: 15,
+        letterSpacing: 2,
+    },
+    dateText: {
+        fontFamily: 'Montserrat-Regular',
         color: color.primaryWhite,
         fontSize: 15,
         letterSpacing: 2,

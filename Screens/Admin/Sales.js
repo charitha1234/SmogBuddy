@@ -21,11 +21,11 @@ import BaseUrl from '../../Config'
 
 function CheckList(props) {
     return (
-        <View style={[styles.ProcessContainer,{backgroundColor:color.primaryWhite}]}>
+        <TouchableOpacity onPress={props.onPress} style={[styles.ProcessContainer, { backgroundColor: color.primaryWhite }]}>
             <View style={styles.statusContainer}>
 
-                    <Text style={styles.nameText}>{props.name}</Text>
-                    <Text style={styles.dateText}>{props.date}</Text>
+                <Text style={styles.nameText}>{props.name}</Text>
+                <Text style={styles.dateText}>{props.date}</Text>
 
             </View>
             <View style={styles.CostContainer}>
@@ -33,9 +33,9 @@ function CheckList(props) {
                 <Text style={styles.CostText}>${props.cost}</Text>
             </View>
             <View style={styles.CostContainer}>
-                <TouchableOpacity onPress={props.onPress}><Ionicons name="ios-download" size={30}/></TouchableOpacity>
+                <View><Ionicons name="ios-download" size={30} /></View>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 class Sales extends Component {
@@ -44,35 +44,35 @@ class Sales extends Component {
         this.state = {
             isDateVisible: true,
             startingDate: null,
-            endDate:null,
-            showEnding:false,
-            showStarting:false,
-            transactionList:null,
-            loading:false,
-            date:new Date()
+            endDate: null,
+            showEnding: false,
+            showStarting: false,
+            transactionList: null,
+            loading: false,
+            date: new Date()
         }
     }
     onChangeStart = (event, selectedDate) => {
         const currentDate = selectedDate || date;
-        this.setState({showStarting:(Platform.OS === 'ios')});
-        this.setState({startingDate:currentDate});
+        this.setState({ showStarting: (Platform.OS === 'ios') });
+        this.setState({ startingDate: currentDate });
     };
     onChangeEnd = (event, selectedDate) => {
         const currentDate = selectedDate || date;
-        this.setState({showEnding:(Platform.OS === 'ios')});
-        this.setState({endDate:currentDate});
+        this.setState({ showEnding: (Platform.OS === 'ios') });
+        this.setState({ endDate: currentDate });
     };
-    getTransactionList(){
-        this.setState({loading:true})
+    getTransactionList() {
+        this.setState({ loading: true })
         const user = firebase.auth().currentUser
-        console.log("UID",user.uid)
-        console.log("STARTING",this.state.startingDate.toLocaleDateString())
-        console.log("ENDING",this.state.endDate.toLocaleDateString())
-        fetch(BaseUrl.Url+'/admin/sales?startAt='+this.state.startingDate.toLocaleDateString()+'&endAt='+this.state.endDate.toLocaleDateString())
-        .then((res)=>res.json())
-        .then((resJson)=>this.setState({transactionList:resJson,loading:false}))
-        .catch((e)=>alert(e))
-        this.setState({isDateVisible:false})
+        console.log("UID", user.uid)
+        console.log("STARTING", this.state.startingDate.toLocaleDateString())
+        console.log("ENDING", this.state.endDate.toLocaleDateString())
+        fetch(BaseUrl.Url + '/admin/sales?startAt=' + this.state.startingDate.toLocaleDateString() + '&endAt=' + this.state.endDate.toLocaleDateString())
+            .then((res) => res.json())
+            .then((resJson) => this.setState({ transactionList: resJson, loading: false }))
+            .catch((e) => alert(e))
+        this.setState({ isDateVisible: false })
 
 
     }
@@ -85,54 +85,54 @@ class Sales extends Component {
         return (
             <SafeAreaView style={styles.container}>
                 <Header title="SALES" navigation={this.props.navigation} onPress={() => this.setState({ isDateVisible: true })} icon="ios-calendar" />
-                {this.state.loading?
-                <View style={{flex:1,justifyContent:'center',alignItems:'center'}} >
-                <ActivityIndicator size={40} color={color.primaryBlack}/>
-                </View>
-                :
-                <FlatList data={this.state.transactionList} renderItem={({item})=>(<CheckList onPress={()=>this.props.navigation.navigate("PdfViewer")}  name={item.user} date={item.timestamp} cost={item.totalCost}/>)}/>
+                {this.state.loading ?
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} >
+                        <ActivityIndicator size={40} color={color.primaryBlack} />
+                    </View>
+                    :
+                    <FlatList data={this.state.transactionList} renderItem={({ item }) => (<CheckList onPress={() => this.props.navigation.navigate("PdfViewer")} name={item.user} date={item.timestamp} cost={item.totalCost} />)} />
                 }
-                
-                <Modal useNativeDriver={true} isVisible={this.state.isDateVisible} onBackdropPress={()=>this.setState({isDateVisible:false})}>
+
+                <Modal useNativeDriver={true} isVisible={this.state.isDateVisible} onBackdropPress={() => this.setState({ isDateVisible: false })}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <View style={{ backgroundColor: color.primaryWhite, alignSelf: 'center', height: '50%', width: '90%', borderRadius: 20 }}>
-                    <TouchableOpacity onPress={() => this.setState({ showStarting: true })} style={{ flex: 1, margin: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text style={styles.settingText}>Select Starting Date:</Text>
-                        {this.state.startingDate ?
-                            <Text>{this.state.startingDate.toLocaleDateString()}</Text>
-                            :
-                            <Ionicons name='ios-calendar' size={30} />}
-                    </TouchableOpacity>
-                    {this.state.showStarting && (
-                                    <DateTimePicker
-                                        testID="dateTimePicker"
-                                        timeZoneOffsetInMinutes={0}
-                                        value={this.state.startingDate?this.state.startingDate:this.state.date}
-                                        mode={'date'}
-                                        is24Hour={true}
-                                        display="default"
-                                        onChange={this.onChangeStart}
-                                    />
-                                )}
-                    <TouchableOpacity onPress={()=>this.setState({showEnding:true})} style={{ flex: 1, margin: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text style={styles.settingText}>Select Ending Date:</Text>
-                        {this.state.endDate ?
-                            <Text>{this.state.endDate.toLocaleDateString()}</Text>
-                            :
-                            <Ionicons name='ios-calendar' size={30} />}
-                    </TouchableOpacity>
-                    {this.state.showEnding && (
-                                    <DateTimePicker
-                                        testID="dateTimePicker"
-                                        timeZoneOffsetInMinutes={0}
-                                        value={this.state.endDate?this.state.endDate:this.state.date}
-                                        mode={'date'}
-                                        is24Hour={true}
-                                        display="default"
-                                        onChange={this.onChangeEnd}
-                                    />
-                                )}
-                    
+                        <View style={{ backgroundColor: color.primaryWhite, alignSelf: 'center', height: '50%', width: '90%', borderRadius: 20 }}>
+                            <TouchableOpacity onPress={() => this.setState({ showStarting: true })} style={{ flex: 1, margin: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Text style={styles.settingText}>Select Starting Date:</Text>
+                                {this.state.startingDate ?
+                                    <Text>{this.state.startingDate.toLocaleDateString()}</Text>
+                                    :
+                                    <Ionicons name='ios-calendar' size={30} />}
+                            </TouchableOpacity>
+                            {this.state.showStarting && (
+                                <DateTimePicker
+                                    testID="dateTimePicker"
+                                    timeZoneOffsetInMinutes={0}
+                                    value={this.state.startingDate ? this.state.startingDate : this.state.date}
+                                    mode={'date'}
+                                    is24Hour={true}
+                                    display="default"
+                                    onChange={this.onChangeStart}
+                                />
+                            )}
+                            <TouchableOpacity onPress={() => this.setState({ showEnding: true })} style={{ flex: 1, margin: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Text style={styles.settingText}>Select Ending Date:</Text>
+                                {this.state.endDate ?
+                                    <Text>{this.state.endDate.toLocaleDateString()}</Text>
+                                    :
+                                    <Ionicons name='ios-calendar' size={30} />}
+                            </TouchableOpacity>
+                            {this.state.showEnding && (
+                                <DateTimePicker
+                                    testID="dateTimePicker"
+                                    timeZoneOffsetInMinutes={0}
+                                    value={this.state.endDate ? this.state.endDate : this.state.date}
+                                    mode={'date'}
+                                    is24Hour={true}
+                                    display="default"
+                                    onChange={this.onChangeEnd}
+                                />
+                            )}
+
                             <TouchableOpacity onPress={this.getTransactionList.bind(this)} style={styles.buttonContainer}><Text style={styles.buttonText}>SEARCH</Text></TouchableOpacity>
                         </View>
                     </View>
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor:color.primaryWhite,
+        backgroundColor: color.primaryWhite,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
         height: 40,
         width: 200,
         margin: 20,
-        alignSelf:'center',
+        alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 20,
@@ -216,15 +216,15 @@ const styles = StyleSheet.create({
         letterSpacing: 2,
         color: color.primaryBlack
     },
-    nameText:{
+    nameText: {
         fontFamily: 'Montserrat-Regular',
         fontSize: 15,
         color: color.primaryBlack
     },
     icon: {
-        alignItems:'center',
-        justifyContent:'center',
-        flex:0.5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 0.5,
 
     },
     modalIcon: {
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     ProcessContainer: {
         flexDirection: 'row',
         marginTop: 10,
-        marginBottom:10,
+        marginBottom: 10,
         height: 100,
         width: '100%',
         justifyContent: 'center',

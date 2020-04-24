@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { 
     View,
     Text,
@@ -9,6 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 import { color } from '../Assets/color';
 function HomeDrawer({navigation},props){
+
 
 return(
     <View style={styles.container}>
@@ -38,7 +39,6 @@ const styles = StyleSheet.create({
     imageContainer:{
         width:100,
         height:100,
-        backgroundColor:'black',
         borderRadius:50,
         marginLeft:30,
         alignSelf:'center'

@@ -88,14 +88,14 @@ function EmployeeRegistration({ navigation, route }) {
                     </View>
                     <View style={styles.selection}>
                         <View style={styles.insideArea}>
-                            <TextBox title="First NAME" underline={true} onChangeText={text => setfirstName(text)} />
-                            <TextBox title="Last NAME" underline={true} onChangeText={text => setlastName(text)} />
-                            <TextBox title="EMAIL" underline={true} onChangeText={text => setemail(text)} />
+                            <TextBox title="First NAME" underline={true} value={firstName} onChangeText={text => setfirstName(text)} />
+                            <TextBox title="Last NAME" underline={true} value={lastName} onChangeText={text => setlastName(text)} />
+                            <TextBox title="EMAIL" underline={true} value={email} onChangeText={text => setemail(text)} />
                             <View style={{ flexDirection: 'row' }}>
-                                <TouchableOpacity onPress={chooseFile} style={styles.imageContainer}>
+                                <TouchableOpacity onPress={chooseFile} style={[styles.imageContainer,filePath?{borderColor:color.primaryBlue,borderWidth:1}:null]}>
                                     <Ionicons name="ios-camera" size={30} />
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={showDatepicker} style={styles.dateContainer}>
+                                <TouchableOpacity onPress={showDatepicker} style={[styles.dateContainer,date?{borderColor:color.primaryBlue,borderWidth:1}:null]}>
                                     <Text style={styles.dateLabel}>PICK DATE</Text>
                                     <Text style={styles.dateText}>{date.toLocaleDateString()}</Text>
                                     {show && (

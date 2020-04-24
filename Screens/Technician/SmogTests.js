@@ -183,6 +183,7 @@ class SmogTests extends Component {
                     alert("Complete All Checks")
                 }
                 else {
+                    this.setState({Completed:true})
                     console.log("RESPONSEE", resJson)
                 }
 
@@ -335,7 +336,7 @@ class SmogTests extends Component {
 
                                 }
                             </TouchableOpacity>
-                            <TouchableOpacity disabled={this.state.fuelcapApporved} onPress={this.completeChecks.bind(this)} style={[styles.fuelCapContainer, { backgroundColor: color.primaryBlue }]}>
+                            <TouchableOpacity disabled={this.state.Completed} onPress={this.completeChecks.bind(this)} style={[styles.fuelCapContainer, { backgroundColor: color.primaryBlue }]}>
                                 {
                                     this.state.capLoading ?
                                         <ActivityIndicator size={30} color={color.primaryWhite} />
@@ -343,7 +344,7 @@ class SmogTests extends Component {
                                         !this.state.Completed ?
                                             <Text style={styles.fuelCapRequestText}>COMPLETE</Text>
                                             :
-                                            <Ionicons name="ios-check" size={40} color={color.primaryBlack} />
+                                            <Ionicons name="ios-checkmark" size={40} color={color.primaryWhite} />
                                 }
                             </TouchableOpacity>
                         </View>

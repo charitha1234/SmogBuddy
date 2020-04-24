@@ -113,7 +113,7 @@ function UserHomeScreen() {
                 })
                 .catch((e) => { })
         }
-    })
+    },[])
     return (
         <Drawer.Navigator initialRouteName="Home" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <HomeDrawerContent {...props} />}>
             {
@@ -251,7 +251,6 @@ function WelcomeScreen() {
         fetch(BaseUrl.Url+`/user/${user.uid}`)
             .then((response) => response.json())
             .then((Json)=>{
-                console.log("REyvvvvvvvvvvvvvvvvS",Json)
                 fetch(BaseUrl.Url+'/user/fcm/' +user.uid, {
                     method: 'PUT',
                     headers: {
@@ -264,7 +263,6 @@ function WelcomeScreen() {
                 })
                     .then((resJson) => {
                         if (resJson.status == 200) {
-                                console.log("reeponseparse",Json)
                                 setrole(Json.role);
                                 setUid(user)
                                 setLoggedIn(true);

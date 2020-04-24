@@ -14,12 +14,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import GradientButton from '../../Components/longButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BaseUrl from '../../Config'
+import Header from '../../Components/NormalHeader'
 function deleteProfile() {
 
 }
 function Assign(pickUp, technician, driver, userId, setloading, navigation) {
     console.log(pickUp, ":", technician, ":", driver, ":", userId, ":", setloading)
-    fetch(BaseUrl.Url+'/admin/assign/driver', {
+    fetch(BaseUrl.Url + '/admin/assign/driver', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -59,7 +60,7 @@ function AssignEmployees({ navigation, route }) {
         }
     }
     const getApiData = () => {
-        fetch(BaseUrl.Url+'/driver/available-list')
+        fetch(BaseUrl.Url + '/driver/available-list')
             .then((res) => res.json())
             .then((resJson) => {
                 console.log("RESJSON>>", resJson)
@@ -69,7 +70,7 @@ function AssignEmployees({ navigation, route }) {
                 setName(details.user.firstName + " " + details.user.lastName);
             })
             .catch((e) => {
-                console.log("EMPLOYEE ERR",e)
+                console.log("EMPLOYEE ERR", e)
                 alert(e)
             })
     }
@@ -81,74 +82,67 @@ function AssignEmployees({ navigation, route }) {
     return (
         <SafeAreaView style={styles.container}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-                <View style={styles.headerContainer}><TouchableOpacity  onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>ASSIGN EMPLOYEES</Text><View /></View>
+                <Header navigation={navigation} title="ASSIGN EMPLOYEES" />
                 <View style={styles.container}>
-                    {
-                        employeeList?.length?
-                            <View style={styles.formContainer}>
-                                {
-                                    loading ?
-                                        <ActivityIndicator size="large" color={color.primaryBlack} />
-                                        :
-                                        <>
-                                            <TextBox title="CUSTOMER NAME" value={Name} disabled={true} />
-                                            <Picker style={styles.picker} itemStyle={styles.pickerItems}
-                                                selectedValue={driver}
-                                                onValueChange={(itemValue, itemIndex) =>
-                                                    handleDriver(itemValue)
-                                                }>
-                                                <Picker.Item label='Select a Driver' value='0' />
+                    <View style={styles.formContainer}>
+                        {
+                            loading ?
+                                <ActivityIndicator size="large" color={color.primaryBlack} />
+                                :
+                                <>
+                                    <TextBox title="CUSTOMER NAME" value={Name} disabled={true} />
+                                    <Picker style={styles.picker} itemStyle={styles.pickerItems}
+                                        selectedValue={driver}
+                                        onValueChange={(itemValue, itemIndex) =>
+                                            handleDriver(itemValue)
+                                        }>
+                                        <Picker.Item label='Select a Driver' value='0' />
 
-                                                {employeeList.drivers.map(element => {
-                                                    return (
-                                                        <Picker.Item label={element.firstName + " " + element.lastName} value={element.uid} />
-                                                    );
-                                                })
+                                        {employeeList.drivers.map(element => {
+                                            return (
+                                                <Picker.Item label={element.firstName + " " + element.lastName} value={element.uid} />
+                                            );
+                                        })
 
-                                                }
-
-                                            </Picker>
-                                            <Picker style={styles.picker}
-                                                selectedValue={technician}
-                                                onValueChange={(itemValue, itemIndex) =>
-                                                    handleTechnician(itemValue)
-                                                }
-                                                itemStyle={styles.pickerItems}
-                                            >
-                                                <Picker.Item label='Select a Technician' value='0' />
-                                                {employeeList.technicians.map(element => {
-                                                    return (
-                                                        <Picker.Item label={element.firstName + " " + element.lastName} value={element.uid} />
-                                                    );
-                                                })
-
-                                                }
-
-                                            </Picker>
-                                        </>
-
-                                }
-                                {
-                                    !loading ?
-                                        <TouchableOpacity onPress={() => {
-
-                                            if (technician == null || driver == null) alert("Please Select Driver And Technician")
-                                            else {
-                                                setloading(true);
-
-                                                Assign(details.pickupLocation, technician, driver, details.userId, setloading, navigation);
-                                            }
                                         }
-                                        } style={styles.buttonContainer}><GradientButton title="SUBMIT" style={styles.button} /></TouchableOpacity>
-                                        :
-                                        null
-                                }
-                            </View> :
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={styles.pickerItems}>No employees are available</Text>
-                            </View>
-                    }
 
+                                    </Picker>
+                                    <Picker style={styles.picker}
+                                        selectedValue={technician}
+                                        onValueChange={(itemValue, itemIndex) =>
+                                            handleTechnician(itemValue)
+                                        }
+                                        itemStyle={styles.pickerItems}
+                                    >
+                                        <Picker.Item label='Select a Technician' value='0' />
+                                        {employeeList.technicians.map(element => {
+                                            return (
+                                                <Picker.Item label={element.firstName + " " + element.lastName} value={element.uid} />
+                                            );
+                                        })
+
+                                        }
+
+                                    </Picker>
+                                </>
+
+                        }
+                        {
+                            !loading ?
+                                <TouchableOpacity onPress={() => {
+
+                                    if (technician == null || driver == null) alert("Please Select Driver And Technician")
+                                    else {
+                                        setloading(true);
+
+                                        Assign(details.pickupLocation, technician, driver, details.userId, setloading, navigation);
+                                    }
+                                }
+                                } style={styles.buttonContainer}><GradientButton title="SUBMIT" style={styles.button} /></TouchableOpacity>
+                                :
+                                null
+                        }
+                    </View>
                 </View>
             </LinearGradient>
         </SafeAreaView>
@@ -193,10 +187,10 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     icon: {
-        height:50,
-        width:50,
-        justifyContent:'center',
-        alignItems:'center',
+        height: 50,
+        width: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
 
     },
 

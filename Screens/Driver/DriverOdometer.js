@@ -9,6 +9,7 @@ import {
     ScrollView,
     Dimensions
 } from "react-native";
+import AsyncStorage from '@react-native-community/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import { RNCamera } from 'react-native-camera';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -17,6 +18,7 @@ import TextBox from '../../Components/textBox';
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
 import firebase from 'react-native-firebase';
+import BaseUrl from '../../Config'
 
 const uuidv1 = require('uuid/v1');
 
@@ -30,6 +32,34 @@ class OdometerRead extends Component {
             loading: false,
             finished: false,
             uploaded: false,
+        }
+    }
+    async setUploaded() {
+        try {
+            await AsyncStorage.setItem('ODOMETER_UPLOADED', 'UPLOADED')
+        } catch (e) {
+            alert(e)
+        }
+    }
+    componentDidUpdate(){
+        if(this.state.finished){
+            fetch(BaseUrl.Url + '/driver/images/images', {
+                method: 'PUT',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+
+                    userUid: this.props.route.params.userId,
+                    images: this.state.images
+
+
+                }),
+            }).then((res) => {
+                this.setUploaded()
+                console.log("responseeeeeee", res)})
+                .catch((e) => console.log("ERRR", e))
         }
     }
 
@@ -52,16 +82,20 @@ class OdometerRead extends Component {
     uploadImage = () => {
         const user = firebase.auth().currentUser;
         this.setState({ uid: user.uid });
-    this.setState({loading:true})
+        this.setState({ loading: true })
         firebase
             .storage()
             .ref(this.formatDate() + '/' + user.uid + '/' + uuidv1() + '.jpeg')
             .putFile(this.state.picture)
             .then((res) => {
-                if (this.state.images.length == 0) this.state.images.push({ imageUrl: res.downloadURL, imagePath: res.ref, isOdometer: true })
-                else this.state.images.push({ imageUrl: res.downloadURL, imagePath: res.ref, isOdometer: false })
-                this.setState({finished:true, loading: false, picture: null });
-
+                if (this.state.images.length == 0) this.state.images.push({ imageUrl: res.downloadURL,isOdometer: true,status:this.props.route.params.case })
+                else this.state.images.push({ imageUrl: res.downloadURL,isOdometer: false ,status:this.props.route.params.case})
+                this.setState({  loading: false, picture: null });
+                console.log("CASE",this.props.route.params.case)
+                if(this.props.route.params.case!='PICKED_UP'){
+                    console.log("FINISHED")
+                    this.setState({finished:true})}
+                console.log("IMAGE ARRAY",this.state.images)
             })
             .catch((e) => {
                 this.setState({ loading: false, picture: null });
@@ -70,7 +104,7 @@ class OdometerRead extends Component {
     }
 
     takePicture = async () => {
-        
+
         if (this.camera) {
             const options = { quality: 0.5, base64: true };
             const data = await this.camera.takePictureAsync(options);
@@ -88,13 +122,12 @@ class OdometerRead extends Component {
                             <View style={{ flex: 2 }}><Text style={styles.headerText}>ODOMETER</Text></View>
                             <View style={{ flex: 0.5 }} />
                         </View>
-                        <KeyboardAwareScrollView style={{flex:1}} showsVerticalScrollIndicator={false} contentContainerStyle={{height:400,justifyContent:'space-between',alignItems:'center'}}>
-                        <View style={styles.formContainer}>
-                            <TextBox title="METER READING" underline={true} />
-                            <TextBox title="FUEL" underline={true} />
-                        </View>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate("Searching", { serviceList: this.props.route.params.serviceList, images: this.state.images })} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
-                    </KeyboardAwareScrollView>
+                        <KeyboardAwareScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ height: 400, justifyContent: 'space-between', alignItems: 'center' }}>
+                            <View style={styles.formContainer}>
+                                <TextBox title="METER READING" underline={true} />
+                            </View>
+                            <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
+                        </KeyboardAwareScrollView>
                     </View>
                     :
                     !this.state.picture ?
@@ -125,7 +158,7 @@ class OdometerRead extends Component {
                                 permissionDialogMessage={'We need your permission to use your camera phone'}
                                 style={styles.preview}
                             >
-                                
+
                                 <TouchableOpacity disabled={this.state.loading} onPress={this.takePicture.bind(this)}>
                                     {this.state.loading ?
                                         <ActivityIndicator size={80} color={color.primaryWhite} style={{ margin: 30 }} />
@@ -214,6 +247,7 @@ const styles = StyleSheet.create({
     },
     headerTextContainer: {
         flexDirection: 'row',
+        zIndex:10,
         alignItems: 'center',
         height: 100,
         width: '100%',

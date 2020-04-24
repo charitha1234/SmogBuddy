@@ -5,17 +5,23 @@ import {
     StyleSheet,
     TouchableOpacity,
     ActivityIndicator,
-    Alert,
-    ScrollView
+    ScrollView,
+    Dimensions,
+    ImageBackground
 } from "react-native";
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import firebase from 'react-native-firebase';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Dialog from "react-native-dialog";
 import BaseUrl from '../../Config'
+import Dialog from "react-native-dialog";
+import ImagePicker from 'react-native-image-picker';
+import Header from '../../Components/TwoButtonHeader'
+import firebase from 'react-native-firebase';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+const uuidv1 = require('uuid/v1');
 
 function EmployeeProfile({ navigation, route }) {
     const [firstName, setfirstName] = useState("")
@@ -26,15 +32,18 @@ function EmployeeProfile({ navigation, route }) {
     const [loading, setloading] = useState(true)
     const [title, settitle] = useState("")
     const [body, setbody] = useState("")
+    const [phoneNo, setphoneNo] = useState("")
+    const [imageUri, setimageUri] = useState("")
     const [editing, setediting] = useState(false)
     const [dialogboxVisible, setdialogboxVisible] = useState(false)
     const { userId } = route.params
     useEffect(() => {
-        fetch(BaseUrl.Url+'/user/' + userId)
+        fetch(BaseUrl.Url + '/user/' + userId)
             .then((res) => res.json())
             .then((resJson) => {
                 console.log(resJson)
                 setloading(false);
+                setphoneNo(resJson.phoneNumber)
                 setfirstName(resJson.firstName);
                 setlastName(resJson.lastName);
                 setaddress(resJson.address);
@@ -42,10 +51,51 @@ function EmployeeProfile({ navigation, route }) {
                 setzipCode(resJson.zipCode);
             })
     }, [])
+    const ImagePick = () => {
+        const options = {
 
+            title: 'Select Profile Picture',
+            customButtons: [
+            ],
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
+            quality: 0.5
+        };
+
+
+        ImagePicker.showImagePicker(options, (response) => {
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+                const source = { uri: response.uri };
+                setloading(true)
+
+                firebase
+                    .storage()
+                    .ref(formatDate() + '/' + userId + '/' + uuidv1() + '.jpeg')
+                    .putFile(source.uri)
+                    .then((res) => {
+                        setimageUri(res.downloadURL)
+                        setloading(false)
+                    })
+                    .catch((e) => {
+                        setloading(false)
+                        alert(e)
+                    });
+
+            }
+        });
+    }
     const deleteUser = () => {
         setloading(true)
-        fetch(BaseUrl.Url+'/driver/' + userId, {
+        fetch(BaseUrl.Url + '/driver/' + userId, {
             method: 'DELETE',
             headers: {
                 Accept: 'application/json',
@@ -60,7 +110,7 @@ function EmployeeProfile({ navigation, route }) {
         setloading(false)
     }
     const sendMessage = () => {
-        fetch(BaseUrl.Url+'/admin/notification', {
+        fetch(BaseUrl.Url + '/admin/notification', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -76,35 +126,68 @@ function EmployeeProfile({ navigation, route }) {
             .then((resJson) => console.log("RES", resJson))
             .catch((e) => alert(e))
     }
+    const saveDetails = () => {
+        setloading(true)
+        fetch(BaseUrl.Url + "/driver/"+userId, {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+
+                firstName: firstName,
+                lastName: lastName,
+                dateOfHire: dateOfHire,
+                employNumber: employeeNo,
+                phoneNumber:phoneNo,
+                imageUrl: imageUri,
+                isAdmin:false,
+                licenseNumber: licenceNo,
+                role: role,
+                position: position,
+                uid: userId
+
+
+
+            }),
+        }).then((res) => res.json())
+            .then((resJson) => { 
+                console.log("reeeeee",resJson)
+                setloading(false) })
+            .catch((e) => {
+                setloading(false)
+
+                alert(e)
+            })
+    }
 
     return (
         <SafeAreaView style={styles.container}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-                <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>PROFILE</Text>
-                    <TouchableOpacity onPress={() => setdialogboxVisible(true)} style={{ marginLeft: -40, marginRight: 20 }}><Ionicons name="ios-mail" size={40} /></TouchableOpacity></View>
+                <Header title="PROFILE" onPress={() => setdialogboxVisible(true)} icon="ios-mail" navigation={navigation} />
                 <ScrollView style={styles.container}>
-                    <View style={styles.container}>
+                    <View style={styles.WhiteContainer}>
                         <View style={styles.formContainer}>
-                            <TouchableOpacity onPress={() => setediting(prev => !prev)} style={{ zIndex: 100, position: "absolute", top: 0, right: 0, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }}>
-                                {
-                                    editing ?
-                                        <Text style={styles.saveText}>Save</Text>
-                                        :
-                                        <Ionicons name="md-create" size={20} />
-                                }
 
-
-                            </TouchableOpacity>
                             {
                                 loading ?
                                     <ActivityIndicator size="large" color={color.primaryBlack} />
                                     :
                                     <>
-                                        <TextBox title="FIRST NAME" value={firstName} disabled={editing ? false : true}  onChangeText={(text)=>setfirstName(text)} />
-                                        <TextBox title="LAST NAME" value={lastName} disabled={editing ? false : true} onChangeText={(text)=>setlastName(text)} />
-                                        <TextBox title="ADDRESS" value={address} disabled={editing ? false : true} onChangeText={(text)=>setaddress(text)} />
-                                        <TextBox title="STATE" value={state} disabled={editing ? false : true} onChangeText={(text)=>setstate(text)} />
-                                        <TextBox title="ZIPCODE" value={zipCode} disabled={editing ? false : true} onChangeText={(text)=>setzipCode(text)} />
+                                        <View style={styles.ImagesContainer}>
+                                            <TouchableOpacity onPress={() => ImagePick()} disabled={editing ? false : true} style={{ borderWidth: 1, borderRadius: (windowWidth - 60) / 3 }}>
+                                                <ImageBackground source={{ uri: imageUri }} style={styles.logoContainer} imageStyle={{ borderRadius: (windowWidth - 60) / 3 }}>
+                                                    <Ionicons name="ios-add-circle" style={{ position: 'absolute', top: Math.sqrt(2) * (windowWidth - 60) / 6 - (windowWidth - 60) / 6 - 20, right: Math.sqrt(2) * (windowWidth - 60) / 6 - (windowWidth - 60) / 6 - 20 }} size={30} color={color.failedRed} />
+                                                </ImageBackground>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <TextBox title="FIRST NAME" value={firstName} disabled={editing ? false : true} onChangeText={(text) => setfirstName(text)} />
+                                        <TextBox title="LAST NAME" value={lastName} disabled={editing ? false : true} onChangeText={(text) => setlastName(text)} />
+                                        <TextBox title="ADDRESS" value={address} disabled={editing ? false : true} onChangeText={(text) => setaddress(text)} />
+                                        <TextBox title="PHONE NUMBER" value={phoneNo} disabled={editing ? false : true} onChangeText={(text) => setphoneNo(text)} />
+                                        <TextBox title="STATE" value={state} disabled={editing ? false : true} onChangeText={(text) => setstate(text)} />
+                                        <TextBox title="ZIPCODE" value={zipCode} disabled={editing ? false : true} onChangeText={(text) => setzipCode(text)} />
                                     </>
 
                             }
@@ -121,18 +204,41 @@ function EmployeeProfile({ navigation, route }) {
                             sendMessage()
                         }} label="SEND" />
                     </Dialog.Container>
-                    <TouchableOpacity onPress={() => {
-                        Alert.alert(
-                            '',
-                            'Are you sure you want to delete?',  
-                            [
-                               {text: 'Cancel', onPress: () => {}, style: 'cancel'},
-                               {text: 'OK', onPress: () => deleteUser()},
-                            ],
-                            { cancelable: false }
-                       )
-                        
-                        }} style={styles.deleteButton}><Text style={styles.deleteText}>DELETE PROFILE</Text></TouchableOpacity>
+                    <View style={styles.buttonContainer}>
+                        {
+                            editing ?
+                                <>
+                                    <TouchableOpacity onPress={() => setediting(false)} style={styles.button}>
+                                        <Text style={styles.buttonText}>CANCEL</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => saveDetails()} style={[styles.button, { backgroundColor: color.failedRed }]}>
+                                        <Text style={styles.buttonText}>SAVE</Text>
+                                    </TouchableOpacity>
+                                </>
+                                :
+                                <>
+                                    <TouchableOpacity onPress={() => setediting(prev => !prev)} style={styles.button}>
+                                        <Text style={styles.buttonText}>EDIT</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => {
+                                        Alert.alert(
+                                            '',
+                                            'Are you sure you want to delete?',
+                                            [
+                                                { text: 'Cancel', onPress: () => { }, style: 'cancel' },
+                                                { text: 'OK', onPress: () => deleteUser() },
+                                            ],
+                                            { cancelable: false }
+                                        )
+
+                                    }} style={[styles.button, { backgroundColor: color.failedRed }]}>
+                                        <Text style={styles.buttonText}>DELETE</Text>
+                                    </TouchableOpacity>
+                                </>
+
+                        }
+
+                    </View>
                 </ScrollView>
             </LinearGradient>
         </SafeAreaView>
@@ -160,12 +266,16 @@ const styles = StyleSheet.create({
         letterSpacing: 2,
     },
     formContainer: {
-        marginTop: 30,
-        height: '90%',
-        width: '90%',
-        alignSelf: 'center',
-        justifyContent: 'center',
+        marginVertical: 20,
+        justifyContent: 'space-evenly',
+
+
+    },
+    WhiteContainer: {
         backgroundColor: color.primaryWhite,
+        alignSelf: 'center',
+        marginVertical: 30,
+        width: '90%',
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -180,15 +290,33 @@ const styles = StyleSheet.create({
         marginRight: -20,
         marginLeft: 20
     },
-    deleteButton: {
+
+    saveText: {
+        fontFamily: 'Montserrat-Bold',
+        fontSize: 12,
+        letterSpacing: 2,
+        color: color.primaryBlue
+    },
+    buttonContainer: {
         height: 50,
-        width: 200,
-        alignItems: 'center',
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly'
+    },
+    buttonText: {
+        fontFamily: 'Montserrat-Bold',
+        color: color.primaryWhite,
+        fontSize: 15,
+        letterSpacing: 2,
+    },
+    button: {
+        backgroundColor: color.primaryBlue,
         justifyContent: 'center',
-        alignSelf: 'center',
-        backgroundColor: color.failedRed,
-        borderRadius: 25,
-        margin: 30,
+        alignItems: 'center',
+        height: 40,
+        width: '40%',
+        marginHorizontal: 10,
+        borderRadius: 20,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -196,19 +324,16 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: .2,
         shadowRadius: 8.30,
-
-        elevation: 5,
+        elevation: 3,
     },
-    deleteText: {
-        fontFamily: 'Montserrat-Bold',
-        fontSize: 12,
-        letterSpacing: 2,
-        color: color.primaryWhite
+    ImagesContainer: {
+        marginVertical: 20,
+        marginHorizontal: 10,
+        alignItems: 'center'
     },
-    saveText: {
-        fontFamily: 'Montserrat-Bold',
-        fontSize: 12,
-        letterSpacing: 2,
-        color: color.primaryBlue
-    }
+    logoContainer: {
+        width: (windowWidth - 60) / 3,
+        height: (windowWidth - 60) / 3,
+        borderRadius: 50
+    },
 });

@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     },
     NameLabel: {
         fontFamily: 'Montserrat-Regular',
-        fontSize: 20,
+        fontSize: 15,
         letterSpacing: 2,
     },
     statusContainer: {
@@ -161,11 +161,11 @@ const styles = StyleSheet.create({
     },
     RoleLabel: {
         fontFamily: 'Montserrat-Regular',
-        fontSize: 20,
+        fontSize: 15,
     },
     RoleText: {
         fontFamily: 'Montserrat-Regular',
-        fontSize: 15,
+        fontSize: 10,
     },
     SearchBarStyles: {
         borderWidth: 0,

@@ -72,6 +72,7 @@ class ServiceSelection extends Component {
             console.log("TOTALTIME", new Date(new Date().getTime() + totalTime * 60000).getHours())
             if (new Date(new Date().getTime() + totalTime * 60000).getHours() >= 17) {
                 alert("Service Station Closes At 5 PM")
+                this.props.navigation.navigate("ScanDMV", { serviceList: this.state.selectedList })
             }
             else {
                 this.props.navigation.navigate("ScanDMV", { serviceList: this.state.selectedList })

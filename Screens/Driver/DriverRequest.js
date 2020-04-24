@@ -160,7 +160,6 @@ function RenderContent(props) {
     const user = firebase.auth().currentUser;
     const fetchFirebaseStart = () => {
         firebase.database().ref('location/' + user.uid).once('value', snapshot => {
-            console.log("FIREBASE UPDATED ERROR", snapshot.val().currentStage)
             if (snapshot.val().currentStage) setcurrentStage(snapshot.val().currentStage)
             setfetching(false)
         })
@@ -182,13 +181,13 @@ function RenderContent(props) {
         else props.setreturnToStation(false)
         if (currentStage == 8) props.navigation.navigate("DriverHomeScreen")
         console.log("CURRENTSTAGE", currentStage)
-        if (!fetching || !currentStage == 8) {
+        if (!fetching && currentStage != 8) {
             console.log("fetching")
             firebase.database().ref('location/' + user.uid).update({
                 currentStage
             });
         }
-    },[]);
+    },[currentStage]);
     return (
         <View style={styles.detailsContainer}>
             <Ionicons name="ios-remove" size={50} style={styles.bottomsheetMoreIcon} />
@@ -360,6 +359,7 @@ function DriverRequest({ navigation, route }) {
     const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
     const destination = { latitude: location.lat, longitude: location.lng }
     const user = firebase.auth().currentUser;
+
     useEffect(() => {
 
         if (status == "DRIVER_ASSIGN") { }
@@ -384,11 +384,14 @@ function DriverRequest({ navigation, route }) {
             setlat(info.coords.latitude);
             setlng(info.coords.longitude);
         }, e => console.log(e), { distanceFilter: 0 });
+        
+    },[]);
+    useEffect(()=>{
         firebase.database().ref('location/' + user.uid).update({
             lat,
             lng,
         });
-    });
+    },[lat,lng])
 
     return (
         <SafeAreaView style={styles.container}>
