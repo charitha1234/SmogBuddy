@@ -7,6 +7,7 @@ import {
     ActivityIndicator,
     ScrollView,
     Dimensions,
+    Alert,
     ImageBackground
 } from "react-native";
 import { color } from '../../Assets/color';
