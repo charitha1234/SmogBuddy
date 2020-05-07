@@ -5,6 +5,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     Modal,
+    ActivityIndicator,
 } from "react-native";
 import PayLogo from '../../Assets/payLogo';
 import { color } from '../../Assets/color'
@@ -14,6 +15,7 @@ import VerifiedsSvg from '../../Assets/verified';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import firebase from 'react-native-firebase';
 import BaseUrl from '../../Config'
+import Header from '../../Components/PaymentHeader'
 class PaypalScreen extends Component {
     constructor(props) {
         super(props);
@@ -21,13 +23,14 @@ class PaypalScreen extends Component {
             modalVisible: false,
             status: 'pending',
             amount: null,
-            uid: null
+            uid: null,
+            loading: false
         }
     }
     componentDidMount() {
         const user = firebase.auth().currentUser
 
-        fetch(BaseUrl.Url+'/user/amount/' + user.uid)
+        fetch(BaseUrl.Url + '/user/amount/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
 
@@ -39,7 +42,7 @@ class PaypalScreen extends Component {
     handlepayment(data) {
         console.log("DATA", data)
 
-        if (data.title == "SUCCESS" || data.title == "FAILED") {
+        if (data.title == "success" || data.title == "failed") {
             this.setState({
                 modalVisible: false,
                 status: data.title
@@ -51,13 +54,27 @@ class PaypalScreen extends Component {
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={styles.container}>
                     <Modal visible={this.state.modalVisible}
-                        onRequestClose={() => { this.setState({ modalVisible: false }) }}>
+                        onRequestClose={() => { this.setState({ modalVisible: false }) }}
+                    >
+                        <Header title="PAYMENT" onPress={() => this.setState({ modalVisible: false })} />
+
                         {
                             this.state.amount && this.state.uid ?
-                                <WebView
-                                    source={{ uri: BaseUrl.Url+'/admin/pay?amount=' + this.state.amount.toString() + '&uid=' + this.state.uid.toString() }}
-                                    onNavigationStateChange={(data) => this.handlepayment(data)}
-                                /> : null
+                                <>
+                                    <WebView
+                                        onLoadStart={() => this.setState({ loading: true })}
+                                        onLoadEnd={() => {
+                                            console.log("LOADING FINISHED")
+                                            this.setState({ loading: false })
+                                        }}
+                                        source={{ uri: BaseUrl.Url + '/admin/pay?amount=' + this.state.amount.toString() + '&uid=' + this.state.uid.toString() }}
+                                        onNavigationStateChange={(data) => this.handlepayment(data)}
+                                    />
+                                    {this.state.loading && (
+                                        <ActivityIndicator size={30} style={{ position: "absolute", top: '50%', left: '50%'}} color={color.primaryBlack} />
+                                    )}
+                                </>
+                                : null
                         }
                     </Modal>
                     {
@@ -72,7 +89,7 @@ class PaypalScreen extends Component {
                                 <TouchableOpacity style={styles.PayButton} onPress={() => this.setState({ modalVisible: true })}><PaypalLogo /></TouchableOpacity>
                             </>
                             :
-                            this.state.status == "SUCCESS" ?
+                            this.state.status == "success" ?
                                 <View style={{ flex: 1, alignItems: 'center' }}>
                                     <View style={{ height: 200, justifyContent: 'center', alignItems: 'center' }}>
                                         <Text style={styles.headerText}>Payment Has Successful</Text>

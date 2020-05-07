@@ -23,7 +23,21 @@ import firebase from 'react-native-firebase';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const uuidv1 = require('uuid/v1');
+function formatDate() {
+    let d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
+    if (month.length < 2) {
+        month = '0' + month;
+    }
+    if (day.length < 2) {
+        day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
+}
 function EmployeeProfile({ navigation, route }) {
     const [firstName, setfirstName] = useState("")
     const [lastName, setlastName] = useState("")
@@ -38,19 +52,23 @@ function EmployeeProfile({ navigation, route }) {
     const [editing, setediting] = useState(false)
     const [dialogboxVisible, setdialogboxVisible] = useState(false)
     const { userId } = route.params
-    useEffect(() => {
+    const getApiData=()=>{
         fetch(BaseUrl.Url + '/user/' + userId)
-            .then((res) => res.json())
-            .then((resJson) => {
-                console.log(resJson)
-                setloading(false);
-                setphoneNo(resJson.phoneNumber)
-                setfirstName(resJson.firstName);
-                setlastName(resJson.lastName);
-                setaddress(resJson.address);
-                setstate(resJson.state);
-                setzipCode(resJson.zipCode);
-            })
+        .then((res) => res.json())
+        .then((resJson) => {
+            console.log(resJson)
+            setloading(false);
+            setimageUri(resJson.imageUrl)
+            setphoneNo(resJson.phoneNumber)
+            setfirstName(resJson.firstName);
+            setlastName(resJson.lastName);
+            setaddress(resJson.address);
+            setstate(resJson.state);
+            setzipCode(resJson.zipCode);
+        })
+    }
+    useEffect(() => {
+       getApiData()
     }, [])
     const ImagePick = () => {
         const options = {
@@ -129,24 +147,20 @@ function EmployeeProfile({ navigation, route }) {
     }
     const saveDetails = () => {
         setloading(true)
-        fetch(BaseUrl.Url + "/driver/"+userId, {
+        fetch(BaseUrl.Url + "/user", {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-
                 firstName: firstName,
                 lastName: lastName,
-                dateOfHire: dateOfHire,
-                employNumber: employeeNo,
+                address:address,
                 phoneNumber:phoneNo,
+                state:state,
                 imageUrl: imageUri,
-                isAdmin:false,
-                licenseNumber: licenceNo,
-                role: role,
-                position: position,
+                zipCode:zipCode,
                 uid: userId
 
 
@@ -154,6 +168,8 @@ function EmployeeProfile({ navigation, route }) {
             }),
         }).then((res) => res.json())
             .then((resJson) => { 
+                setediting(false)
+                getApiData()
                 console.log("reeeeee",resJson)
                 setloading(false) })
             .catch((e) => {
@@ -162,6 +178,7 @@ function EmployeeProfile({ navigation, route }) {
                 alert(e)
             })
     }
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -179,7 +196,11 @@ function EmployeeProfile({ navigation, route }) {
                                         <View style={styles.ImagesContainer}>
                                             <TouchableOpacity onPress={() => ImagePick()} disabled={editing ? false : true} style={{ borderWidth: 1, borderRadius: (windowWidth - 60) / 3 }}>
                                                 <ImageBackground source={{ uri: imageUri }} style={styles.logoContainer} imageStyle={{ borderRadius: (windowWidth - 60) / 3 }}>
-                                                    <Ionicons name="ios-add-circle" style={{ position: 'absolute', top: Math.sqrt(2) * (windowWidth - 60) / 6 - (windowWidth - 60) / 6 - 20, right: Math.sqrt(2) * (windowWidth - 60) / 6 - (windowWidth - 60) / 6 - 20 }} size={30} color={color.failedRed} />
+                                                    {
+                                                        editing ?
+                                                            <Ionicons name="ios-add-circle" style={{ position: 'absolute', top: Math.sqrt(2) * (windowWidth - 60) / 6 - (windowWidth - 60) / 6 - 20, right: Math.sqrt(2) * (windowWidth - 60) / 6 - (windowWidth - 60) / 6 - 20 }} size={30} color={color.failedRed} />
+                                                            : null
+                                                    }
                                                 </ImageBackground>
                                             </TouchableOpacity>
                                         </View>

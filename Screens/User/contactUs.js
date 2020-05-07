@@ -9,12 +9,13 @@ import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Header from '../../Components/NormalHeader'
 import { SafeAreaView } from "react-native-safe-area-context";
 function ContactUs({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>CONTACT US</Text><View /></View>
+            <Header navigation={navigation} title="CONTACT US"/>
         </SafeAreaView>
     );
 

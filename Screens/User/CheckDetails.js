@@ -11,6 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Item } from "native-base";
+import Header from '../../Components/NormalHeader'
 
 function ServiceList(props) {
     return (
@@ -41,13 +42,7 @@ function Process({ navigation, route }) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.headerContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}>
-                    <Ionicons name="ios-close" size={40} />
-                </TouchableOpacity>
-                <View><Text style={styles.headerText}>INSPECTIOIN HISTORY</Text></View>
-                <View />
-            </View>
+            <Header navigation={navigation} title="INSPECTIONS"/>
             <FlatList data={details.serviceList} renderItem={({ item }) => (<ServiceList ServiceName={item.serviceName} failedPart={item.partName} status={item.status} cost={item.cost} />)} />
         </View>
     );

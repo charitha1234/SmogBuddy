@@ -5,18 +5,19 @@ import {
     StyleSheet,
     TouchableOpacity,
     ActivityIndicator,
-    Image
+    Image,
+    ScrollView
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import { RNCamera } from 'react-native-camera';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextBox from '../../Components/textBox';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import firebase from 'react-native-firebase';
 import BaseUrl from '../../Config'
+import Header from '../../Components/NormalHeader'
 class ScanDMV extends Component {
     constructor(props) {
         super(props);
@@ -24,7 +25,7 @@ class ScanDMV extends Component {
             uId: firebase.auth().currentUser.uid,
             loading: false,
             before80: false,
-            successfull: false,
+            successfull: true,
             flashMode: RNCamera.Constants.FlashMode.auto,
         };
 
@@ -85,7 +86,7 @@ class ScanDMV extends Component {
                 <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
                     {!this.state.successfull ?
                         <>
-                            <View style={styles.headerTextContainer}><TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-arrow-back" size={40} /></TouchableOpacity><Text style={styles.scanScreenMessage}>SCAN YOUR DMV</Text><View /></View>
+                            <Header navigation={this.props.navigation} leftIcon="ios-arrow-back" title="SCAN DMV"/>
                             <RNCamera
                                 ref={ref => {
                                     this.camera = ref;
@@ -101,12 +102,10 @@ class ScanDMV extends Component {
                             ></RNCamera>
                         </>
                         :
-                        <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ alignItems: 'center', height: 700 }}>
-                            <View style={styles.headerTextContainer}>
-                                <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-arrow-back" size={40} /></TouchableOpacity>
-
-                                <Text style={styles.headerText}>Vehicle Details</Text>
-                            </View>
+                        <>
+                        <Header title="VEHICLE DETAILS" navigation={this.props.navigation} leftIcon="ios-arrow-back"/>
+                        <ScrollView style={{ flex: 1, zIndex: 0,width:'100%',marginTop:10 }} contentContainerStyle={{alignItems:'center'}} >
+                           
                             {!this.state.loading ?
                                 <>
                                     {
@@ -126,7 +125,8 @@ class ScanDMV extends Component {
                                 </View>
                             }
                             <TouchableOpacity onPress={() => { !this.state.loading ? this.props.navigation.navigate("OdometerRead", { serviceList: this.props.route.params.serviceList }) : null }} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
-                        </KeyboardAwareScrollView>
+                        </ScrollView>
+                        </>
                     }
 
                 </LinearGradient>

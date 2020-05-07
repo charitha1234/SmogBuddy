@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 import BaseUrl from '../../Config'
+import Header from '../../Components/NormalHeader'
 function Profile({ navigation }) {
     const [driverAssigned, setdriverAssigned] = useState(false)
     const [loading, setloading] = useState(true)
@@ -47,7 +48,7 @@ function Profile({ navigation }) {
     return (
         <SafeAreaView style={{flex:1}}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-                <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>DRIVER</Text><View /></View>
+                <Header navigation={navigation} title="DRIVER PROFILE"/>
                 {
                     loading ?
                         <View style={{ flex: 1, justifyContent: 'center' }}><ActivityIndicator size={40} color={color.primaryBlack} /></View>

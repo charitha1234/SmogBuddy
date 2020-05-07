@@ -5,7 +5,8 @@ import {
     StyleSheet,
     TouchableOpacity, ScrollView, KeyboardAvoidingView,
     ActivityIndicator,
-    Dimensions
+    Dimensions,
+    Alert
 } from "react-native";
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
@@ -36,9 +37,9 @@ function formatDate() {
 }
 function newUser(username, password, firstName, lastName, imageUrl, address, state, zipCode, phoneNo, navigation, setloading, setserverError) {
     console.log("User", username, password)
-    firebase.auth().createUserWithEmailAndPassword(username, password)
+    firebase.app('SecondApp').auth().createUserWithEmailAndPassword(username, password)
         .then((res) => {
-            firebase
+            firebase.app('SecondApp')
                 .storage()
                 .ref(formatDate() + '/' + res.user.uid + '/' + uuidv1() + '.jpeg')
                 .putFile(imageUrl.uri)
@@ -63,9 +64,17 @@ function newUser(username, password, firstName, lastName, imageUrl, address, sta
                         }),
                     }).then((res) => res.json())
                         .then((responseJson) => {
+                            firebase.app('SecondApp').auth().signOut()
                             setloading(false)
-                            firebase.auth().signOut()
-                            navigation.navigate("Login")
+                            Alert.alert(
+                                "SUCCESS",
+                                "You have successfully registered.",
+                                [
+                                  { text: "OK", onPress: () => navigation.navigate("Login") }
+                                ],
+                                { cancelable: false }
+                              );
+                            
                         })
                         .catch((error) => {
                             setserverError(true)

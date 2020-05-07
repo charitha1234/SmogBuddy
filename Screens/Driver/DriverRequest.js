@@ -164,6 +164,48 @@ function RenderContent(props) {
             setfetching(false)
         })
     }
+    const isUserPaid=()=>{
+        fetch(BaseUrl.Url+'/driver/is-pay/' +user.uid)
+        .then((res) => res.json())
+        .then((resJson) => {
+            console.log("PAYED",resJson)
+            if(resJson.isPaid){
+                setloading(true)
+
+                fetch(BaseUrl.Url+'/driver/status',
+                    {
+                        method: 'PUT',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            userUid: props.userId,
+                            driverUid: user.uid,
+                            status: cases[currentStage]
+
+
+                        }),
+                    })
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        removeUploaded()
+                        setcurrentStage(currentStage + 1)
+                        setloading(false)
+                        console.log("RESPONEJSON>>>", responseJson);
+
+                    })
+                    .catch((error) => {
+                        setloading(false)
+                        alert(error);
+                    });
+            }
+            else{
+                alert("Customer has not paid. Please check")
+            }
+        })
+        .catch((e) => console.log("error", e))
+    }
     const getServiceList = () => {
         setmodalVisible(true)
         fetch(BaseUrl.Url+'/driver/assign/service/' + user.uid)
@@ -236,8 +278,12 @@ function RenderContent(props) {
                                         },
                                         {
                                             text: 'Yes', onPress: () => {
+                                                if(currentStage==7){
+                                                    console.log("ISPAID")
+                                                    isUserPaid()
+                                                }
+                                                else{
                                                 setloading(true)
-                                                const user = firebase.auth().currentUser;
 
                                                 fetch(BaseUrl.Url+'/driver/status',
                                                     {
@@ -266,6 +312,8 @@ function RenderContent(props) {
                                                         setloading(false)
                                                         alert(error);
                                                     });
+                                                }
+                                                
 
                                             }
                                         },

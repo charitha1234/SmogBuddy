@@ -68,6 +68,7 @@ function ManageUsers({ navigation }) {
 
 
     const updateSearch = search => {
+        console.log("CHANGe")
         setsearch(search)
     };
 

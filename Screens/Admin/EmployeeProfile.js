@@ -23,6 +23,21 @@ import firebase from 'react-native-firebase';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const uuidv1 = require('uuid/v1');
+function formatDate() {
+    let d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) {
+        month = '0' + month;
+    }
+    if (day.length < 2) {
+        day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
+}
 function EmployeeProfile({ navigation, route }) {
     const [firstName, setfirstName] = useState("")
     const [lastName, setlastName] = useState("")

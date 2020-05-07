@@ -37,6 +37,52 @@ function Settings({ navigation }) {
         setdate(currentDate);
     };
 
+    const deleteData=()=>{
+        if(startingdate && endingDate){
+            Alert.alert(
+                '',
+                'Are you sure you want to delete?', 
+                [
+                   {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                   {text: 'OK', onPress: () => {
+                    fetch(BaseUrl.Url + "/admin/storage", {
+                        method: 'DELETE',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+            
+                            startAt: startingdate.toLocaleDateString(),
+                            endAt: endingDate.toLocaleDateString()
+            
+            
+            
+                        }),})
+                        .then((res)=>res.json())
+                        .then((resJson)=>{
+                            Alert.alert(
+                                'SUCCESS',
+                                'Succesfuly deleted ', // <- this part is optional, you can pass an empty string
+                                [
+                                  {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                ],
+                                {cancelable: false},
+                              );
+                            console.log(resJson)})
+                        .catch(()=>alert("Something has wrong"))
+
+
+                   }},
+                ],
+                { cancelable: false }
+           )
+            
+        }
+        else{
+            alert("Please select starting date and ending date")
+        }
+    }
     const saveSettings = () => {
         fetch(BaseUrl.Url + "/admin/shop/price", {
             method: 'PUT',
@@ -168,10 +214,10 @@ function Settings({ navigation }) {
                             <Ionicons name='ios-calendar' size={30} />}
                     </TouchableOpacity>
                     <View style={{ flex: 1, margin: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <TouchableOpacity style={{ flex: 1, margin: 10, justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity onPress={()=>setisModalVisible(false)} style={{ flex: 1, margin: 10, justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={[styles.settingText, { fontFamily: 'Montserrat-Bold', color: color.primaryBlue }]}>Cancel</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ flex: 1, margin: 10, justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity onPress={()=>deleteData()} style={{ flex: 1, margin: 10, justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={[styles.settingText, { fontFamily: 'Montserrat-Bold', color: color.failedRed }]}>Delete</Text>
                         </TouchableOpacity>
                     </View>

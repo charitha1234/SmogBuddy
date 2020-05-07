@@ -4,11 +4,13 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    FlatList
+    FlatList,
+    ActivityIndicator
 } from "react-native";
 import { color } from '../../Assets/color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
+import Header from '../../Components/NormalHeader'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BaseUrl from '../../Config'
 function CheckList(props) {
@@ -45,8 +47,18 @@ function PreviousChecks(props) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={() => props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>ALL CHECKS</Text><View /></View>
-            <FlatList data={previousChecks} renderItem={({item})=>(<CheckList onPress={()=>props.navigation.navigate("CheckDetails",{details:item})} status={item.status} date={item.date} cost={item.totalCost}/>)}/>
+            <Header title="Previous Checks" navigation={props.navigation}  />
+            {
+                previousChecks?
+                previousChecks.length>0?
+                <FlatList data={previousChecks} renderItem={({item})=>(<CheckList onPress={()=>props.navigation.navigate("CheckDetails",{details:item})} status={item.status} date={item.date} cost={item.totalCost}/>)}/>
+                :
+                <Text style={[styles.dateText,{textAlign:'center'}]}>No Records</Text>
+                :
+                <ActivityIndicator size={30} color={color.primaryBlack}/>
+
+            }
+            
             
         </SafeAreaView>
     );

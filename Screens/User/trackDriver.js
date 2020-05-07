@@ -18,6 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import StepIndicator from 'react-native-step-indicator';
 import MapViewDirections from 'react-native-maps-directions';
 import BaseUrl from '../../Config'
+import Header from '../../Components/NormalHeader'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 Geolocation.setRNConfiguration({ authorizationLevel: 'always' });
@@ -166,7 +167,7 @@ function DriverTrack({ navigation }, props) {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-                <View style={styles.headerContainer}><TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>TRACKING</Text><View /></View>
+                <Header navigation={navigation} title="TRACKING" />
                 {loading || !ownLat || !ownLng ?
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator size={40} color={color.primaryBlack} />
@@ -234,7 +235,9 @@ function DriverTrack({ navigation }, props) {
                             }
                         </>
                         :
-                        <View style={styles.headerTextContainer}><Text style={styles.headerText}>No Driver has assigned</Text></View>
+                        <View style={styles.container}>
+                                <Text style={styles.subText}>Driver Is Not Assigned yet</Text>
+                            </View>
                 }
             </LinearGradient>
         </SafeAreaView>
@@ -246,6 +249,12 @@ export default DriverTrack;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    subText: {
+        fontFamily: 'Montserrat-Regular',
+        fontSize: 20,
+        letterSpacing: 2,
+        textAlign:'center'
     },
     label: {
         marginHorizontal: 10,

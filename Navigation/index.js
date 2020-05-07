@@ -88,8 +88,9 @@ function RequestProcess() {
 function UserHomeScreen() {
     const [currentState, setcurrentState] = useState(null)
     const [payable, setpayable] = useState(false)
+    const user = firebase.auth().currentUser;
     useEffect(() => {
-        const user = firebase.auth().currentUser;
+        
         fetch(BaseUrl.Url+'/user/assign/driver/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
@@ -103,7 +104,11 @@ function UserHomeScreen() {
             }).catch((e) => { })
 
 
+        
+    },[])
+    useEffect(()=>{
         if (currentState == 7) {
+            console.log("CURRENT STAGE USERRRRRRRR",currentState)
             fetch(BaseUrl.Url+'/user/amount/' + user.uid)
                 .then((res) => res.json())
                 .then((resJson) => {
@@ -113,7 +118,7 @@ function UserHomeScreen() {
                 })
                 .catch((e) => { })
         }
-    },[])
+    },[currentState])
     return (
         <Drawer.Navigator initialRouteName="Home" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <HomeDrawerContent {...props} />}>
             {

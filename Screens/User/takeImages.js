@@ -18,6 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
 import firebase from 'react-native-firebase';
+import Header from '../../Components/NormalHeader'
 
 const uuidv1 = require('uuid/v1');
 
@@ -85,11 +86,7 @@ class OdometerRead extends Component {
                 <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
                     {this.state.images.length > 10 || this.state.finished ?
                         <View style={styles.container}>
-                            <View style={styles.headerTextContainer}>
-                                <TouchableOpacity style={{ flex: 0.5 }} onPress={() => this.props.navigation.goBack()} ><Ionicons style={{ marginLeft: 10 }} name="ios-arrow-back" size={40} /></TouchableOpacity>
-                                <View style={{ flex: 2 }}><Text style={styles.headerText}>ODOMETER</Text></View>
-                                <View style={{ flex: 0.5 }} />
-                            </View>
+                            <Header navigation={this.props.navigation} title="ODOMETER" leftIcon="ios-arrow-back"/>
                             <KeyboardAwareScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ height: 400, justifyContent: 'space-between', alignItems: 'center' }}>
                                 <View style={styles.formContainer}>
                                     <TextBox title="METER READING" underline={true} />
@@ -218,6 +215,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         height: 100,
+        zIndex:10,
         width: '100%',
         justifyContent: 'space-between',
         backgroundColor: color.primaryWhite

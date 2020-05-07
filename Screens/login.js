@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     Keyboard,
+    TextInput,
     TouchableWithoutFeedback
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';

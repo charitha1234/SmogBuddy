@@ -15,6 +15,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import GradientButton from '../../Components/CustomButton';
 import firebase from 'react-native-firebase';
 import BaseUrl from '../../Config'
+import Header from '../../Components/NormalHeader'
 
 function Service(props) {
     return (
@@ -116,10 +117,7 @@ class ServiceSelection extends Component {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-                    <View style={styles.headerTextContainer}>
-                        <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity>
-                        <Text style={styles.headerText}>SELECT SERVICES</Text>
-                    </View>
+                    <Header navigation={this.props.navigation} title="SELECT SERVICES"/>
                     <View style={styles.serviceListContainer}>
                         <View style={styles.serviceContainer}>
                             <View style={{ flex: 2 }}>
@@ -130,8 +128,9 @@ class ServiceSelection extends Component {
                             </View>
                         </View>
                         <FlatList data={this.state.serviceList} renderItem={({ item }) => (<Service serviceName={item.serviceName} serviceYear={item.yearRange} Checked={this.state.check[item.serviceID]} onChange={() => this.checkBox_Test(item.serviceID)} />)} keyExtractor={item => item.serviceID} />
+                    <Ionicons name="ios-arrow-down" size={20} style={{marginVertical:5,alignSelf:'center'}}/>
                     </View>
-                    <TouchableOpacity onPress={this.handleRequest.bind(this)} style={styles.buttonContainer}><GradientButton style={styles.button} title="NEXT" /></TouchableOpacity>
+                    <View  style={styles.buttonContainer}><TouchableOpacity onPress={this.handleRequest.bind(this)}><GradientButton style={styles.button} title="NEXT" /></TouchableOpacity></View>
                 </LinearGradient>
             </SafeAreaView>
         );
@@ -195,12 +194,21 @@ const styles = StyleSheet.create({
     },
 
     buttonContainer: {
-        margin: 10,
-        alignItems: 'flex-end',
+        marginVertical:10,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: -3,
+        },
+        shadowOpacity: .5,
+        shadowRadius: 8.30,
+        elevation: 10,
+        alignItems:'center',
 
 
     },
     button: {
+        marginVertical:10,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
