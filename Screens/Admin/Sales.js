@@ -23,10 +23,8 @@ function CheckList(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={[styles.ProcessContainer, { backgroundColor: color.primaryWhite }]}>
             <View style={styles.statusContainer}>
-
                 <Text style={styles.nameText}>{props.name}</Text>
                 <Text style={styles.dateText}>{props.date}</Text>
-
             </View>
             <View style={styles.CostContainer}>
                 <Text style={styles.Costlabel}>Total Cost</Text>
@@ -70,7 +68,9 @@ class Sales extends Component {
         console.log("ENDING", this.state.endDate.toLocaleDateString())
         fetch(BaseUrl.Url + '/admin/sales?startAt=' + this.state.startingDate.toLocaleDateString() + '&endAt=' + this.state.endDate.toLocaleDateString())
             .then((res) => res.json())
-            .then((resJson) => this.setState({ transactionList: resJson, loading: false }))
+            .then((resJson) => {
+                console.log("TRANSACTION ",resJson)
+                this.setState({ transactionList: resJson, loading: false })})
             .catch((e) => alert(e))
         this.setState({ isDateVisible: false })
 
@@ -90,7 +90,7 @@ class Sales extends Component {
                         <ActivityIndicator size={40} color={color.primaryBlack} />
                     </View>
                     :
-                    <FlatList data={this.state.transactionList} renderItem={({ item }) => (<CheckList onPress={() => this.props.navigation.navigate("PdfViewer")} name={item.user} date={item.timestamp} cost={item.totalCost} />)} />
+                    <FlatList data={this.state.transactionList} renderItem={({ item }) => (<CheckList onPress={() => this.props.navigation.navigate("PdfViewer",{reportUrl:item.reportUrl})} name={item.user} date={item.timestamp} cost={item.totalCost}/>)} />
                 }
 
                 <Modal useNativeDriver={true} isVisible={this.state.isDateVisible} onBackdropPress={() => this.setState({ isDateVisible: false })}>
@@ -133,7 +133,7 @@ class Sales extends Component {
                                 />
                             )}
 
-                            <TouchableOpacity onPress={this.getTransactionList.bind(this)} style={styles.buttonContainer}><Text style={styles.buttonText}>SEARCH</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={this.getTransactionList.bind(this)} disabled={!(this.state.startingDate && this.state.endDate)} style={styles.buttonContainer}><Text style={styles.buttonText}>SEARCH</Text></TouchableOpacity>
                         </View>
                     </View>
                 </Modal>
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 20,
-        backgroundColor: color.primaryBlue,
+        backgroundColor: color.secondryBlue,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

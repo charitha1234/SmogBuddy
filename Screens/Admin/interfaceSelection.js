@@ -16,11 +16,14 @@ function InterfaceSelection({ navigation }) {
     const [manager, setManager] = useState(false);
     return (
         <SafeAreaView style={styles.container}>
-            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
+            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
                 <View style={styles.upperContainer}>
-                    <Text style={styles.waterMarkText}>SMOGBUDDY</Text>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 30 }}><Ionicons name="ios-close" size={40} /></TouchableOpacity>
-                    <Text style={styles.largeText}>SELECT ACCOUNT TYPE</Text>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                        <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
+                    </TouchableOpacity>
+                    <Text style={styles.waterMarkText}>SMOGBUDDY </Text>
+                    <Text style={styles.smallTextHeader}>|</Text>
+                    <Text style={styles.smallTextHeader}> ACCOUNT</Text>
                 </View>
                 <View style={styles.selection}>
                     <View style={styles.insideArea}>
@@ -86,6 +89,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         width: 300,
         height: 300,
+        borderRadius: 20,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -103,6 +107,26 @@ const styles = StyleSheet.create({
         letterSpacing: 2,
         opacity: 0.5
     },
+    smallTextHeader: {
+        fontFamily: 'Montserrat-regular',
+        fontSize: 10,
+        letterSpacing: 6,
+        color: color.primaryWhite,
+    },
+    backButton: {
+        marginHorizontal: 20,
+
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: .2,
+        shadowRadius: 8.30,
+
+        elevation: 5,
+
+    },
     largeText: {
         marginBottom: -100,
         fontFamily: 'Montserrat-Bold',
@@ -115,10 +139,8 @@ const styles = StyleSheet.create({
     waterMarkText: {
         fontFamily: 'Montserrat-Bold',
         fontSize: 10,
-        margin: 20,
         letterSpacing: 6,
-        marginLeft: 30,
-        color: color.primaryBlack,
+        color: color.primaryWhite,
 
     },
     sections: {
@@ -132,7 +154,11 @@ const styles = StyleSheet.create({
         margin: 20,
     },
     upperContainer: {
+        height: 50,
+        flexDirection: 'row',
         alignSelf: 'flex-start',
-        width: '100%'
-    }
+        alignItems: 'center',
+        marginVertical: 20,
+        justifyContent: 'space-evenly'
+    },
 });

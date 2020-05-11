@@ -19,7 +19,7 @@ import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
 import firebase from 'react-native-firebase';
 import Header from '../../Components/NormalHeader'
-
+import BaseUrl from '../../Config'
 const uuidv1 = require('uuid/v1');
 
 class OdometerRead extends Component {
@@ -32,6 +32,8 @@ class OdometerRead extends Component {
             loading: false,
             finished: false,
             uploaded: false,
+            odometerVal: null,
+            error: null
         }
     }
 
@@ -60,8 +62,8 @@ class OdometerRead extends Component {
             .ref(this.formatDate() + '/' + user.uid + '/' + uuidv1() + '.jpeg')
             .putFile(this.state.picture)
             .then((res) => {
-                if (this.state.images.length == 0) this.state.images.push({ imageUrl: res.downloadURL,status:'Request Service',isOdometer: true })
-                else this.state.images.push({ imageUrl: res.downloadURL,status:'Request Service',isOdometer: false })
+                if (this.state.images.length == 0) this.state.images.push({ imageUrl: res.downloadURL, status: 'Request Service', isOdometer: true })
+                else this.state.images.push({ imageUrl: res.downloadURL, status: 'Request Service', isOdometer: false })
                 this.setState({ loading: false, picture: null });
 
             })
@@ -69,6 +71,50 @@ class OdometerRead extends Component {
                 this.setState({ loading: false, picture: null });
                 alert(e)
             });
+    }
+
+    putOdometerRead() {
+        const user = firebase.auth().currentUser;
+        if (this.state.odometerVal) {
+            if (/^[0-9]+$/.test(this.state.odometerVal)) {
+                this.setState({ loading: true })
+                fetch(BaseUrl.Url + '/user/odometer', {
+                    method: 'PUT',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userUid: user.uid,
+                        role: "CUSTOMER",
+                        status: "Requesting driver",
+                        odoMeterRecord: this.state.odometerVal,
+                        fuelLevel: " "
+                    }),
+                })
+                    .then((resJson) => {
+                        if (resJson.status == 200) {
+                            this.props.navigation.navigate("Searching", { serviceList: this.props.route.params.serviceList, images: this.state.images })
+                            this.setState({ loading: false })
+                        }
+                        else {
+                            this.setState({ loading: false })
+                            alert("Something has wrong")
+                        }
+
+                    })
+                    .catch(() => {
+                        alert("Somethins has wrong")
+                        this.setState({ loading: false })
+                    })
+            }
+            else {
+                alert("Please enter number")
+            }
+
+        }
+        else this.setState({ error: "Please fill odometer value" })
+
     }
 
     takePicture = async () => {
@@ -86,12 +132,12 @@ class OdometerRead extends Component {
                 <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
                     {this.state.images.length > 10 || this.state.finished ?
                         <View style={styles.container}>
-                            <Header navigation={this.props.navigation} title="ODOMETER" leftIcon="ios-arrow-back"/>
+                            <Header navigation={this.props.navigation} title="ODOMETER" leftIcon="ios-arrow-back" />
                             <KeyboardAwareScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ height: 400, justifyContent: 'space-between', alignItems: 'center' }}>
                                 <View style={styles.formContainer}>
-                                    <TextBox title="METER READING" underline={true} />
+                                    <TextBox title="METER READING" keyboardType="number-pad" value={this.state.odometerVal} error={this.state.error} underline={true} onChangeText={(text) => this.setState({ odometerVal: text, error: null })} />
                                 </View>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Searching", { serviceList: this.props.route.params.serviceList, images: this.state.images })} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
+                                <TouchableOpacity onPress={this.putOdometerRead.bind(this)} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
                             </KeyboardAwareScrollView>
                         </View>
                         :
@@ -215,7 +261,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         height: 100,
-        zIndex:10,
+        zIndex: 10,
         width: '100%',
         justifyContent: 'space-between',
         backgroundColor: color.primaryWhite

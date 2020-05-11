@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
         letterSpacing: 2,
     },
     button: {
-        backgroundColor: color.primaryBlue,
+        backgroundColor: color.secondryBlue,
         justifyContent: 'center',
         alignItems: 'center',
         height: 40,

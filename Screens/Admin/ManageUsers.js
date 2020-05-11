@@ -4,7 +4,8 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    FlatList
+    FlatList,
+    Image
 } from "react-native";
 import { color } from '../../Assets/color';
 import { useIsFocused, useFocusEffect } from '@react-navigation/native';
@@ -17,6 +18,13 @@ import BaseUrl from '../../Config'
 function Users(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={styles.UserContainer}>
+            {
+                props.image?
+                <Image style={{ width: 100, height: 100, borderTopLeftRadius: 30, borderBottomLeftRadius: 30 }} source={{ uri: props.image }} />
+                :
+                <View style={{ width: 100, height: 100, borderTopLeftRadius: 30, borderBottomLeftRadius: 30 }} />
+            }
+            
             <View style={styles.statusContainer}>
                 <Text style={styles.NameLabel}>NAME</Text>
                 <Text style={styles.NameText}>{props.Fname} {props.Lname}</Text>
@@ -34,7 +42,7 @@ function ManageUsers({ navigation }) {
     const [data, setdata] = useState([])
     const [filteredList, setfilteredList] = useState([])
     const getApidata = (adjust) => {
-        fetch(BaseUrl.Url+'/admin/users')
+        fetch(BaseUrl.Url + '/admin/users')
             .then((res) => res.json())
             .then((resJson) => {
 
@@ -85,10 +93,10 @@ function ManageUsers({ navigation }) {
                 lightTheme
                 inputContainerStyle={{ backgroundColor: color.primaryWhite }}
             />
-            {search == "" ?
+            {!search ?
                 <TouchableOpacity onPress={() => navigation.navigate("InterfaceSelection")} style={styles.AddUserContainer}><Text style={styles.AddUserText}>ADD USER</Text></TouchableOpacity>
                 :
-                <FlatList data={filteredList} renderItem={({ item }) => (<Users onPress={() => navigation.navigate(item.role == "CUSTOMER" ? "AdminUserProfile" : "EmployeeProfile", { userId: item.uid })} Fname={item.firstName} Lname={item.lastName} Role={item.role} />)} keyExtractor={item => item.UserId} />
+                <FlatList data={filteredList} renderItem={({ item }) => (<Users onPress={() => navigation.navigate(item.role == "CUSTOMER" ? "AdminUserProfile" : "EmployeeProfile", { userId: item.uid })} Fname={item.firstName} Lname={item.lastName} Role={item.role} image={item.imageUrl} />)} keyExtractor={item => item.UserId} />
 
 
             }
@@ -122,12 +130,15 @@ const styles = StyleSheet.create({
         marginRight: -20,
         marginLeft: 20
     },
+    logoText: {
+        fontFamily: 'Montserrat-Bold',
+        fontSize: 50,
+        color: color.primaryWhite
+    },
     UserContainer: {
         flexDirection: 'row',
-        marginTop: 10,
-        marginBottom: 10,
+        margin: 10,
         height: 100,
-        width: '100%',
         justifyContent: 'center',
         backgroundColor: color.primaryWhite,
         shadowColor: "#000",
@@ -146,7 +157,7 @@ const styles = StyleSheet.create({
 
     },
     NameLabel: {
-        fontFamily: 'Montserrat-Regular',
+        fontFamily: 'Montserrat-SemiBold',
         fontSize: 15,
         letterSpacing: 2,
     },
@@ -161,7 +172,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     RoleLabel: {
-        fontFamily: 'Montserrat-Regular',
+        fontFamily: 'Montserrat-SemiBold',
         fontSize: 15,
     },
     RoleText: {
@@ -179,7 +190,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 25,
         alignSelf: 'center',
-        backgroundColor: color.primaryBlue,
+        backgroundColor: color.secondryBlue,
         alignItems: 'center',
         shadowColor: "#000",
         shadowOffset: {

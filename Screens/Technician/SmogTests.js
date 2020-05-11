@@ -336,7 +336,7 @@ class SmogTests extends Component {
 
                                 }
                             </TouchableOpacity>
-                            <TouchableOpacity disabled={this.state.Completed} onPress={this.completeChecks.bind(this)} style={[styles.fuelCapContainer, { backgroundColor: color.primaryBlue }]}>
+                            <TouchableOpacity disabled={this.state.Completed} onPress={this.completeChecks.bind(this)} style={[styles.fuelCapContainer, { backgroundColor: color.secondryBlue }]}>
                                 {
                                     this.state.capLoading ?
                                         <ActivityIndicator size={30} color={color.primaryWhite} />

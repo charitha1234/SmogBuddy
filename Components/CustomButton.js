@@ -1,7 +1,8 @@
 import React from "react";
 import {
     StyleSheet,
-    Text
+    Text,
+    View
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../Assets/color';
@@ -9,9 +10,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 function GradientButton(props) {
 
     return (
-            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.buttonUpper, color.buttonLower]} style={styles.container}>
+            <View style={styles.container}>
                 <Text style={styles.text}>{props.title}</Text>
-            </LinearGradient>
+            </View>
     );
 
 }
@@ -22,9 +23,19 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: "center",
         alignItems: 'center',
-        width: 150,
+        width: 200,
         height: 70,
-        borderRadius:35
+        borderRadius:35,
+        backgroundColor:color.secondryBlue,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: .3,
+        shadowRadius: 20,
+        borderRadius: 35,
+        elevation: 13,
         
 
     },

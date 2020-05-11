@@ -644,7 +644,7 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     completeButton: {
-        backgroundColor: color.primaryBlue,
+        backgroundColor: color.secondryBlue,
         width: 300,
         height: 50,
         borderRadius: 25,

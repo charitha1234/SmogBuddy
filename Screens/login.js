@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../Assets/color';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Logo from '../Assets/logo';
 import GradientButton from '../Components/longButton';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -78,18 +79,20 @@ function Login({ navigation }) {
 
                                 <Logo style={styles.Logo} />
                         }
-                        <TouchableWithoutFeedback onPress={() => textBox1.current.focus()}>
-                            <View style={[styles.LoginForm, usernameError ? { borderColor: color.failedRed, borderWidth: 3 } : null]}>
-                                <TextBox sendref={textBox1} onFocus={() => setonFocus(true)} value={username} error={usernameError} onBlur={() => setonFocus(false)} onChangeText={text => {
-                                    setusernameError(false)
-                                    setusername(text);
-                                }} title="USERNAME" icon="md-person" /></View></TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback onPress={() => textBox2.current.focus()}><View style={[styles.LoginForm, passwordError ? { borderColor: color.failedRed, borderWidth: 3 } : null]}>
-                            <TextBox sendref={textBox2} error={passwordError} value={password} onFocus={() => setonFocus(true)} onBlur={() => setonFocus(false)} onChangeText={text => {
-                                setpasswordError(false)
-                                setpassword(text);
-                            }} title="PASSWORD" icon="md-key" /></View></TouchableWithoutFeedback>
-                        <View style={styles.button}>
+                        <View style={[styles.LoginForm, usernameError||passwordError ? { borderColor: color.failedRed, borderWidth: 3 } : null]}>
+                            <TouchableWithoutFeedback onPress={() => textBox1.current.focus()}>
+                                <View style={styles.InputContainer}>
+                                    <TextBox sendref={textBox1} onFocus={() => setonFocus(true)} value={username} error={usernameError} onBlur={() => setonFocus(false)} onChangeText={text => {
+                                        setusernameError(false)
+                                        setusername(text);
+                                    }} title="USERNAME" icon="md-person" /></View></TouchableWithoutFeedback>
+                            <View style={{ borderBottomWidth: 1, opacity: 0.2, marginHorizontal: 10 }} />
+                            <TouchableWithoutFeedback onPress={() => textBox2.current.focus()}>
+                                <View style={styles.InputContainer}>
+                                    <TextBox sendref={textBox2} error={passwordError} value={password} onFocus={() => setonFocus(true)} onBlur={() => setonFocus(false)} onChangeText={text => {
+                                        setpasswordError(false)
+                                        setpassword(text);
+                                    }} title="PASSWORD" icon="md-key" /></View></TouchableWithoutFeedback>
                             <TouchableOpacity style={styles.shadowButton} onPress={() => {
 
 
@@ -102,13 +105,22 @@ function Login({ navigation }) {
                                     if (!password) setpasswordError("Password is empty")
                                 }
                             }}>
-                                <GradientButton title="LOGIN" />
+                                <Ionicons name="ios-play" size={20} color={color.primaryWhite} />
                             </TouchableOpacity>
                         </View>
+
                         {
                             isKeyboardVisible ?
                                 null :
-                                <TouchableOpacity  onPress={() => { navigation.navigate("NewUser") }}><Text style={styles.bottomText}>NEW ACCOUNT</Text></TouchableOpacity>
+                                <TouchableOpacity style={{margin:20}} onPress={() => { navigation.navigate("NewUser") }}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={styles.bottomText}>NEW ACCOUNT</Text>
+                                        <Ionicons name="ios-play" size={20} color={color.primaryWhite} />
+                                    </View>
+                                    <Text style={[styles.bottomText,{opacity:0.5}]}>Register here</Text>
+
+
+                                </TouchableOpacity>
                         }
 
                     </KeyboardAwareScrollView>
@@ -139,10 +151,10 @@ const styles = StyleSheet.create({
     },
     bottomText: {
         fontFamily: 'Montserrat-Bold',
-        fontSize: 10,
+        fontSize: 12,
         letterSpacing: 6,
         color: color.primaryWhite,
-        margin: 20
+        marginRight:10
     },
     watermarkText: {
         height: 20,
@@ -156,6 +168,7 @@ const styles = StyleSheet.create({
 
     },
     button: {
+        width: 80,
         height: 80,
         justifyContent: 'center',
         alignSelf: 'center',
@@ -171,27 +184,32 @@ const styles = StyleSheet.create({
 
     },
     shadowButton: {
-        backgroundColor: 'transparent',
-        borderRadius: 35,
+        position: 'absolute',
+        bottom: -15,
+        right: -15,
+        backgroundColor: color.secondryBlue,
+        borderRadius: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 60,
+        width: 60,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
             height: 6,
         },
         shadowOpacity: .2,
-        shadowRadius: 8.30,
+        shadowRadius: 20,
 
-        elevation: 5,
+        elevation: 10,
     },
     LoginForm: {
         alignSelf: 'center',
         marginBottom: 20,
-        alignItems: 'stretch',
-        justifyContent: 'flex-end',
         backgroundColor: 'white',
-        borderRadius: 40,
+        borderRadius: 25,
         width: 300,
-        height: 80,
+        height: 200,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -201,6 +219,14 @@ const styles = StyleSheet.create({
         shadowRadius: 8.30,
         elevation: 8,
 
+    },
+    InputContainer: {
+        alignSelf: 'center',
+        marginBottom: 20,
+        alignItems: 'stretch',
+        justifyContent: 'flex-end',
+        width: 300,
+        height: 80,
     },
     middleLine: {
         flex: 1,

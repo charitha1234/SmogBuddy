@@ -53,7 +53,7 @@ function UserRegistration({ navigation }) {
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
             <SafeAreaView style={styles.container}>
-                <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height:windowHeight,justifyContent:'space-between' }}>
+                <KeyboardAwareScrollView style={{ flex: 1, zIndex: 0 }} contentContainerStyle={{ height:windowHeight }}>
                     <View style={styles.upperContainer}>
                         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                             <Ionicons name="ios-arrow-dropleft-circle" size={40} color={color.primaryWhite} />
@@ -95,7 +95,7 @@ function UserRegistration({ navigation }) {
                                     alert("Please upload an image")
                                 }
                                 else navigation.navigate("UserRegistration_2", { firstName: firstName, lastName: lastName, address: address, state: state, imageUrl: filePath })
-                            }}><GradientButton style={styles.button} /></TouchableOpacity>
+                            }}><GradientButton  /></TouchableOpacity>
                         </View>
                     </View>
                     <View />
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         backgroundColor: 'white',
         width: 300,
+        borderRadius:20,
         
         shadowColor: "#000",
         shadowOffset: {
@@ -185,20 +186,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-evenly',
     },
-    button: {
 
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 6,
-        },
-        shadowOpacity: .2,
-        shadowRadius: 8.30,
-
-        elevation: 10,
-
-
-    },
     buttonContainer: {
         marginRight: -30,
         marginBottom: -10,

@@ -10,7 +10,7 @@ import Pdf from 'react-native-pdf';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RNFetchBlob from 'rn-fetch-blob'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {color} from '../../Assets/color';
+import { color } from '../../Assets/color';
 import Header from '../../Components/TwoButtonHeader'
 
 export default function PdfViewer({ navigation, route }) {
@@ -20,7 +20,7 @@ export default function PdfViewer({ navigation, route }) {
         RNFetchBlob
             .config({
                 fileCache: true,
-                path : dirs.DocumentDir + '/file.pdf'
+                path: dirs.DocumentDir + '/file.pdf'
             })
             .fetch('GET', 'https://storage.googleapis.com/smog-buddy-dev.appspot.com/reports/aaa.pdf', {
                 //some headers ..
@@ -34,23 +34,27 @@ export default function PdfViewer({ navigation, route }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Header navigation={navigation} icon="ios-download" title="TRANSACTION" onPress={() => download()}/>
+            <Header navigation={navigation} icon="ios-download" title="TRANSACTION" onPress={() => download()} />
+            {
+                route.params.reportUrl ?
+                    <Pdf
+                        source={{ uri: route.props.reportUrl, cache: true }}
+                        onLoadComplete={(numberOfPages, filePath) => {
+                            console.log(`number of pages: ${numberOfPages}`);
+                        }}
+                        onPageChanged={(page, numberOfPages) => {
+                            console.log(`current page: ${page}`);
+                        }}
+                        onError={(error) => {
+                            console.log(error);
+                        }}
+                        onPressLink={(uri) => {
+                            console.log(`Link presse: ${uri}`)
+                        }}
+                        style={styles.pdf} />
+                    : null
+            }
 
-            <Pdf
-                source={{ uri: 'https://storage.googleapis.com/smog-buddy-dev.appspot.com/reports/aaa.pdf', cache: true }}
-                onLoadComplete={(numberOfPages, filePath) => {
-                    console.log(`number of pages: ${numberOfPages}`);
-                }}
-                onPageChanged={(page, numberOfPages) => {
-                    console.log(`current page: ${page}`);
-                }}
-                onError={(error) => {
-                    console.log(error);
-                }}
-                onPressLink={(uri) => {
-                    console.log(`Link presse: ${uri}`)
-                }}
-                style={styles.pdf} />
         </SafeAreaView>
     )
 }
@@ -58,12 +62,12 @@ export default function PdfViewer({ navigation, route }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor:color.primaryWhite
+        backgroundColor: color.primaryWhite
 
     },
     pdf: {
-        flex:1,
-        backgroundColor:color.primaryWhite,
+        flex: 1,
+        backgroundColor: color.primaryWhite,
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
     },

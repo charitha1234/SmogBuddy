@@ -13,7 +13,7 @@ import { color } from '../Assets/color';
 function HeaderBar(props) {
 
     return (
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.lightBlue]} style={styles.container}>
+        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.headergreen, color.lightBlue]} style={styles.container}>
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={styles.headerBar}>
                     <TouchableOpacity onPress={()=>{

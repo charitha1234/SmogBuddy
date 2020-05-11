@@ -24,12 +24,64 @@ class ScanDMV extends Component {
         this.state = {
             uId: firebase.auth().currentUser.uid,
             loading: false,
-            before80: false,
+            before80: true,
             successfull: true,
             flashMode: RNCamera.Constants.FlashMode.auto,
+            year: null,
+            make: null,
+            model: null,
+            engine: null,
+            error: null,
+            vin:null,
+            plate:null
         };
 
     }
+
+    postVehicalInfo() {
+
+        if (this.state.year && this.state.make && this.state.model && this.state.engine) {
+            if (/^[0-9]{4}$/.test(this.state.year)) {
+                this.setState({loading:true})
+                    fetch(BaseUrl.Url + '/vehicle/' + this.state.uId, {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            plateNumber: " ",
+                            enginCapacity: this.state.engine,
+                            make: this.state.make,
+                            manufacturer: " ",
+                            model: this.state.model,
+                            year: this.state.year,
+                            country: " ",
+                            vin: " "
+                        }),
+                    }).then((resJson)=>{
+                        console.log("RESSSS",resJson)
+                        if (resJson.status == 200) {
+                            this.props.navigation.navigate("OdometerRead", { serviceList: this.props.route.params.serviceList })
+                            this.setState({loading:false})
+                        }
+                        else {
+                            this.setState({loading:false})
+                            alert("Something has wrong")
+                        }
+                    })
+                    .catch(()=>{
+                        this.setState({loading:false})
+                        alert("Something has wrong")})
+
+            }
+            else alert("Year is invalid")
+        }
+        else {
+            this.setState({ error: "Please fill all requires" })
+        }
+    }
+
     onBarCodeRead(scanResult) {
         if (scanResult.data != null) {
             this.setState({
@@ -49,13 +101,15 @@ class ScanDMV extends Component {
                 this.setState({ loading: false })
                 let vin = scanResult.data.substr(2, 10);
                 let plate = scanResult.data.substr(20, 7);
+                this.setState({vin:vin,plate:plate})
                 console.log(vin);
                 console.log(plate);
             }
             else {
                 let vin = scanResult.data.substr(2, 17);
                 let plate = scanResult.data.substr(20, 7);
-                fetch(BaseUrl.Url+'/vehicle/' + this.state.uId + '?plateNumber=' + plate + '&vin=' + vin)
+                this.setState({vin:vin,plate:plate})
+                fetch(BaseUrl.Url + '/vehicle/' + this.state.uId + '?plateNumber=' + plate + '&vin=' + vin)
                     .then((response) => response.json())
                     .then((responseJson) => {
                         this.setState({
@@ -86,7 +140,7 @@ class ScanDMV extends Component {
                 <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
                     {!this.state.successfull ?
                         <>
-                            <Header navigation={this.props.navigation} leftIcon="ios-arrow-back" title="SCAN DMV"/>
+                            <Header navigation={this.props.navigation} leftIcon="ios-arrow-back" title="SCAN DMV" />
                             <RNCamera
                                 ref={ref => {
                                     this.camera = ref;
@@ -103,29 +157,37 @@ class ScanDMV extends Component {
                         </>
                         :
                         <>
-                        <Header title="VEHICLE DETAILS" navigation={this.props.navigation} leftIcon="ios-arrow-back"/>
-                        <ScrollView style={{ flex: 1, zIndex: 0,width:'100%',marginTop:10 }} contentContainerStyle={{alignItems:'center'}} >
-                           
-                            {!this.state.loading ?
-                                <>
-                                    {
-                                        this.state.before80 ? <Text style={styles.before80Message}>Your vehicle is older than 1980 please fill below form</Text> : null
-                                    }
+                            <Header title="VEHICLE DETAILS" navigation={this.props.navigation} leftIcon="ios-arrow-back" />
+                            <ScrollView style={{ flex: 1, zIndex: 0, width: '100%', marginTop: 10 }} contentContainerStyle={{ alignItems: 'center' }} >
 
+                                {!this.state.loading ?
+                                    <>
+                                        {
+                                            this.state.before80 ? <Text style={styles.before80Message}>Your vehicle is older than 1980 please fill below form</Text> : null
+                                        }
+
+                                        <View style={styles.formContainer}>
+                                            <TextBox title="YEAR" keyboardType="number-pad" underline={true} disabled={!this.state.before80 ? true : false} error={this.state.error} value={this.state.year} onChangeText={(text) => {
+                                                this.setState({ year: text, error: null })
+                                            }} />
+                                            <TextBox title="MAKE" underline={true} disabled={!this.state.before80 ? true : false} error={this.state.error} value={this.state.make} onChangeText={(text) => {
+                                                this.setState({ make: text, error: null })
+                                            }} />
+                                            <TextBox title="MODEL" underline={true} disabled={!this.state.before80 ? true : false} error={this.state.error} value={this.state.model} onChangeText={(text) => {
+                                                this.setState({ model: text, error: null })
+                                            }} />
+                                            <TextBox title="ENGINE SIZE" underline={true} disabled={!this.state.before80 ? true : false} error={this.state.error} value={this.state.engine} onChangeText={(text) => {
+                                                this.setState({ engine: text, error: null })
+                                            }} />
+                                        </View>
+                                    </>
+                                    :
                                     <View style={styles.formContainer}>
-                                        <TextBox title="YEAR" underline={true} disable={true} value={this.state.year} />
-                                        <TextBox title="MAKE" underline={true} disable={true} value={this.state.make} />
-                                        <TextBox title="MODEL" underline={true} disable={true} value={this.state.model} />
-                                        <TextBox title="ENGINE SIZE" underline={true} disable={true} value={this.state.engine} />
+                                        <ActivityIndicator size={40} color="black" />
                                     </View>
-                                </>
-                                :
-                                <View style={styles.formContainer}>
-                                    <ActivityIndicator size={40} color="black" />
-                                </View>
-                            }
-                            <TouchableOpacity onPress={() => { !this.state.loading ? this.props.navigation.navigate("OdometerRead", { serviceList: this.props.route.params.serviceList }) : null }} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
-                        </ScrollView>
+                                }
+                                <TouchableOpacity onPress={this.postVehicalInfo.bind(this)} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
+                            </ScrollView>
                         </>
                     }
 

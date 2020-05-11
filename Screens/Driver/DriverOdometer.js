@@ -32,6 +32,8 @@ class OdometerRead extends Component {
             loading: false,
             finished: false,
             uploaded: false,
+            odometerVal: null,
+            error: null
         }
     }
     async setUploaded() {
@@ -102,6 +104,50 @@ class OdometerRead extends Component {
                 alert(e)
             });
     }
+    putOdometerRead() {
+        const user = firebase.auth().currentUser;
+        if (this.state.odometerVal) {
+            if (/^[0-9]+$/.test(this.state.odometerVal)) {
+                this.setState({ loading: true })
+                fetch(BaseUrl.Url + '/user/odometer', {
+                    method: 'PUT',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userUid: user.uid,
+                        role: "DRIVER",
+                        status: this.props.route.params.case,
+                        odoMeterRecord: this.state.odometerVal,
+                        fuelLevel: " "
+                    }),
+                })
+                    .then((resJson) => {
+                        if (resJson.status == 200) {
+                            this.props.navigation.goBack()
+                            this.setState({ loading: false })
+                        }
+                        else {
+                            this.setState({ loading: false })
+                            alert("Something has wrong")
+                        }
+
+                    })
+                    .catch(() => {
+                        alert("Somethins has wrong")
+                        this.setState({ loading: false })
+                    })
+            }
+            else {
+                alert("Please enter number")
+            }
+
+        }
+        else this.setState({ error: "Please fill odometer value" })
+
+    }
+
 
     takePicture = async () => {
 
@@ -124,9 +170,9 @@ class OdometerRead extends Component {
                         </View>
                         <KeyboardAwareScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ height: 400, justifyContent: 'space-between', alignItems: 'center' }}>
                             <View style={styles.formContainer}>
-                                <TextBox title="METER READING" underline={true} />
+                            <TextBox title="METER READING" keyboardType="number-pad" value={this.state.odometerVal} error={this.state.error} underline={true} onChangeText={(text) => this.setState({ odometerVal: text, error: null })} />
                             </View>
-                            <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
+                            <TouchableOpacity onPress={this.putOdometerRead.bind(this)} style={styles.button}><GradientButton title="NEXT" /></TouchableOpacity>
                         </KeyboardAwareScrollView>
                     </View>
                     :

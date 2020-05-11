@@ -9,27 +9,37 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 import BaseUrl from '../Config'
-function HomeDrawer({navigation},props){
+function HomeDrawer({ navigation }, props) {
     const [imageUrl, setimageUrl] = useState("")
-    useEffect(()=>{
-        const user=firebase.auth().currentUser;
-        fetch(BaseUrl.Url+'/user/'+user.uid)
-        .then((res)=>res.json())
-        .then((resJson)=>setimageUrl(resJson.imageUrl))
-    },[])
-return(
-    <View style={styles.container}>
-        <View style={styles.headerContainer}><TouchableOpacity onPress={()=>navigation.closeDrawer()} style={styles.icon}><Ionicons  name="md-arrow-back" size={40}/></TouchableOpacity></View>
-        <Image style={styles.imageContainer} resizeMode='cover' source={{uri:imageUrl}}/>
-        <TouchableOpacity onPress={()=>navigation.navigate("Profile")} style={styles.content}><Ionicons name="md-person" size={30}/><Text style={styles.contentText}>PROFILE</Text></TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("DriverProfile")} style={styles.content}><Ionicons name="md-car" size={30}/><Text style={styles.contentText}>YOUR DRIVER</Text></TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("DriverTrack")} style={styles.content}><Ionicons name="md-navigate" size={30}/><Text style={styles.contentText}>TRACK CAR</Text></TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("ContactUs")} style={styles.content}><Ionicons name="md-contacts" size={30}/><Text style={styles.contentText}>CONTACT US</Text></TouchableOpacity>
-        <View style={{height:70,width:150}}/>
-        <TouchableOpacity onPress={()=>{
-            firebase.auth().signOut();}}
-             style={styles.logout}><Text style={styles.logoutText}>LOGOUT</Text></TouchableOpacity>
-    </View>
+    useEffect(() => {
+        const user = firebase.auth().currentUser;
+        fetch(BaseUrl.Url + '/user/' + user.uid)
+            .then((res) => res.json())
+            .then((resJson) => setimageUrl(resJson.imageUrl))
+    }, [])
+    return (
+        <View style={styles.container}>
+            <View style={styles.headerContainer}>
+                <TouchableOpacity onPress={() => navigation.closeDrawer()} style={styles.icon}><Ionicons name="md-arrow-back" size={40} style={{ marginLeft: 10 }} /></TouchableOpacity>
+                {
+                    imageUrl ?
+                        <Image style={styles.imageContainer} resizeMode='cover' source={{ uri: imageUrl }} />
+                        :
+                        <View style={styles.imageContainer} />
+                }
+
+                <View style={{ flex: 0.5 }} />
+            </View>
+            <TouchableOpacity onPress={() => navigation.navigate("Profile")} style={styles.content}><Ionicons name="md-person" size={20} /><Text style={styles.contentText}>PROFILE</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("DriverProfile")} style={styles.content}><Ionicons name="md-car" size={20} /><Text style={styles.contentText}>YOUR DRIVER</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("DriverTrack")} style={styles.content}><Ionicons name="md-navigate" size={20} /><Text style={styles.contentText}>TRACK CAR</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("ContactUs")} style={styles.content}><Ionicons name="md-contacts" size={20} /><Text style={styles.contentText}>CONTACT US</Text></TouchableOpacity>
+            <View style={{ height: 70, width: 150 }} />
+            <TouchableOpacity onPress={() => {
+                firebase.auth().signOut();
+            }}
+                style={styles.logout}><Text style={styles.logoutText}>LOGOUT</Text></TouchableOpacity>
+        </View>
 
     );
 
@@ -45,13 +55,11 @@ const styles = StyleSheet.create({
         width: 100,
         height: 100,
         borderRadius: 50,
-        margin: 30,
         alignSelf: 'center'
 
     },
     headerContainer: {
         marginTop: 10,
-        height: 50,
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -63,12 +71,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center'
     },
-    contentText: {
+    contentText:{
         fontFamily: 'Montserrat-Regular',
-        fontSize: 15,
+        fontSize: 12,
         letterSpacing: 2,
-        opacity: 0.6,
-        marginLeft: 20,
+        opacity:0.6,
+        marginLeft:20,
 
 
     },
@@ -88,7 +96,7 @@ const styles = StyleSheet.create({
         letterSpacing: 2,
     },
     icon: {
-        marginRight: -20,
-        marginLeft: 20
+        flex: 0.5,
+
     }
 });

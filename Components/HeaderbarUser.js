@@ -12,7 +12,7 @@ import { color } from '../Assets/color';
 function HeaderBar(props) {
 
     return (
-        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.lightBlue]} style={styles.container}>
+        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.headergreen, color.lightBlue]} style={styles.container}>
                 <View style={styles.headerBar}>
                     <TouchableOpacity style={{flex:0.5,height:'100%',justifyContent:'center'}} onPress={()=>props.navigation.openDrawer()} >
                         <Ionicons style={{color:color.primaryWhite}}  name="ios-menu" size={30} />

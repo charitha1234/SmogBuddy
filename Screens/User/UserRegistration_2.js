@@ -190,7 +190,7 @@ function UserRegistration_2({ navigation, route }) {
                                             }
 
                                         }}
-                                        ><GradientButton style={styles.button} /></TouchableOpacity>
+                                        ><GradientButton /></TouchableOpacity>
                                     </View>
                                 </View>
                                 <View />
@@ -218,6 +218,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         backgroundColor: 'white',
         width: 300,
+        borderRadius:20,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

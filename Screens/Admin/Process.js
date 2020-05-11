@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     },
     button: {
         flex: 1,
-        backgroundColor: color.primaryBlue,
+        backgroundColor: color.secondryBlue,
         justifyContent: 'center',
         alignItems: 'center',
         height: 40,

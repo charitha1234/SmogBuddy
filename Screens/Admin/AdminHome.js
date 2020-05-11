@@ -4,6 +4,7 @@ import {
     Text,
     StyleSheet,
     FlatList,
+    Image,
     TouchableOpacity
 } from "react-native";
 import Header from '../../Components/HeaderBarAdmin';
@@ -15,6 +16,13 @@ import BaseUrl from '../../Config'
 function OngoingProcesses(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={styles.ProcessContainer}>
+             {
+                props.image?
+                <Image style={{ width: 100, height: 100, borderTopLeftRadius: 30, borderBottomLeftRadius: 30 }} source={{ uri: props.image }} />
+                :
+                <View style={{ width: 100, height: 100, borderTopLeftRadius: 30, borderBottomLeftRadius: 30 }} />
+            }
+            
             <View style={styles.statusContainer}>
                 <Text style={styles.processNameText}>{props.fname} {props.lname}</Text>
                 <Text style={styles.processStatusText}>{props.status}</Text>
@@ -42,8 +50,14 @@ class AdminHome extends Component {
         fetch(BaseUrl.Url+'/admin/process')
             .then((res) => res.json())
             .then((resJson) => {
-                console.log("proccess",resJson)
-                this.setState({ processList: resJson })
+                let tempres=resJson
+                console.log("proccess",tempres)
+                for( let i in tempres){
+                    if(!tempres[i].user){
+                        tempres.splice(i, 1)
+                    }
+                }
+                this.setState({ processList: tempres })
                 this.setState({ isFetching: false });
 
             }
@@ -63,11 +77,11 @@ class AdminHome extends Component {
                 <Header title="SMOGBUDDY" navigation={this.props.navigation} />
                 <View style={styles.HeaderTextContainer}><Text style={styles.HeaderText}>Ongoing Processes</Text></View>
                 {
-                    this.state.processList ?
+                    this.state.processList?.length!=0?
                         <FlatList data={this.state.processList}
                             onRefresh={() => this.onRefresh()}
                             refreshing={this.state.isFetching}
-                            renderItem={({ item }) => (<OngoingProcesses onPress={() => this.props.navigation.navigate("Process", { details: item })} status={item.status} fname={item.user.firstName} lname={item.user.lastName} time={item.totalServiceTime} />)} keyExtractor={item => item.UserId} />
+                            renderItem={({ item }) => (<OngoingProcesses onPress={() => this.props.navigation.navigate("Process", { details: item })} status={item.status} fname={item.user.firstName} lname={item.user.lastName} time={item.totalServiceTime} image={item.user.imageUrl} />)} keyExtractor={item => item.UserId} />
                         :
                         <Text style={styles.processNameText}>No Ongoing Processes</Text>
                 }
@@ -118,7 +132,7 @@ const styles = StyleSheet.create({
 
     },
     processNameText: {
-        fontFamily: 'Montserrat-Regular',
+        fontFamily: 'Montserrat-SemiBold',
         fontSize: 15,
         letterSpacing: 2,
     },
@@ -131,6 +145,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'space-evenly',
         alignItems: 'center',
+        marginRight:5
     },
     EstimatedTimeText: {
         fontFamily: 'Montserrat-Regular',
@@ -139,7 +154,7 @@ const styles = StyleSheet.create({
     },
     EstimatedTimelabel: {
         textAlign:'center',
-        fontFamily: 'Montserrat-Regular',
+        fontFamily: 'Montserrat-SemiBold',
         fontSize: 15,
     }
 });

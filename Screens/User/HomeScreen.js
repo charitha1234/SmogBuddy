@@ -41,13 +41,21 @@ function Home({ navigation }, props) {
             <Header title="SMOGBUDDY" navigation={navigation} />
             <View style={styles.content}>
                 <View style={styles.process}>
-                    <TouchableOpacity onPress={() => navigation.navigate("RequestProcess")} style={styles.processContent}>
+                    <View style={styles.processContent}>
                         <Text style={styles.titleText}>SMOG CHECK REQUEST</Text>
+                        <Text style={styles.bodyText}>Meet your smogcheck driver at your doorsteps</Text>
+                    </View>
+                    <TouchableOpacity onPress={() => navigation.navigate("RequestProcess")}  style={styles.button}>
+                        <GradientButton title="ORDER NOW" />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.process}>
-                    <TouchableOpacity onPress={() => navigation.navigate("PreviousChecks")} style={styles.processContent}>
+                    <View style={styles.processContent}>
                         <Text style={styles.titleText}>PREVIOUS SMOG CHECK</Text>
+                        <Text style={styles.bodyText}>Check your previous smogchecks</Text>
+                    </View>
+                    <TouchableOpacity onPress={() => navigation.navigate("PreviousChecks")}  style={styles.button}>
+                        <GradientButton title="OLD RECORDS" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -73,20 +81,21 @@ const styles = StyleSheet.create({
     },
     process: {
         backgroundColor: color.primaryWhite,
-        height: 100,
-        width: 300,
+        height: 150,
+        width: '80%',
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
             height: 6,
         },
-        shadowOpacity: .2,
-        shadowRadius: 8.30,
-        borderRadius: 50,
-        elevation: 5,
+        shadowOpacity: .3,
+        shadowRadius: 20,
+        borderRadius: 35,
+        elevation: 13,
     },
     button: {
         alignSelf: 'center',
+        marginLeft:50,
         marginBottom: -20,
         shadowColor: "#000",
         shadowOffset: {
@@ -94,18 +103,27 @@ const styles = StyleSheet.create({
             height: 6,
         },
         shadowOpacity: .2,
-        shadowRadius: 8.30,
-        elevation: 5,
+        shadowRadius: 20,
+        elevation: 13,
 
     },
     processContent: {
         flex: 1,
-        justifyContent:'center',
-        alignItems:'center'
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    bodyText:{
+        fontFamily: 'Montserrat-SemiBold',
+        fontSize: 12,
+        color:color.primaryBlack,
+        opacity: 0.4,
+        marginTop:5,
+        marginHorizontal:25
     },
     titleText: {
-        fontFamily: 'Montserrat-SemiBold',
+        fontFamily: 'Montserrat-Bold',
         fontSize: 15,
+        color:color.darkBlue,
         letterSpacing: 3,
         opacity: 0.6
     }

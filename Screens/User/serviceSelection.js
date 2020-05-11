@@ -21,7 +21,7 @@ function Service(props) {
     return (
         <View style={styles.serviceContainer}>
             <View style={{ flex: 2 }}>
-                <Text style={styles.serviceNameText}>{props.serviceName}</Text>
+                <Text style={[styles.serviceNameText ,{fontFamily:'Montserrat-SemiBold'}]}>{props.serviceName}</Text>
                 <Text style={styles.serviceNameText}>{props.serviceYear}</Text>
             </View>
             <View style={{ flex: 0.25 }}>
@@ -186,9 +186,8 @@ const styles = StyleSheet.create({
 
     },
     serviceNameText: {
-        fontFamily: 'Montserrat-Medium',
+        fontFamily: 'Montserrat-Regular',
         fontSize: 15,
-        opacity: 0.8
 
 
     },
