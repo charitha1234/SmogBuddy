@@ -428,6 +428,12 @@ function DriverRequest({ navigation, route }) {
         console.log("lat>>", lat, "lng>>", lng)
         if (minutes / 10 >= 1) setarrivalTime((hours).toString() + " h " + (minutes).toString() + " min");
         else setarrivalTime((hours).toString() + " h 0" + (minutes).toString() + " min");
+        
+        
+        Geolocation.getCurrentPosition(info => {
+            setlat(info.coords.latitude);
+            setlng(info.coords.longitude);
+        }, e => console.log(e), { distanceFilter: 0 });
         Geolocation.watchPosition(info => {
             setlat(info.coords.latitude);
             setlng(info.coords.longitude);

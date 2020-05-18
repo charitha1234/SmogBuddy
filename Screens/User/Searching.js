@@ -34,9 +34,11 @@ class Searching extends Component {
 
 
     componentWillMount() {
-        Geolocation.getCurrentPosition(info => { this.setState({ lat: info.coords.latitude, lng: info.coords.longitude, midlat: info.coords.latitude, midlng: info.coords.longitude }) });
+        // Geolocation.getCurrentPosition(info => { this.setState({ lat: info.coords.latitude, lng: info.coords.longitude, midlat: info.coords.latitude, midlng: info.coords.longitude }) });
 
-
+        Geolocation.getCurrentPosition(info => {
+            this.setState({ lat: info.coords.latitude, lng: info.coords.longitude, midlat: info.coords.latitude, midlng: info.coords.longitude })
+        }, e => console.log(e), { distanceFilter: 0 });
 
 
     }
@@ -51,7 +53,7 @@ class Searching extends Component {
         const user = firebase.auth().currentUser;
         console.log("HERE>>>>", this.state.lat, this.state.lng)
         if (this.state.lat && this.state.lng) {
-            fetch(BaseUrl.Url+'/user/request', {
+            fetch(BaseUrl.Url + '/user/request', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

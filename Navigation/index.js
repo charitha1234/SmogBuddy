@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import firebase from 'react-native-firebase';
 
-
+import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import InterfaceSelection from '../Screens/Admin/interfaceSelection';
 import UserRegistration_1 from '../Screens/User/UserRegistration_1';
 import UserRegistration_2 from '../Screens/User/UserRegistration_2';
@@ -54,6 +54,19 @@ import PdfViewer from '../Screens/Admin/checkDetails';
 import AdminUserProfile from '../Screens/Admin/UserProfile';
 import Settings from '../Screens/Admin/Settings';
 import BaseUrl from '../Config'
+import { Platform } from 'react-native';
+import { PERMISSIONS, request } from 'react-native-permissions';
+
+request(
+    Platform.select({
+        android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+    }),
+);
+request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then((result) => {
+    console.log("RESPONSE RESULT", result)
+    // …
+});
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -90,8 +103,8 @@ function UserHomeScreen() {
     const [payable, setpayable] = useState(false)
     const user = firebase.auth().currentUser;
     useEffect(() => {
-        
-        fetch(BaseUrl.Url+'/user/assign/driver/' + user.uid)
+
+        fetch(BaseUrl.Url + '/user/assign/driver/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 if (resJson.isDriverAssigned) {
@@ -104,12 +117,12 @@ function UserHomeScreen() {
             }).catch((e) => { })
 
 
-        
-    },[])
-    useEffect(()=>{
+
+    }, [])
+    useEffect(() => {
         if (currentState == 7) {
-            console.log("CURRENT STAGE USERRRRRRRR",currentState)
-            fetch(BaseUrl.Url+'/user/amount/' + user.uid)
+            console.log("CURRENT STAGE USERRRRRRRR", currentState)
+            fetch(BaseUrl.Url + '/user/amount/' + user.uid)
                 .then((res) => res.json())
                 .then((resJson) => {
                     console.log("ISPAID>>", resJson)
@@ -118,7 +131,7 @@ function UserHomeScreen() {
                 })
                 .catch((e) => { })
         }
-    },[currentState])
+    }, [currentState])
     return (
         <Drawer.Navigator initialRouteName="Home" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <HomeDrawerContent {...props} />}>
             {
@@ -201,7 +214,7 @@ function ManageUsersStack({ route }) {
         <Stack.Navigator initialRouteName="ManageUsers" screenOptions={{ animationEnabled: false, headerShown: false }}>
             <Stack.Screen name="ManageUsers" component={ManageUsers} />
             <Stack.Screen name="InterfaceSelection" component={InterfaceSelection} />
-            <Stack.Screen name="AdminUserProfile" component={AdminUserProfile}/>
+            <Stack.Screen name="AdminUserProfile" component={AdminUserProfile} />
             <Stack.Screen name="EmployeeProfile" component={EmployeeProfile} />
             <Stack.Screen name="EmployeeRegistration_1" component={EmployeeRegistration_1} />
             <Stack.Screen name="EmployeeRegistration_2" component={EmployeeRegistration_2} />
@@ -230,8 +243,8 @@ function AdminScreens() {
             <Drawer.Screen name="ManageUsersStack" component={ManageUsersStack} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="Sales" component={Sales} options={{ gestureEnabled: false }} />
             <Drawer.Screen name="RequestStack" component={RequestStack} options={{ gestureEnabled: false }} />
-            <Drawer.Screen name="PdfViewer" component={PdfViewer} options={{ gestureEnabled: false }}/>
-           
+            <Drawer.Screen name="PdfViewer" component={PdfViewer} options={{ gestureEnabled: false }} />
+
         </Drawer.Navigator>
     );
 }
@@ -240,23 +253,25 @@ function AdminScreens() {
 function WelcomeScreen() {
     const [LoggedIn, setLoggedIn] = useState(false)
     const [appOpened, setappOpened] = useState(false)
+    const [initializing, setinitializing] = useState(true)
     const [role, setrole] = useState(null)
-    const setUid=async (user)=>{
-        console.log("SETUSER",user)
+    const setUid = async (user) => {
+        console.log("SETUSER", user)
         try {
             await AsyncStorage.setItem('userId', user.uid)
-          } catch (e) {
+        } catch (e) {
             alert("User is not Logged Properly")
-          }
+        }
     }
 
     const datafetch = async (user) => {
         let fcmToken = await AsyncStorage.getItem('fcmToken');
-        console.log("BASEURL",BaseUrl.Url)
-        fetch(BaseUrl.Url+`/user/${user.uid}`)
+        console.log("BASEURL", BaseUrl.Url)
+
+        fetch(BaseUrl.Url + `/user/${user.uid}`)
             .then((response) => response.json())
-            .then((Json)=>{
-                fetch(BaseUrl.Url+'/user/fcm/' +user.uid, {
+            .then((Json) => {
+                fetch(BaseUrl.Url + '/user/fcm/' + user.uid, {
                     method: 'PUT',
                     headers: {
                         Accept: 'application/json',
@@ -268,17 +283,17 @@ function WelcomeScreen() {
                 })
                     .then((resJson) => {
                         if (resJson.status == 200) {
-                                setrole(Json.role);
-                                setUid(user)
-                                setLoggedIn(true);
-                                setappOpened(true); 
-                            }
-                            
+                            setrole(Json.role);
+                            setUid(user)
+                            setLoggedIn(true);
+                            setappOpened(true);
+                        }
+
                         else {
                             firebase.auth().signOut()
                             alert("FCM not sent")
                         }
-                        
+
                     })
                     .catch((e) => {
                         alert(e)
@@ -287,10 +302,10 @@ function WelcomeScreen() {
                     })
 
 
-                
+
             })
             .catch((e) => {
-                console.log("INDEX ERROR",e)
+                console.log("INDEX ERROR", e)
                 alert("Something has wrong")
                 firebase.auth().signOut();
                 setappOpened(true);
@@ -299,18 +314,35 @@ function WelcomeScreen() {
     }
 
     useEffect(() => {
+        RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 })
+            .then(data => {
+                
+                firebase.auth().onAuthStateChanged(user => {
+                    console.log("Init", initializing)
+                    if (!user) {
+                        setLoggedIn(false);
+                        setappOpened(true);
 
-        firebase.auth().onAuthStateChanged(user => {
-            if (!user) {
-                setLoggedIn(false);
-                setappOpened(true);
-            }
-            else {
-                datafetch(user)
-            }
+                    }
+                    else {
+                        console.log("ENABLE", data)
+                        datafetch(user)
+                    }
 
-        });
-    },[]);
+
+                });
+            }).catch(err => {
+
+            });
+
+    }, []);
+
+
+
+
+
+
+
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Splash" screenOptions={{ animationEnabled: false, headerShown: false }}>
