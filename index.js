@@ -13,11 +13,13 @@ var firebaseConfig = {
     projectId: "smog-buddy-dev",
     storageBucket: "smog-buddy-dev.appspot.com",
     messagingSenderId: "414626078341",
-    appId: "1:414626078341:web:a8df4537470721e06093ec",
-    measurementId: "G-LEB351F8YM"
+    appId: "1:414626078341:ios:5dfb700b08e4ea2c6093ec",
+
+    // enable persistence by adding the below flag
+    persistence: true,
 };
 const SecondApp = firebase.initializeApp(
     firebaseConfig,
     'SecondApp',
 );
-    AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => App);

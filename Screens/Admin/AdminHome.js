@@ -16,13 +16,13 @@ import BaseUrl from '../../Config'
 function OngoingProcesses(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={styles.ProcessContainer}>
-             {
-                props.image?
-                <Image style={{ width: 100, height: 100, borderTopLeftRadius: 30, borderBottomLeftRadius: 30 }} source={{ uri: props.image }} />
-                :
-                <View style={{ width: 100, height: 100, borderTopLeftRadius: 30, borderBottomLeftRadius: 30 }} />
+            {
+                props.image ?
+                    <Image style={{ width: 100, height: 100, borderTopLeftRadius: 30, borderBottomLeftRadius: 30 }} source={{ uri: props.image }} />
+                    :
+                    <View style={{ width: 100, height: 100, borderTopLeftRadius: 30, borderBottomLeftRadius: 30 }} />
             }
-            
+
             <View style={styles.statusContainer}>
                 <Text style={styles.processNameText}>{props.fname} {props.lname}</Text>
                 <Text style={styles.processStatusText}>{props.status}</Text>
@@ -37,7 +37,7 @@ function OngoingProcesses(props) {
 
 class AdminHome extends Component {
     constructor(props) {
-        
+
         super(props);
         this.state = {
             processList: null,
@@ -47,13 +47,13 @@ class AdminHome extends Component {
 
     getApiData() {
 
-        fetch(BaseUrl.Url+'/admin/process')
+        fetch(BaseUrl.Url + '/admin/process')
             .then((res) => res.json())
             .then((resJson) => {
-                let tempres=resJson
-                console.log("proccess",tempres)
-                for( let i in tempres){
-                    if(!tempres[i].user){
+                let tempres = resJson
+                console.log("proccess", tempres)
+                for (let i in tempres) {
+                    if (!tempres[i].user) {
                         tempres.splice(i, 1)
                     }
                 }
@@ -77,10 +77,11 @@ class AdminHome extends Component {
                 <Header title="SMOGBUDDY" navigation={this.props.navigation} />
                 <View style={styles.HeaderTextContainer}><Text style={styles.HeaderText}>Ongoing Processes</Text></View>
                 {
-                    this.state.processList?.length!=0?
+                    this.state.processList?.length != 0 ?
                         <FlatList data={this.state.processList}
                             onRefresh={() => this.onRefresh()}
                             refreshing={this.state.isFetching}
+                            style={styles.list}
                             renderItem={({ item }) => (<OngoingProcesses onPress={() => this.props.navigation.navigate("Process", { details: item })} status={item.status} fname={item.user.firstName} lname={item.user.lastName} time={item.totalServiceTime} image={item.user.imageUrl} />)} keyExtractor={item => item.UserId} />
                         :
                         <Text style={styles.processNameText}>No Ongoing Processes</Text>
@@ -95,6 +96,9 @@ export default AdminHome;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    list: {
+        paddingHorizontal: 10
     },
     HeaderTextContainer: {
         height: 100,
@@ -119,10 +123,10 @@ const styles = StyleSheet.create({
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
-            height: 6,
+            height: 3,
         },
         shadowOpacity: .2,
-        shadowRadius: 8.30,
+        shadowRadius: 2.30,
         borderRadius: 30,
         elevation: 3,
     },
@@ -145,15 +149,15 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        marginRight:5
+        marginRight: 5
     },
     EstimatedTimeText: {
         fontFamily: 'Montserrat-Regular',
-        textAlign:'center',
+        textAlign: 'center',
         fontSize: 15,
     },
     EstimatedTimelabel: {
-        textAlign:'center',
+        textAlign: 'center',
         fontFamily: 'Montserrat-SemiBold',
         fontSize: 15,
     }

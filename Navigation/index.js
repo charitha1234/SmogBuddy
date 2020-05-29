@@ -296,7 +296,7 @@ function WelcomeScreen() {
 
                     })
                     .catch((e) => {
-                        alert(e)
+                        alert("Fuck error" + e)
                         firebase.auth().signOut();
 
                     })
@@ -314,9 +314,27 @@ function WelcomeScreen() {
     }
 
     useEffect(() => {
-        RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 })
-            .then(data => {
-                
+        Platform.OS == "android" ?
+            RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 })
+                .then(data => {
+
+                    firebase.auth().onAuthStateChanged(user => {
+                        console.log("Init", initializing)
+                        if (!user) {
+                            setLoggedIn(false);
+                            setappOpened(true);
+
+                        }
+                        else {
+                            console.log("ENABLE", data)
+                            datafetch(user)
+                        }
+
+
+                    });
+                }).catch(err => {
+
+                }) : (
                 firebase.auth().onAuthStateChanged(user => {
                     console.log("Init", initializing)
                     if (!user) {
@@ -325,15 +343,12 @@ function WelcomeScreen() {
 
                     }
                     else {
-                        console.log("ENABLE", data)
                         datafetch(user)
                     }
 
 
-                });
-            }).catch(err => {
-
-            });
+                })
+            )
 
     }, []);
 

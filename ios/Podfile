@@ -48,6 +48,9 @@ pod 'Firebase/Storage'
   pod 'GoogleMaps'
   pod 'Google-Maps-iOS-Utils'
 
+  pod 'Permission-LocationWhenInUse', :path => "../node_modules/react-native-permissions/ios/LocationWhenInUse.podspec"
+
+
 
 pod 'Firebase/Database'
 
