@@ -88,11 +88,11 @@ function DriverTrack({ navigation, route }, props) {
     const [currentStage, setcurrentStage] = useState(0)
     const [fetching, setfetching] = useState(true)
     const origin = { latitude: latitude, longitude: longitude };
-    const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
+    const GOOGLE_MAPS_APIKEY = "AIzaSyA55_OOjalixvTwraAZeNY2M27NTKwDBxM";
     const destination = { latitude: customerLat, longitude: customerLng }
     const { userId } = route.params
     const getApiData = () => {
-        fetch(BaseUrl.Url+'/user/assign/driver/' + userId)
+        fetch(BaseUrl.Url + '/user/assign/driver/' + userId)
             .then((res) => res.json())
             .then((responseJson) => {
                 if (responseJson.isDriverAssigned) setdriverAssigned(true);
@@ -141,7 +141,7 @@ function DriverTrack({ navigation, route }, props) {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.container}>
-                <Header title="TRACK DRIVER" navigation={navigation}/>
+                <Header title="TRACK DRIVER" navigation={navigation} />
                 {loading ?
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator size={40} color={color.primaryBlack} />

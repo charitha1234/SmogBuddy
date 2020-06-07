@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     View,
     Text,
@@ -95,13 +95,13 @@ function DriverTrack({ navigation }, props) {
     const [fetching, setfetching] = useState(true)
     const [showAlert, setshowAlert] = useState(true)
     const origin = { latitude: latitude, longitude: longitude };
-    const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
+    const GOOGLE_MAPS_APIKEY = "AIzaSyA55_OOjalixvTwraAZeNY2M27NTKwDBxM";
     const destination = { latitude: customerLat, longitude: customerLng }
 
     const getApiData = () => {
         if (fetching) {
             const user = firebase.auth().currentUser;
-            fetch(BaseUrl.Url+'/user/assign/driver/' + user.uid)
+            fetch(BaseUrl.Url + '/user/assign/driver/' + user.uid)
                 .then((res) => res.json())
                 .then((responseJson) => {
                     console.log("RESSSSS", responseJson)
@@ -116,6 +116,7 @@ function DriverTrack({ navigation }, props) {
                         setDriverUid(responseJson.assignedDriver)
                         setcustomerLat(responseJson.userPickupLocation.lat)
                         setcustomerLng(responseJson.userPickupLocation.lng)
+                        subscribeToDriverLocation(responseJson.assignedDriver)
                     }
                     if (!responseJson.isDriverStarted) setstartGiven(false);
                     setloading(false)
@@ -126,44 +127,40 @@ function DriverTrack({ navigation }, props) {
                 .catch((e) => alert(e))
         }
     }
+
+
     useEffect(() => {
         getApiData()
-    }, [])
-    useEffect(() => {
-
-
-        console.log("USEEFFECT", DriverUid)
         Geolocation.getCurrentPosition(info => {
             setownLat(info.coords.latitude);
             setownLng(info.coords.longitude);
         }, e => console.log(e), { distanceFilter: 0 });
-        if (startGiven) {
-
-            firebase.database().ref('location/' + DriverUid).on('value', snapshot => {
-                console.log("snp", snapshot.val())
-                if (snapshot.val()) {
+    }, [])
 
 
-                    var hours = Math.floor(duration / 60);
-                    var minutes = Math.floor(duration % 60);
+    const subscribeToDriverLocation = (driverId) => {
+        firebase.database().ref('location/' + driverId).on('value', snapshot => {
+            console.log("snp", snapshot.val())
+            if (snapshot.val()) {
+                var hours = Math.floor(duration / 60);
+                var minutes = Math.floor(duration % 60);
 
-                    if (minutes / 10 >= 1) {
-                        if (hours == 0) setarrivalTime((minutes).toString() + " min");
-                        else setarrivalTime((hours).toString() + "h " + (minutes).toString() + " min");
-                    }
-
-                    else {
-                        if (hours == 0) setarrivalTime("0" + (minutes).toString() + " min");
-                        else setarrivalTime((hours).toString() + "h " + (minutes).toString() + " min");
-                    }
-                    setlatitude(snapshot.val().lat),
-                        setlongitude(snapshot.val().lng)
-                    setcurrentStage(snapshot.val().currentStage)
+                if (minutes / 10 >= 1) {
+                    if (hours == 0) setarrivalTime((minutes).toString() + " min");
+                    else setarrivalTime((hours).toString() + "h " + (minutes).toString() + " min");
                 }
 
-            });
-        }
-    })
+                else {
+                    if (hours == 0) setarrivalTime("0" + (minutes).toString() + " min");
+                    else setarrivalTime((hours).toString() + "h " + (minutes).toString() + " min");
+                }
+                setlatitude(snapshot.val().lat),
+                    setlongitude(snapshot.val().lng)
+                setcurrentStage(snapshot.val().currentStage)
+            }
+
+        });
+    }
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
@@ -236,8 +233,8 @@ function DriverTrack({ navigation }, props) {
                         </>
                         :
                         <View style={styles.container}>
-                                <Text style={styles.subText}>Driver Is Not Assigned yet</Text>
-                            </View>
+                            <Text style={styles.subText}>Driver Is Not Assigned yet</Text>
+                        </View>
                 }
             </LinearGradient>
         </SafeAreaView>
@@ -254,7 +251,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Regular',
         fontSize: 20,
         letterSpacing: 2,
-        textAlign:'center'
+        textAlign: 'center'
     },
     label: {
         marginHorizontal: 10,
@@ -288,7 +285,7 @@ const styles = StyleSheet.create({
         backgroundColor: color.primaryWhite
     },
     headerContainer: {
-        height:66,
+        height: 66,
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',

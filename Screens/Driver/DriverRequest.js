@@ -56,7 +56,7 @@ const customStyles = {
 }
 Geolocation.setRNConfiguration({ authorizationLevel: 'always' });
 function feedback(navigation, request, uid, userPickupLocation, distance, duration, setaccepted) {
-    fetch(BaseUrl.Url+'/driver/confirmation', {
+    fetch(BaseUrl.Url + '/driver/confirmation', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -87,7 +87,7 @@ function feedback(navigation, request, uid, userPickupLocation, distance, durati
 
 function navigationStart(userId) {
     const user = firebase.auth().currentUser;
-    fetch(BaseUrl.Url+'/driver/start',
+    fetch(BaseUrl.Url + '/driver/start',
         {
             method: 'POST',
             headers: {
@@ -142,7 +142,7 @@ async function removeUploaded() {
 function Service(props) {
     return (
         <View style={styles.serviceContainer}>
-            <Text style={styles.serviceNameText,{marginRight:20}}>{props.number + 1}</Text>
+            <Text style={styles.serviceNameText, { marginRight: 20 }}>{props.number + 1}</Text>
             <View style={{ flex: 1 }}>
                 <Text style={styles.serviceNameText}>{props.serviceName}</Text>
                 <Text style={styles.serviceNameText}>{props.serviceYear}</Text>
@@ -164,51 +164,51 @@ function RenderContent(props) {
             setfetching(false)
         })
     }
-    const isUserPaid=()=>{
-        fetch(BaseUrl.Url+'/driver/is-pay/' +user.uid)
-        .then((res) => res.json())
-        .then((resJson) => {
-            console.log("PAYED",resJson)
-            if(resJson.isPaid){
-                setloading(true)
+    const isUserPaid = () => {
+        fetch(BaseUrl.Url + '/driver/is-pay/' + user.uid)
+            .then((res) => res.json())
+            .then((resJson) => {
+                console.log("PAYED", resJson)
+                if (resJson.isPaid) {
+                    setloading(true)
 
-                fetch(BaseUrl.Url+'/driver/status',
-                    {
-                        method: 'PUT',
-                        headers: {
-                            Accept: 'application/json',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            userUid: props.userId,
-                            driverUid: user.uid,
-                            status: cases[currentStage]
+                    fetch(BaseUrl.Url + '/driver/status',
+                        {
+                            method: 'PUT',
+                            headers: {
+                                Accept: 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                userUid: props.userId,
+                                driverUid: user.uid,
+                                status: cases[currentStage]
 
 
-                        }),
-                    })
-                    .then((response) => response.json())
-                    .then((responseJson) => {
-                        removeUploaded()
-                        setcurrentStage(currentStage + 1)
-                        setloading(false)
-                        console.log("RESPONEJSON>>>", responseJson);
+                            }),
+                        })
+                        .then((response) => response.json())
+                        .then((responseJson) => {
+                            removeUploaded()
+                            setcurrentStage(currentStage + 1)
+                            setloading(false)
+                            console.log("RESPONEJSON>>>", responseJson);
 
-                    })
-                    .catch((error) => {
-                        setloading(false)
-                        alert(error);
-                    });
-            }
-            else{
-                alert("Customer has not paid. Please check")
-            }
-        })
-        .catch((e) => console.log("error", e))
+                        })
+                        .catch((error) => {
+                            setloading(false)
+                            alert(error);
+                        });
+                }
+                else {
+                    alert("Customer has not paid. Please check")
+                }
+            })
+            .catch((e) => console.log("error", e))
     }
     const getServiceList = () => {
         setmodalVisible(true)
-        fetch(BaseUrl.Url+'/driver/assign/service/' + user.uid)
+        fetch(BaseUrl.Url + '/driver/assign/service/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 setserviceList(resJson.services)
@@ -229,7 +229,7 @@ function RenderContent(props) {
                 currentStage
             });
         }
-    },[currentStage]);
+    }, [currentStage]);
     return (
         <View style={styles.detailsContainer}>
             <Ionicons name="ios-remove" size={50} style={styles.bottomsheetMoreIcon} />
@@ -278,42 +278,42 @@ function RenderContent(props) {
                                         },
                                         {
                                             text: 'Yes', onPress: () => {
-                                                if(currentStage==7){
+                                                if (currentStage == 7) {
                                                     console.log("ISPAID")
                                                     isUserPaid()
                                                 }
-                                                else{
-                                                setloading(true)
+                                                else {
+                                                    setloading(true)
 
-                                                fetch(BaseUrl.Url+'/driver/status',
-                                                    {
-                                                        method: 'PUT',
-                                                        headers: {
-                                                            Accept: 'application/json',
-                                                            'Content-Type': 'application/json',
-                                                        },
-                                                        body: JSON.stringify({
-                                                            userUid: props.userId,
-                                                            driverUid: user.uid,
-                                                            status: cases[currentStage]
+                                                    fetch(BaseUrl.Url + '/driver/status',
+                                                        {
+                                                            method: 'PUT',
+                                                            headers: {
+                                                                Accept: 'application/json',
+                                                                'Content-Type': 'application/json',
+                                                            },
+                                                            body: JSON.stringify({
+                                                                userUid: props.userId,
+                                                                driverUid: user.uid,
+                                                                status: cases[currentStage]
 
 
-                                                        }),
-                                                    })
-                                                    .then((response) => response.json())
-                                                    .then((responseJson) => {
-                                                        removeUploaded()
-                                                        setcurrentStage(currentStage + 1)
-                                                        setloading(false)
-                                                        console.log("RESPONEJSON>>>", responseJson);
+                                                            }),
+                                                        })
+                                                        .then((response) => response.json())
+                                                        .then((responseJson) => {
+                                                            removeUploaded()
+                                                            setcurrentStage(currentStage + 1)
+                                                            setloading(false)
+                                                            console.log("RESPONEJSON>>>", responseJson);
 
-                                                    })
-                                                    .catch((error) => {
-                                                        setloading(false)
-                                                        alert(error);
-                                                    });
+                                                        })
+                                                        .catch((error) => {
+                                                            setloading(false)
+                                                            alert(error);
+                                                        });
                                                 }
-                                                
+
 
                                             }
                                         },
@@ -342,7 +342,7 @@ function RenderContent(props) {
                                         const user = firebase.auth().currentUser;
                                         setloading(true)
                                         console.log("STAGE", cases[currentStage])
-                                        fetch(BaseUrl.Url+'/driver/status',
+                                        fetch(BaseUrl.Url + '/driver/status',
                                             {
                                                 method: 'PUT',
                                                 headers: {
@@ -404,9 +404,20 @@ function DriverRequest({ navigation, route }) {
     const [started, setstarted] = useState(false)
     const [arrivalTime, setarrivalTime] = useState("")
     const origin = { latitude: lat, longitude: lng };
-    const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
+    const GOOGLE_MAPS_APIKEY = "AIzaSyA55_OOjalixvTwraAZeNY2M27NTKwDBxM";
     const destination = { latitude: location.lat, longitude: location.lng }
     const user = firebase.auth().currentUser;
+
+    useEffect(() => {
+        Geolocation.getCurrentPosition(info => {
+            setlat(info.coords.latitude);
+            setlng(info.coords.longitude);
+        }, e => console.log(e), { distanceFilter: 0 });
+        Geolocation.watchPosition(info => {
+            setlat(info.coords.latitude);
+            setlng(info.coords.longitude);
+        }, e => console.log(e), { distanceFilter: 0 });
+    }, []);
 
     useEffect(() => {
 
@@ -428,24 +439,14 @@ function DriverRequest({ navigation, route }) {
         console.log("lat>>", lat, "lng>>", lng)
         if (minutes / 10 >= 1) setarrivalTime((hours).toString() + " h " + (minutes).toString() + " min");
         else setarrivalTime((hours).toString() + " h 0" + (minutes).toString() + " min");
-        
-        
-        Geolocation.getCurrentPosition(info => {
-            setlat(info.coords.latitude);
-            setlng(info.coords.longitude);
-        }, e => console.log(e), { distanceFilter: 0 });
-        Geolocation.watchPosition(info => {
-            setlat(info.coords.latitude);
-            setlng(info.coords.longitude);
-        }, e => console.log(e), { distanceFilter: 0 });
-        
-    },[]);
-    useEffect(()=>{
+    }, [duration]);
+
+    useEffect(() => {
         firebase.database().ref('location/' + user.uid).update({
             lat,
             lng,
         });
-    },[lat,lng])
+    }, [lat, lng])
 
     return (
         <SafeAreaView style={styles.container}>
@@ -475,6 +476,7 @@ function DriverRequest({ navigation, route }) {
                             strokeColor={color.primaryBlue}
                             resetOnChange={false}
                             onReady={(info) => {
+                                console.log("Duration changes")
                                 setloading(false);
                                 setdistance(info.distance);
                                 setduration(info.duration);

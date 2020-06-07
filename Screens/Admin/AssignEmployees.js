@@ -15,9 +15,6 @@ import GradientButton from '../../Components/longButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BaseUrl from '../../Config'
 import Header from '../../Components/NormalHeader'
-function deleteProfile() {
-
-}
 function Assign(pickUp, technician, driver, userId, setloading, navigation) {
     console.log(pickUp, ":", technician, ":", driver, ":", userId, ":", setloading)
     fetch(BaseUrl.Url + '/admin/assign/driver', {
@@ -39,7 +36,10 @@ function Assign(pickUp, technician, driver, userId, setloading, navigation) {
             navigation.goBack()
 
         })
-        .catch((e) => Alert(e))
+        .catch((e) => {
+            console.log("Err", e)
+            alert(e)
+        })
 }
 function AssignEmployees({ navigation, route }) {
     const [Name, setName] = useState("")

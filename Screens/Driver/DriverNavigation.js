@@ -55,7 +55,7 @@ function DriverTrack({ navigation, route }) {
     const [startGiven, setstartGiven] = useState(false)
     const origin = { latitude: lat, longitude: lng };
     const destination = { latitude: userPickupLocation.lat, longitude: userPickupLocation.lng }
-    const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
+    const GOOGLE_MAPS_APIKEY = "AIzaSyA55_OOjalixvTwraAZeNY2M27NTKwDBxM";
     useEffect(() => {
         BackgroundTask.schedule({
             period: 1,
@@ -83,18 +83,18 @@ function DriverTrack({ navigation, route }) {
                     longitudeDelta: 0.0421,
                 }}
             >
-                    <MapViewDirections
-                        origin={origin}
-                        destination={destination}
-                        apikey={GOOGLE_MAPS_APIKEY}
-                        strokeWidth={accepted?3:0}
-                        strokeColor={color.primaryBlack}
-                        resetOnChange={false}
-                        onReady={(info) => {
-                            setdistance(info.distance);
-                            setduration(info.duration);
-                        }}
-                    />
+                <MapViewDirections
+                    origin={origin}
+                    destination={destination}
+                    apikey={GOOGLE_MAPS_APIKEY}
+                    strokeWidth={accepted ? 3 : 0}
+                    strokeColor={color.primaryBlack}
+                    resetOnChange={false}
+                    onReady={(info) => {
+                        setdistance(info.distance);
+                        setduration(info.duration);
+                    }}
+                />
                 <Marker
                     coordinate={{
                         "latitude": userPickupLocation.lat,

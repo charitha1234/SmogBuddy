@@ -32,7 +32,7 @@ function Process({ navigation, route }) {
     const [assignedTechnician, setassignedTechnician] = useState("")
     console.log('details', details)
     const getImages = () => {
-        console.log("USERID",userId)
+        console.log("USERID", userId)
         fetch(BaseUrl.Url + '/user/images/' + details.userId)
             .then((res) => res.json())
             .then((resJson) => {
@@ -63,61 +63,66 @@ function Process({ navigation, route }) {
 
     }, [])
     return (
-        <SafeAreaView style={styles.container}>
-            <Header title="PROCESS" navigation={navigation} icon='ios-map' onPress={() => navigation.navigate("TrackDriver", { userId: details.userId })} />
-            <ScrollView style={styles.container}>
-                <View style={styles.whitebackground}>
-                    <View style={styles.formContainer}>
-                        <TextBox title="CUSTOMER NAME" value={Name} disabled={true} />
-                        <TextBox title="STATUS" value={status} disabled={true} />
-                        <TextBox title="ASSIGNED DRIVER" value={assignedDriver} disabled={true} />
-                        <TextBox title="ASSIGNED TECHNICIAN" value={assignedTechnician} disabled={true} />
-                        <TextBox title="ESTIMATED TIME" value={estimatedTime} disabled={true} />
-                        <TextBox title="CUSTOMER TELEPHONE NO." value={customerTelephoneNo} disabled={true} />
-                    </View>
-                </View>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity onPress={() => setisModalVisible(true)} style={styles.button}>
-                        <Text style={styles.buttonText}>IMAGES</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.button, { backgroundColor: color.failedRed }]}>
-                        <Text style={[styles.buttonText]}>DELETE</Text>
-                    </TouchableOpacity>
-                </View>
-                <Modal style={{ margin: 0 }} deviceHeight={windowHeight} deviceWidth={windowWidth} isVisible={isModalVisible} onBackdropPress={() => setisModalVisible(false)} useNativeDriver={true} backdropOpacity={0.9} >
-                    <View style={{ flex: 1 }}>
-                        <View style={{ zIndex: 10, position: 'absolute', top: 0, width: '100%', height: 50, backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                            <TouchableOpacity onPress={() => setisModalVisible(false)} style={{ height: 50, width: 50, alignItems: 'center', justifyContent: 'center' }}>
-                                <Ionicons name="ios-close" color={color.primaryWhite} size={30} />
-                            </TouchableOpacity>
-
+        <>
+            <SafeAreaView style={styles.container}>
+                <Header title="PROCESS" navigation={navigation} icon='ios-map' onPress={() => navigation.navigate("TrackDriver", { userId: details.userId })} />
+                <ScrollView style={styles.container}>
+                    <View style={styles.whitebackground}>
+                        <View style={styles.formContainer}>
+                            <TextBox title="CUSTOMER NAME" value={Name} disabled={true} />
+                            <TextBox title="STATUS" value={status} disabled={true} />
+                            <TextBox title="ASSIGNED DRIVER" value={assignedDriver} disabled={true} />
+                            <TextBox title="ASSIGNED TECHNICIAN" value={assignedTechnician} disabled={true} />
+                            <TextBox title="ESTIMATED TIME" value={estimatedTime} disabled={true} />
+                            <TextBox title="CUSTOMER TELEPHONE NO." value={customerTelephoneNo} disabled={true} />
                         </View>
-                        {
-                            images ?
-                                <Swiper dotColor={'rgba(255,255,255,0.5)'} showsButtons={true} loop={false}>
-                                    {
-                                        images.map((data) => {
-                                            return (
-                                                <View style={{ flex: 1 }}>
-                                                    <Image source={{ uri: data.imageUrl }} resizeMode="contain" style={{ height: '100%', width: '100%' }} />
-                                                    <View style={{ position:'absolute',bottom:50, height: 100, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                                                        <Text style={styles.statusText}>{data.status}</Text>
-                                                        <Text style={styles.dateText}>{data.date}</Text>
-                                                    </View>
+                    </View>
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity onPress={() => setisModalVisible(true)} style={styles.button}>
+                            <Text style={styles.buttonText}>IMAGES</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.button, { backgroundColor: color.failedRed }]}>
+                            <Text style={[styles.buttonText]}>DELETE</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </ScrollView>
+            </SafeAreaView>
+            <Modal isVisible={isModalVisible} style={{
+                margin: 0,
+                padding: 0
+            }} onBackdropPress={() => { console.log("Closing modal"); setisModalVisible(false) }} useNativeDriver={true} backdropOpacity={0.9} >
+                <View style={{ flex: 1, height: windowHeight, deviceWidth: windowWidth }}>
+                    {/* <View style={{ zIndex: 10, position: 'absolute', top: 0, width: '100%', height: 50 }}> */}
+                    <TouchableOpacity onPress={() => { setisModalVisible(false) }} style={{ zIndex: 20, position: 'absolute', top: 50, left: 10, height: 50, width: 50, alignItems: 'center', justifyContent: 'center', }}>
+                        <Ionicons name="ios-close" color={color.primaryWhite} size={30} />
+                    </TouchableOpacity>
+                    {/* </View> */}
+                    {
+                        images ?
+                            <Swiper dotColor={'rgba(255,255,255,0.5)'} showsButtons={true} loop={false}>
+                                {
+                                    images.map((data) => {
+                                        return (
+                                            <View style={{ flex: 1 }}>
+                                                <Image source={{ uri: data.imageUrl }} resizeMode="contain" style={{ height: '100%', width: '100%' }} />
+                                                <View style={{ position: 'absolute', bottom: 50, height: 100, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                                                    <Text style={styles.statusText}>{data.status}</Text>
+                                                    <Text style={styles.dateText}>{data.date}</Text>
                                                 </View>
-                                            )
-                                        }
+                                            </View>
                                         )
                                     }
-                                </Swiper>
-                                :
-                                null
-                        }
+                                    )
+                                }
+                            </Swiper>
+                            :
+                            null
+                    }
 
-                    </View>
-                </Modal>
-            </ScrollView>
-        </SafeAreaView>
+                </View>
+            </Modal>
+        </>
     );
 
 }
