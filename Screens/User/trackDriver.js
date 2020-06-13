@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     View,
     Text,
@@ -53,6 +53,7 @@ const customStyles = {
 function RenderContent(props) {
     const [currentStage, setcurrentStage] = useState(0)
     useEffect(() => {
+ 
         setcurrentStage(props.currentStage);
         if (currentStage == 8) props.navigation.navigate("UserReview")
     })
@@ -94,77 +95,71 @@ function DriverTrack({ navigation }, props) {
     const [fetching, setfetching] = useState(true)
     const [showAlert, setshowAlert] = useState(true)
     const origin = { latitude: latitude, longitude: longitude };
-    const GOOGLE_MAPS_APIKEY = "AIzaSyAyKF-HG17K9PNqUveRKsY4d55_mfjDzh4";
+    const GOOGLE_MAPS_APIKEY = "AIzaSyA55_OOjalixvTwraAZeNY2M27NTKwDBxM";
     const destination = { latitude: customerLat, longitude: customerLng }
 
     const getApiData = () => {
-        const user = firebase.auth().currentUser;
-        console.log("USER",user.uid)
-        fetch(BaseUrl.Url + '/user/assign/driver/' + user.uid)
-            .then((res) => res.json())
-            .then((responseJson) => {
-                setfetching(false)
+        if (fetching) {
+            const user = firebase.auth().currentUser;
+            fetch(BaseUrl.Url + '/user/assign/driver/' + user.uid)
+                .then((res) => res.json())
+                .then((responseJson) => {
 
-                if (responseJson.isDriverAssigned) {
-                    setdriverAssigned(true);
+                    setfetching(false)
+                    if (responseJson.isDriverAssigned) {
+                        setdriverAssigned(true);
 
-                }
-                if (!responseJson.isDriverAssigned) setdriverAssigned(false);
-                if (responseJson.isDriverStarted) {
-                    setstartGiven(true);
-                    setDriverUid(responseJson.assignedDriver)
-                    setcustomerLat(responseJson.userPickupLocation.lat)
-                    setcustomerLng(responseJson.userPickupLocation.lng)
-                }
-                if (!responseJson.isDriverStarted) setstartGiven(false);
-
-                if (responseJson.isDriverAssigned && !responseJson.isDriverStarted) {
-                    alert("Driver Will Depart in 8 minutes")
-                }
-                console.log("res", responseJson)
-                setloading(false)
-            })
-            .catch((e) => alert(e))
-
+                    }
+                    if (!responseJson.isDriverAssigned) setdriverAssigned(false);
+                    if (responseJson.isDriverStarted) {
+                        setstartGiven(true);
+                        setDriverUid(responseJson.assignedDriver)
+                        setcustomerLat(responseJson.userPickupLocation.lat)
+                        setcustomerLng(responseJson.userPickupLocation.lng)
+                        subscribeToDriverLocation(responseJson.assignedDriver)
+                    }
+                    if (!responseJson.isDriverStarted) setstartGiven(false);
+                    setloading(false)
+                    if (responseJson.isDriverAssigned && !responseJson.isDriverStarted) {
+                        alert("Driver Will Depart in 8 minutes")
+                    }
+                })
+                .catch((e) => alert(e))
+        }
     }
+
+
     useEffect(() => {
         getApiData()
-    }, [])
-    useEffect(() => {
-
-
-
         Geolocation.getCurrentPosition(info => {
             setownLat(info.coords.latitude);
             setownLng(info.coords.longitude);
-            console.log("midlat", info)
-        }, e => { }, { distanceFilter: 0 });
-        if (startGiven) {
-
-            firebase.database().ref('location/' + DriverUid).on('value', snapshot => {
-                if (snapshot.val()) {
+        }, e =>{}, { distanceFilter: 0,timeout:30000,maximumAge:30000 });
+    }, [])
 
 
-                    var hours = Math.floor(duration / 60);
-                    var minutes = Math.floor(duration % 60);
+    const subscribeToDriverLocation = (driverId) => {
+        firebase.database().ref('location/' + driverId).on('value', snapshot => {
+            if (snapshot.val()) {
+                var hours = Math.floor(duration / 60);
+                var minutes = Math.floor(duration % 60);
 
-                    if (minutes / 10 >= 1) {
-                        if (hours == 0) setarrivalTime((minutes).toString() + " min");
-                        else setarrivalTime((hours).toString() + "h " + (minutes).toString() + " min");
-                    }
-
-                    else {
-                        if (hours == 0) setarrivalTime("0" + (minutes).toString() + " min");
-                        else setarrivalTime((hours).toString() + "h " + (minutes).toString() + " min");
-                    }
-                    setlatitude(snapshot.val().lat),
-                        setlongitude(snapshot.val().lng)
-                    setcurrentStage(snapshot.val().currentStage)
+                if (minutes / 10 >= 1) {
+                    if (hours == 0) setarrivalTime((minutes).toString() + " min");
+                    else setarrivalTime((hours).toString() + "h " + (minutes).toString() + " min");
                 }
 
-            });
-        }
-    })
+                else {
+                    if (hours == 0) setarrivalTime("0" + (minutes).toString() + " min");
+                    else setarrivalTime((hours).toString() + "h " + (minutes).toString() + " min");
+                }
+                setlatitude(snapshot.val().lat),
+                    setlongitude(snapshot.val().lng)
+                setcurrentStage(snapshot.val().currentStage)
+            }
+
+        });
+    }
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
@@ -198,8 +193,9 @@ function DriverTrack({ navigation }, props) {
                                                 strokeWidth={3}
                                                 strokeColor={color.primaryBlack}
                                                 resetOnChange={false}
-                                                onStart={(info) => { }}
+                                                onStart={(info) => {}}
                                                 onReady={(info) => {
+                                                    
                                                     setdistance(info.distance);
                                                     setduration(info.duration);
                                                 }}

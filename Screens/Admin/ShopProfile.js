@@ -12,7 +12,7 @@ import {
 import { color } from '../../Assets/color';
 import Geolocation from '@react-native-community/geolocation';
 import TextBox from '../../Components/textBox';
-import MapView from 'react-native-maps';
+import MapView,{Marker} from 'react-native-maps';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
@@ -40,6 +40,8 @@ function ShopProfile({ navigation }) {
     const [isModalVisible, setisModalVisible] = useState(false)
     const [midlat, setmidlat] = useState(null)
     const [midlng, setmidlng] = useState(null)
+    const [markerlat, setmarkerlat] = useState(null)
+    const [markerlng, setmarkerlng] = useState(null)
 
     const formatDate = () => {
         let d = new Date(),
@@ -95,18 +97,17 @@ function ShopProfile({ navigation }) {
             }
         });
     }
-
-    useEffect(() => {
+    const getApiData=()=>{
         Geolocation.getCurrentPosition(info => {
             setmidlat(info.coords.latitude)
             setmidlng(info.coords.longitude)
-        })
+        }, (e) => { }, { distanceFilter: 0, timeout: 30000, maximumAge: 30000 })
         fetch(BaseUrl.Url + "/admin/shop?adminUid=" + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
                 if (!resJson[0].location.lat == 0 && !resJson[0].location.lng == 0) {
-                    setmidlat(resJson[0].location.lat)
-                    setmidlng(resJson[0].location.lng)
+                    setmarkerlat(resJson[0].location.lat)
+                    setmarkerlng(resJson[0].location.lng)
                 }
 
                 setimageUri(resJson[0].logoUrl)
@@ -121,6 +122,10 @@ function ShopProfile({ navigation }) {
                 setloading(false)
             })
             .catch((e) => alert(e))
+    }
+
+    useEffect(() => {
+        getApiData()
     }, [])
     const saveDetails = () => {
         setloading(true)
@@ -149,10 +154,11 @@ function ShopProfile({ navigation }) {
 
             }),
         }).then((res) => res.json())
-            .then((resJson) => { setloading(false) })
+            .then((resJson) => { 
+                getApiData()
+            })
             .catch((e) => {
                 setloading(false)
-
                 alert(e)
             })
     }
@@ -175,7 +181,6 @@ function ShopProfile({ navigation }) {
                                             </ImageBackground>
                                         </TouchableOpacity>
                                     </View>
-
                                     <TextBox title="BUSINESS NAME" value={name} disabled={editing ? false : true} onChangeText={(text) => setname(text)} />
                                     <TextBox title="ADDRESS" value={address} disabled={editing ? false : true} onChangeText={(text) => setaddress(text)} />
                                     <TextBox title="ARD" value={ard} disabled={editing ? false : true} onChangeText={(text) => setard(text)} />
@@ -234,7 +239,11 @@ function ShopProfile({ navigation }) {
                                         latitudeDelta: 0.0922,
                                         longitudeDelta: 0.0421,
                                     }}
-                                />
+                                >
+                                    <Marker
+                                        coordinate={{latitude:markerlat,longitude:markerlng}}
+                                    />
+                                </MapView>
                                 :
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                     <ActivityIndicator size={40} color={color.primaryBlack} />
@@ -244,7 +253,7 @@ function ShopProfile({ navigation }) {
 
                         }
                         <Ionicons style={styles.startIcon} name="md-pin" size={30} />
-                        <TouchableOpacity onPress={()=>{
+                        <TouchableOpacity onPress={() => {
                             setisModalVisible(false)
                             saveDetails()
                         }} style={styles.doneButton}><Text>SELECT</Text></TouchableOpacity>

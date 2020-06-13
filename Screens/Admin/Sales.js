@@ -58,6 +58,15 @@ class Sales extends Component {
         this.setState({ showEnding: (Platform.OS === 'ios') });
         this.setState({ endDate: currentDate });
     };
+
+    closeStartTimePicker = () => {
+        this.setState({ showStarting: false, startingDate: this.state.startingDate || new Date() });
+    }
+
+    closeEndTimePicker = () => {
+        this.setState({ showEnding: false, endDate: this.state.endDate || new Date() });
+    }
+
     getTransactionList() {
         this.setState({ loading: true })
         const user = firebase.auth().currentUser
@@ -67,8 +76,6 @@ class Sales extends Component {
                 this.setState({ transactionList: resJson, loading: false })})
             .catch((e) => alert(e))
         this.setState({ isDateVisible: false })
-
-
     }
 
 
@@ -84,53 +91,71 @@ class Sales extends Component {
                         <ActivityIndicator size={40} color={color.primaryBlack} />
                     </View>
                     :
-                    <FlatList data={this.state.transactionList} renderItem={({ item }) => (<CheckList onPress={() => this.props.navigation.navigate("PdfViewer",{reportUrl:item.reportUrl})} name={item.user} date={item.timestamp} cost={item.totalCost}/>)} />
+                    <FlatList
+                        data={this.state.transactionList ? this.state.transactionList : []}
+                        renderItem={({ item }) => (<CheckList onPress={() => this.props.navigation.navigate("PdfViewer", { reportUrl: item.reportUrl })} name={item.user} date={item.timestamp} cost={item.totalCost} />)} />
                 }
 
-                <Modal useNativeDriver={true} isVisible={this.state.isDateVisible} onBackdropPress={() => this.setState({ isDateVisible: false })}>
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ backgroundColor: color.primaryWhite, alignSelf: 'center', height: '50%', width: '90%', borderRadius: 20 }}>
-                            <TouchableOpacity onPress={() => this.setState({ showStarting: true })} style={{ flex: 1, margin: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <Text style={styles.settingText}>Select Starting Date:</Text>
-                                {this.state.startingDate ?
-                                    <Text>{this.state.startingDate.toLocaleDateString()}</Text>
-                                    :
-                                    <Ionicons name='ios-calendar' size={30} />}
-                            </TouchableOpacity>
-                            {this.state.showStarting && (
-                                <DateTimePicker
-                                    testID="dateTimePicker"
-                                    timeZoneOffsetInMinutes={0}
-                                    value={this.state.startingDate ? this.state.startingDate : this.state.date}
-                                    mode={'date'}
-                                    is24Hour={true}
-                                    display="default"
-                                    onChange={this.onChangeStart}
-                                />
-                            )}
-                            <TouchableOpacity onPress={() => this.setState({ showEnding: true })} style={{ flex: 1, margin: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <Text style={styles.settingText}>Select Ending Date:</Text>
-                                {this.state.endDate ?
-                                    <Text>{this.state.endDate.toLocaleDateString()}</Text>
-                                    :
-                                    <Ionicons name='ios-calendar' size={30} />}
-                            </TouchableOpacity>
-                            {this.state.showEnding && (
-                                <DateTimePicker
-                                    testID="dateTimePicker"
-                                    timeZoneOffsetInMinutes={0}
-                                    value={this.state.endDate ? this.state.endDate : this.state.date}
-                                    mode={'date'}
-                                    is24Hour={true}
-                                    display="default"
-                                    onChange={this.onChangeEnd}
-                                />
-                            )}
-
-                            <TouchableOpacity onPress={this.getTransactionList.bind(this)} disabled={!(this.state.startingDate && this.state.endDate)} style={styles.buttonContainer}><Text style={styles.buttonText}>SEARCH</Text></TouchableOpacity>
-                        </View>
+                {this.state.showStarting && (
+                    <View>
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            timeZoneOffsetInMinutes={0}
+                            value={this.state.startingDate ? this.state.startingDate : this.state.date}
+                            mode={'date'}
+                            is24Hour={true}
+                            display="default"
+                            onChange={this.onChangeStart}
+                        />
+                        <TouchableOpacity onPress={this.closeStartTimePicker} style={styles.buttonContainer}><Text style={styles.buttonText}>Set</Text></TouchableOpacity>
                     </View>
-                </Modal>
+                )}
+
+                {this.state.showEnding && (
+                    <View>
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            timeZoneOffsetInMinutes={0}
+                            value={this.state.endDate ? this.state.endDate : this.state.date}
+                            mode={'date'}
+                            is24Hour={true}
+                            display="default"
+                            onChange={this.onChangeEnd}
+                        />
+                        <TouchableOpacity onPress={this.closeEndTimePicker} style={styles.buttonContainer}><Text style={styles.buttonText}>Set</Text></TouchableOpacity>
+                    </View>
+                )}
+
+                {
+                    !this.state.showEnding && !this.state.showStarting && (
+                        <Modal useNativeDriver={true} isVisible={this.state.isDateVisible} onBackdropPress={() => this.setState({ isDateVisible: false })}>
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <View style={{ backgroundColor: color.primaryWhite, alignSelf: 'center', height: '50%', width: '90%', borderRadius: 20 }}>
+                                    <TouchableOpacity onPress={() => this.setState({ showStarting: true })} style={{ flex: 1, margin: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Text style={styles.settingText}>Select Starting Date:</Text>
+                                        {this.state.startingDate ?
+                                            <Text>{this.state.startingDate.toLocaleDateString()}</Text>
+                                            :
+                                            <Ionicons name='ios-calendar' size={30} />}
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity onPress={() => this.setState({ showEnding: true })} style={{ flex: 1, margin: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Text style={styles.settingText}>Select Ending Date:</Text>
+                                        {this.state.endDate ?
+                                            <Text>{this.state.endDate.toLocaleDateString()}</Text>
+                                            :
+                                            <Ionicons name='ios-calendar' size={30} />}
+                                    </TouchableOpacity>
+
+
+                                    <TouchableOpacity onPress={this.getTransactionList.bind(this)} disabled={!(this.state.startingDate && this.state.endDate)} style={styles.buttonContainer}><Text style={styles.buttonText}>SEARCH</Text></TouchableOpacity>
+
+                                </View>
+                            </View>
+                        </Modal>
+                    )
+                }
+
 
             </SafeAreaView>
         );

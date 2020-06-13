@@ -38,7 +38,7 @@ class Searching extends Component {
 
         Geolocation.getCurrentPosition(info => {
             this.setState({ lat: info.coords.latitude, lng: info.coords.longitude, midlat: info.coords.latitude, midlng: info.coords.longitude })
-        }, e => {}, { distanceFilter: 0 });
+        }, e => {},{ distanceFilter: 0,timeout:30000,maximumAge:30000 });
 
 
     }

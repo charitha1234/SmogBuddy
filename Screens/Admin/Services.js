@@ -36,7 +36,7 @@ class Services extends Component {
     }
 
     getApiData() {
-        fetch(BaseUrl.Url+'/service')
+        fetch(BaseUrl.Url + '/service')
             .then((res) => res.json())
             .then((resJson) => {
                 this.setState({ serviceList: resJson });
@@ -62,6 +62,7 @@ class Services extends Component {
             <SafeAreaView style={styles.container}>
                 <Header navigation={this.props.navigation} title="SERVICES" onPress={() => this.props.navigation.navigate("AddService")} icon="ios-add" />
                 <FlatList data={this.state.serviceList}
+                    style={styles.list}
                     onRefresh={() => this.onRefresh()}
                     refreshing={this.state.isFetching}
                     renderItem={({ item }) => (<Service onPress={() => this.props.navigation.navigate("ServiceInfo", { info: item })} name={item.serviceName} yearRange={item.yearRange} />)} keyExtractor={item => item.UserId} />
@@ -76,6 +77,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
 
+    },
+    list: {
+        paddingHorizontal: 10
     },
     headerContainer: {
         height: 100,
@@ -104,10 +108,10 @@ const styles = StyleSheet.create({
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
-            height: 6,
+            height: 3,
         },
         shadowOpacity: .2,
-        shadowRadius: 8.30,
+        shadowRadius: 2.30,
         borderRadius: 30,
         elevation: 3,
     },

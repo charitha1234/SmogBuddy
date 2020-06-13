@@ -13,7 +13,6 @@ import GradientButton from '../../Components/longButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BaseUrl from '../../Config'
 import Header from '../../Components/NormalHeader'
-
 function Assign(pickUp, technician, driver, userId, setloading, navigation) {
     fetch(BaseUrl.Url + '/admin/assign/driver', {
         method: 'POST',
@@ -34,7 +33,9 @@ function Assign(pickUp, technician, driver, userId, setloading, navigation) {
             navigation.goBack()
 
         })
-        .catch((e) => Alert(e))
+        .catch((e) => {
+            alert(e)
+        })
 }
 function AssignEmployees({ navigation, route }) {
     const [Name, setName] = useState("")

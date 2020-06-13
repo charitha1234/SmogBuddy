@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
     View,
+    ScrollView,
     Text,
     StyleSheet,
     TouchableOpacity,
     ActivityIndicator,
     Keyboard,
     TextInput,
+    KeyboardAvoidingView,
     TouchableWithoutFeedback
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -45,90 +47,98 @@ function Login({ navigation }) {
     const textBox1 = useRef(null)
     const textBox2 = useRef(null)
     useEffect(() => {
-        const keyboardDidShowListener = Keyboard.addListener(
-            'keyboardDidShow',
-            (data) => {
-                setKeyboardVisible(true); // or some other action
-            }
-        );
-        const keyboardDidHideListener = Keyboard.addListener(
-            'keyboardDidHide',
-            () => {
-                setKeyboardVisible(false); // or some other action
-            }
-        );
+        // const keyboardDidShowListener = Keyboard.addListener(
+        //     'keyboardDidShow',
+        //     (data) => {
+        //         setKeyboardVisible(true); // or some other action
+        //     }
+        // );
+        // const keyboardDidHideListener = Keyboard.addListener(
+        //     'keyboardDidHide',
+        //     () => {
+        //         setKeyboardVisible(false); // or some other action
+        //     }
+        // );
 
-        return () => {
-            keyboardDidHideListener.remove();
-            keyboardDidShowListener.remove();
-        };
+        // return () => {
+        //     keyboardDidHideListener.remove();
+        //     keyboardDidShowListener.remove();
+        // };
     }, []);
     return (
-        <SafeAreaView style={styles.container}>
-            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={styles.container}>
+        <SafeAreaView style={{ flex: 1 }}>
+            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.primaryGreen, color.primaryBlue]} style={{ flex: 1 }}>
 
                 {!loading ?
-                    <KeyboardAwareScrollView
-                        contentContainerStyle={styles.container}
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                        // keyboardVerticalOffset={100}
+                        style={{ flex: 1 }}
                     >
-                        <Text style={styles.watermarkText}>SMOGBUDDY</Text>
-                        {
-                            isKeyboardVisible ?
-                                null :
+                        <ScrollView
+                            contentContainerStyle={styles.container}
+                            keyboardDismissMode={'interactive'}
+                            keyboardShouldPersistTaps={
+                                Platform.OS === 'android' ? 'handled' : 'never'
+                            }
+                        >
+                            <Text style={styles.watermarkText}>SMOGBUDDY</Text>
+                            {
+                                isKeyboardVisible ?
+                                    null :
 
-                                <Logo style={styles.Logo} />
-                        }
-                        <View style={[styles.LoginForm, usernameError||passwordError ? { borderColor: color.failedRed, borderWidth: 3 } : null]}>
-                            <TouchableWithoutFeedback onPress={() => textBox1.current.focus()}>
-                                <View style={styles.InputContainer}>
-                                    <TextBox sendref={textBox1} onFocus={() => setonFocus(true)} value={username} error={usernameError} onBlur={() => setonFocus(false)} onChangeText={text => {
-                                        setusernameError(false)
-                                        setusername(text);
-                                    }} title="USERNAME" icon="md-person" /></View></TouchableWithoutFeedback>
-                            <View style={{ borderBottomWidth: 1, opacity: 0.2, marginHorizontal: 10 }} />
-                            <TouchableWithoutFeedback onPress={() => textBox2.current.focus()}>
-                                <View style={styles.InputContainer}>
-                                    <TextBox sendref={textBox2} error={passwordError} value={password} onFocus={() => setonFocus(true)} onBlur={() => setonFocus(false)} onChangeText={text => {
-                                        setpasswordError(false)
-                                        setpassword(text);
-                                    }} title="PASSWORD" icon="md-key" /></View></TouchableWithoutFeedback>
-                            <TouchableOpacity style={styles.shadowButton} onPress={() => {
-
-
-                                if (username && password) {
-                                    setloading(true);
-                                    authentication(username, password, navigation, setloading)
-                                }
-                                else {
-                                    if (!username) setusernameError("Username is empty")
-                                    if (!password) setpasswordError("Password is empty")
-                                }
-                            }}>
-                                <Ionicons name="ios-play" size={20} color={color.primaryWhite} />
-                            </TouchableOpacity>
-                        </View>
+                                    <Logo style={styles.Logo} />
+                            }
+                            <View style={[styles.LoginForm, usernameError || passwordError ? { borderColor: color.failedRed, borderWidth: 3 } : null]}>
+                                <TouchableWithoutFeedback onPress={() => textBox1.current.focus()}>
+                                    <View style={styles.InputContainer}>
+                                        <TextBox sendref={textBox1} onFocus={() => setonFocus(true)} value={username} error={usernameError} onBlur={() => setonFocus(false)} onChangeText={text => {
+                                            setusernameError(false)
+                                            setusername(text);
+                                        }} title="USERNAME" icon="md-person" /></View></TouchableWithoutFeedback>
+                                <View style={{ borderBottomWidth: 1, opacity: 0.2, marginHorizontal: 10 }} />
+                                <TouchableWithoutFeedback onPress={() => textBox2.current.focus()}>
+                                    <View style={styles.InputContainer}>
+                                        <TextBox sendref={textBox2} error={passwordError} value={password} onFocus={() => setonFocus(true)} onBlur={() => setonFocus(false)} onChangeText={text => {
+                                            setpasswordError(false)
+                                            setpassword(text);
+                                        }} title="PASSWORD" icon="md-key" /></View></TouchableWithoutFeedback>
+                                <TouchableOpacity style={styles.shadowButton} onPress={() => {
 
 
-                        {
-                            isKeyboardVisible ?
-                                null :
-                                <View style={{margin:20,flexDirection:'row',justifyContent:'space-between'}}>
-                                <TouchableOpacity style={{flex:1}}  onPress={() => { navigation.navigate("NewUser") }}>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <Text style={styles.bottomText}>NEW ACCOUNT</Text>
-                                        <Ionicons name="ios-play" size={20} color={color.primaryWhite} />
+                                    if (username && password) {
+                                        setloading(true);
+                                        authentication(username, password, navigation, setloading)
+                                    }
+                                    else {
+                                        if (!username) setusernameError("Username is empty")
+                                        if (!password) setpasswordError("Password is empty")
+                                    }
+                                }}>
+                                    <Ionicons name="ios-play" size={20} color={color.primaryWhite} />
+                                </TouchableOpacity>
+                            </View>
+
+                            {
+                                isKeyboardVisible ?
+                                    null :
+                                    <View style={{ margin: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
+                                        <TouchableOpacity style={{ flex: 1 }} onPress={() => { navigation.navigate("NewUser") }}>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={styles.bottomText}>NEW ACCOUNT</Text>
+                                                <Ionicons name="ios-play" size={20} color={color.primaryWhite} />
+                                            </View>
+                                            <Text style={[styles.bottomText, { opacity: 0.5 }]}>Register here</Text>
+
+
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{ flex: 0.7, alignItems: 'flex-end' }} onPress={() => { navigation.navigate("ForgotPassword") }}>
+                                            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                                        </TouchableOpacity>
                                     </View>
-                                    <Text style={[styles.bottomText,{opacity:0.5}]}>Register here</Text>
-
-
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{flex:0.7,alignItems:'flex-end'}}  onPress={() => { navigation.navigate("ForgotPassword") }}>
-                                        <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-                                </TouchableOpacity>
-                                </View>
-                        }
-
-                    </KeyboardAwareScrollView>
+                            }
+                        </ScrollView>
+                    </KeyboardAvoidingView>
                     :
                     <View style={{ flex: 1, justifyContent: 'center' }}>
                         <ActivityIndicator size={40} color={color.primaryBlack} />
@@ -137,9 +147,6 @@ function Login({ navigation }) {
 
             </LinearGradient>
         </SafeAreaView>
-
-
-
     );
 
 }
@@ -148,8 +155,11 @@ export default Login;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         justifyContent: 'space-between'
+    },
+    footer: {
+        margin: 20
     },
     Logo: {
         alignSelf: 'center',
@@ -159,7 +169,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         letterSpacing: 3,
         color: color.primaryWhite,
-        marginRight:10
+        marginRight: 10
     },
     forgotPasswordText: {
         fontFamily: 'Montserrat-Bold',
