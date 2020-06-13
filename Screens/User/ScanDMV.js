@@ -5,12 +5,10 @@ import {
     StyleSheet,
     TouchableOpacity,
     ActivityIndicator,
-    Image,
     ScrollView
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import { RNCamera } from 'react-native-camera';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextBox from '../../Components/textBox';
 import { color } from '../../Assets/color';
 import GradientButton from '../../Components/CustomButton';
@@ -24,8 +22,8 @@ class ScanDMV extends Component {
         this.state = {
             uId: firebase.auth().currentUser.uid,
             loading: false,
-            before80: true,
-            successfull: true,
+            before80: false,
+            successfull: false,
             flashMode: RNCamera.Constants.FlashMode.auto,
             year: null,
             make: null,
@@ -60,7 +58,6 @@ class ScanDMV extends Component {
                             vin: " "
                         }),
                     }).then((resJson)=>{
-                        console.log("RESSSS",resJson)
                         if (resJson.status == 200) {
                             this.props.navigation.navigate("OdometerRead", { serviceList: this.props.route.params.serviceList })
                             this.setState({loading:false})
@@ -102,8 +99,6 @@ class ScanDMV extends Component {
                 let vin = scanResult.data.substr(2, 10);
                 let plate = scanResult.data.substr(20, 7);
                 this.setState({vin:vin,plate:plate})
-                console.log(vin);
-                console.log(plate);
             }
             else {
                 let vin = scanResult.data.substr(2, 17);
@@ -214,7 +209,7 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         height: 400,
-        width: 300,
+        width: '90%',
         justifyContent: 'center',
         backgroundColor: color.primaryWhite,
         shadowColor: "#000",

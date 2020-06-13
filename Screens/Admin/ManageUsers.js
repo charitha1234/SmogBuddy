@@ -47,7 +47,6 @@ function ManageUsers({ navigation }) {
             .then((resJson) => {
 
 
-                console.log("res", resJson)
                 setdata(resJson)
             })
             .catch((e) => { })
@@ -76,7 +75,6 @@ function ManageUsers({ navigation }) {
 
 
     const updateSearch = search => {
-        console.log("CHANGe")
         setsearch(search)
     };
 

@@ -5,6 +5,8 @@ import {
     StyleSheet,
     TouchableOpacity,
     FlatList,
+    ActivityIndicator,
+    Alert
 
 } from "react-native";
 import CheckBox from 'react-native-check-box'
@@ -21,7 +23,7 @@ function Service(props) {
     return (
         <View style={styles.serviceContainer}>
             <View style={{ flex: 2 }}>
-                <Text style={[styles.serviceNameText ,{fontFamily:'Montserrat-SemiBold'}]}>{props.serviceName}</Text>
+                <Text style={[styles.serviceNameText, { fontFamily: 'Montserrat-SemiBold' }]}>{props.serviceName}</Text>
                 <Text style={styles.serviceNameText}>{props.serviceYear}</Text>
             </View>
             <View style={{ flex: 0.25 }}>
@@ -41,6 +43,7 @@ class ServiceSelection extends Component {
             serviceList: null,
             checkAll: false,
             uid: null,
+            loading: true,
             selectedList: [],
             totalTime: 0,
         }
@@ -69,17 +72,30 @@ class ServiceSelection extends Component {
                     this.state.selectedList.push({ serviceID: sId })
                 }
             }
-            console.log("Time", totalTime)
-            console.log("TOTALTIME", new Date(new Date().getTime() + totalTime * 60000).getHours())
-            if (new Date(new Date().getTime() + totalTime * 60000).getHours() >= 17) {
-                alert("Service Station Closes At 5 PM")
-                this.props.navigation.navigate("ScanDMV", { serviceList: this.state.selectedList })
+            if (new Date().getTime() + totalTime * 60000 >= new Date(new Date().toLocaleDateString()).getTime()+61200000) {
+                Alert.alert(
+                    "Cannot request a driver",
+                    "Service Station Closes At 5 PM",
+                    [
+                      { text: "OK", onPress: () => {} }
+                    ],
+                    { cancelable: false }
+                  );
             }
             else {
                 this.props.navigation.navigate("ScanDMV", { serviceList: this.state.selectedList })
             }
         }
-        else alert("Please select services")
+        else {
+            Alert.alert(
+                "Please select services",
+                "No services have selected",
+                
+                [
+                  { text: "OK", onPress: () => {} }
+                ],
+                { cancelable: false }
+              );}
     }
 
     checkBox_Test = (id) => {
@@ -106,10 +122,10 @@ class ServiceSelection extends Component {
     componentDidMount() {
         const user = firebase.auth().currentUser;
         this.setState({ uid: user });
-        fetch(BaseUrl.Url+'/service')
+        fetch(BaseUrl.Url + '/service')
             .then((res) => res.json())
             .then((resJson) => {
-                this.setState({ serviceList: resJson });
+                this.setState({ serviceList: resJson, loading: false });
             }
             )
     }
@@ -117,20 +133,31 @@ class ServiceSelection extends Component {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-                    <Header navigation={this.props.navigation} title="SELECT SERVICES"/>
-                    <View style={styles.serviceListContainer}>
-                        <View style={styles.serviceContainer}>
-                            <View style={{ flex: 2 }}>
-                                <Text style={styles.selectAllText}>SELECT ALL</Text>
+                    <Header navigation={this.props.navigation} title="SELECT SERVICES" />
+                    {
+                        this.state.loading ?
+                            <View style={{ flex: 1, justifyContent: 'center' }}>
+                                <ActivityIndicator size={30} color={color.primaryBlack} />
                             </View>
-                            <View style={{ flex: 0.25 }}>
-                                <CheckBox isChecked={this.state.checkAll} onClick={this.CheckAll} />
-                            </View>
-                        </View>
-                        <FlatList data={this.state.serviceList} renderItem={({ item }) => (<Service serviceName={item.serviceName} serviceYear={item.yearRange} Checked={this.state.check[item.serviceID]} onChange={() => this.checkBox_Test(item.serviceID)} />)} keyExtractor={item => item.serviceID} />
-                    <Ionicons name="ios-arrow-down" size={20} style={{marginVertical:5,alignSelf:'center'}}/>
-                    </View>
-                    <View  style={styles.buttonContainer}><TouchableOpacity onPress={this.handleRequest.bind(this)}><GradientButton style={styles.button} title="NEXT" /></TouchableOpacity></View>
+                            :
+                            <>
+                                <View style={styles.serviceListContainer}>
+                                    <View style={styles.serviceContainer}>
+                                        <View style={{ flex: 2 }}>
+                                            <Text style={styles.selectAllText}>SELECT ALL</Text>
+                                        </View>
+                                        <View style={{ flex: 0.25 }}>
+                                            <CheckBox isChecked={this.state.checkAll} onClick={this.CheckAll} />
+                                        </View>
+                                    </View>
+                                    <FlatList data={this.state.serviceList} renderItem={({ item }) => (<Service serviceName={item.serviceName} serviceYear={item.yearRange} Checked={this.state.check[item.serviceID]} onChange={() => this.checkBox_Test(item.serviceID)} />)} keyExtractor={item => item.serviceID} />
+                                    <Ionicons name="ios-arrow-down" size={20} style={{ marginVertical: 5, alignSelf: 'center' }} />
+                                </View>
+                                <View style={styles.buttonContainer}><TouchableOpacity onPress={this.handleRequest.bind(this)}><GradientButton style={styles.button} title="NEXT" /></TouchableOpacity></View>
+                            </>
+
+                    }
+
                 </LinearGradient>
             </SafeAreaView>
         );
@@ -193,7 +220,7 @@ const styles = StyleSheet.create({
     },
 
     buttonContainer: {
-        marginVertical:10,
+        marginVertical: 10,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -202,12 +229,12 @@ const styles = StyleSheet.create({
         shadowOpacity: .5,
         shadowRadius: 8.30,
         elevation: 10,
-        alignItems:'center',
+        alignItems: 'center',
 
 
     },
     button: {
-        marginVertical:10,
+        marginVertical: 10,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

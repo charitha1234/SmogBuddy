@@ -48,8 +48,8 @@ class  App extends Component {
           if(userId !== null) {
             fetch(BaseUrl.Url+"/user/fuelcap/" + userId)
             .then((res)=>res.json())
-            .then((resJson)=>console.log("FUELCAP",resJson))
-            .catch((e)=>console.log("FUEL ERROR",e))
+            .then((resJson)=>{})
+            .catch((e)=>{})
           }
         } catch(e) {
         }
@@ -68,7 +68,6 @@ class  App extends Component {
           }
 
           if(notification.data.status=="CHANGE_FUEL_CAP"){
-            console.log(notification.data)
             this.setState({
               dialogboxVisible:true,
               fuelTitle:title,
@@ -80,47 +79,46 @@ class  App extends Component {
       /*
       * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
       * */
-      // this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
-      //     if (notificationOpen) {   
-      //       const {data } = notificationOpen.notification;
-      //       if(data.status=="CHANGE_FUEL_CAP"){
-      //         this.setState({
-      //           dialogboxVisible:true,
-      //           fuelTitle:data.title,
-      //           fuelBody:data.body,
-      //         })
-      //       }
-      //   }
-      // });
+      this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+          if (notificationOpen) {   
+            const {data } = notificationOpen.notification;
+            if(data.status=="CHANGE_FUEL_CAP"){
+              this.setState({
+                dialogboxVisible:true,
+                fuelTitle:data.title,
+                fuelBody:data.body,
+              })
+            }
+        }
+      });
     
       /*
       * If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
       * */
-      // const notificationOpen = await firebase.notifications().getInitialNotification();
-      // if (notificationOpen) {   
-      //   const {data } = notificationOpen.notification;
-      //   if(data.status=="CHANGE_FUEL_CAP"){
-      //     this.setState({
-      //       dialogboxVisible:true,
-      //       fuelTitle:data.title,
-      //       fuelBody:data.body,
-      //     })
-      //   }
-      // }
+      const notificationOpen = await firebase.notifications().getInitialNotification();
+      if (notificationOpen) {   
+        const {data } = notificationOpen.notification;
+        if(data.status=="CHANGE_FUEL_CAP"){
+          this.setState({
+            dialogboxVisible:true,
+            fuelTitle:data.title,
+            fuelBody:data.body,
+          })
+        }
+      }
       /*
       * Triggered for data only payload in foreground
       * */
-      // this.messageListener = firebase.messaging().onMessage((message) => {
-      //   //process data message
-      //   console.log(JSON.stringify(message));
-      // });
+      this.messageListener = firebase.messaging().onMessage((message) => {
+        //process data message
+      });
     }
     
     showAlert(title, body) {
       Alert.alert(
         title, body,
         [
-            { text: 'OK', onPress: () => console.log('OK Pressed') },
+            { text: 'OK', onPress: () => {} },
         ],
         { cancelable: false },
       );
@@ -152,7 +150,6 @@ class  App extends Component {
           await firebase.messaging().requestPermission();
           this.getToken();
       } catch (error) {
-          console.log('permission rejected',error);
       }
     }
     areYouSure(){

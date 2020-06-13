@@ -3,7 +3,7 @@ import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity, ScrollView, KeyboardAvoidingView,
+    TouchableOpacity,
     ActivityIndicator,
     Dimensions
 } from "react-native";
@@ -11,7 +11,6 @@ import { color } from '../../Assets/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import CheckBox from '@react-native-community/checkbox';
 import TextBox from '../../Components/textBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import GradientButton from '../../Components/longButton';
@@ -52,7 +51,6 @@ function newUser(firstName, lastName, email, date, employNo, phoneNo, imageUri, 
                 .then((response) => response.json())
                 .then((responseJson) => {
                     setloading(false)
-                    console.log("ERR",responseJson)
                      navigation.popToTop()
 
                 })

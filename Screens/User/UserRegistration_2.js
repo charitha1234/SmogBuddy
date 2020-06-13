@@ -36,7 +36,6 @@ function formatDate() {
     return [year, month, day].join('-');
 }
 function newUser(username, password, firstName, lastName, imageUrl, address, state, zipCode, phoneNo, navigation, setloading, setserverError) {
-    console.log("User", username, password)
     firebase.app('SecondApp').auth().createUserWithEmailAndPassword(username, password)
         .then((res) => {
             firebase.app('SecondApp')
@@ -98,7 +97,6 @@ function newUser(username, password, firstName, lastName, imageUrl, address, sta
         .catch((e) => {
             setserverError(true)
             setloading(false)
-            console.log("USER NOT created")
             alert(e)
         }
         )
@@ -217,7 +215,7 @@ const styles = StyleSheet.create({
     selection: {
         alignSelf: 'center',
         backgroundColor: 'white',
-        width: 300,
+        width: '90%',
         borderRadius:20,
         shadowColor: "#000",
         shadowOffset: {

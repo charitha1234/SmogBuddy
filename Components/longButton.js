@@ -2,7 +2,8 @@ import React from "react";
 import {
     StyleSheet,
     Text,
-    View
+    View,
+    ActivityIndicator
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../Assets/color';
@@ -10,14 +11,20 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 function GradientButton(props) {
 
     return (
-            <View style={styles.container}>
-                {!props.title?
-                    <Text style={styles.text}>NEXT STEP</Text>
+        <View style={styles.container}>
+            {
+                props.loading ?
+                    <ActivityIndicator size={30} color={color.primaryWhite} />
                     :
-                    <Text style={styles.text}>{props.title}</Text>
+                    !props.title ?
 
-                }
-            </View>
+                        <Text style={styles.text}>NEXT STEP</Text>
+                        :
+                        <Text style={styles.text}>{props.title}</Text>
+            }
+
+
+        </View>
     );
 
 }
@@ -30,8 +37,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: 200,
         height: 70,
-        borderRadius:35,
-        backgroundColor:color.secondryBlue,
+        borderRadius: 35,
+        backgroundColor: color.secondryBlue,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -42,10 +49,10 @@ const styles = StyleSheet.create({
 
         elevation: 10,
 
-        
+
 
     },
-    text:{
+    text: {
 
         fontFamily: 'Montserrat-Bold',
         fontSize: 10,

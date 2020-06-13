@@ -10,9 +10,7 @@ import {
 import { color } from '../../Assets/color';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import UsersList from '../../data/Users';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { SearchBar } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import firebase from "react-native-firebase";
 import Header from '../../Components/TwoButtonHeader'
@@ -63,13 +61,9 @@ class Sales extends Component {
     getTransactionList() {
         this.setState({ loading: true })
         const user = firebase.auth().currentUser
-        console.log("UID", user.uid)
-        console.log("STARTING", this.state.startingDate.toLocaleDateString())
-        console.log("ENDING", this.state.endDate.toLocaleDateString())
         fetch(BaseUrl.Url + '/admin/sales?startAt=' + this.state.startingDate.toLocaleDateString() + '&endAt=' + this.state.endDate.toLocaleDateString())
             .then((res) => res.json())
             .then((resJson) => {
-                console.log("TRANSACTION ",resJson)
                 this.setState({ transactionList: resJson, loading: false })})
             .catch((e) => alert(e))
         this.setState({ isDateVisible: false })
@@ -244,7 +238,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
         height: 100,
-        width: '100%',
+        marginHorizontal:5,
         justifyContent: 'center',
         shadowColor: "#000",
         shadowOffset: {

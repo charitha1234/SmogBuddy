@@ -7,10 +7,6 @@ import {
     FlatList
 } from "react-native";
 import { color } from '../../Assets/color';
-import LinearGradient from 'react-native-linear-gradient';
-import TextBox from '../../Components/textBox';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Item } from "native-base";
 import Header from '../../Components/NormalHeader'
 
 function ServiceList(props) {

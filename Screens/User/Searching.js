@@ -38,7 +38,7 @@ class Searching extends Component {
 
         Geolocation.getCurrentPosition(info => {
             this.setState({ lat: info.coords.latitude, lng: info.coords.longitude, midlat: info.coords.latitude, midlng: info.coords.longitude })
-        }, e => console.log(e), { distanceFilter: 0 });
+        }, e => {}, { distanceFilter: 0 });
 
 
     }
@@ -48,10 +48,8 @@ class Searching extends Component {
         return hours + " h " + minutes + " min";
     }
     requestingDriver() {
-        console.log("HERE")
         this.setState({ locationSelected: true })
         const user = firebase.auth().currentUser;
-        console.log("HERE>>>>", this.state.lat, this.state.lng)
         if (this.state.lat && this.state.lng) {
             fetch(BaseUrl.Url + '/user/request', {
                 method: 'POST',
@@ -69,7 +67,6 @@ class Searching extends Component {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson);
                     this.setState({
                         placed: true,
                         totalServiceTime: responseJson.totalServiceTime,
@@ -191,7 +188,7 @@ const styles = StyleSheet.create({
     messageContainer: {
         alignSelf: 'center',
         backgroundColor: 'white',
-        width: 300,
+        width: '90%',
         height: 250,
         shadowColor: "#000",
         shadowOffset: {

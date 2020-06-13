@@ -73,13 +73,10 @@ function feedback(navigation, request, uid, userPickupLocation, distance, durati
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log(responseJson)
             setaccepted(true)
-            console.log("RESPONEJSON>>>", responseJson);
             // navigation.navigate("DriverNavigation", { userPickupLocation: JSON.parse(userPickupLocation), uid: uid });
         })
         .catch((error) => {
-            console.error(error);
         });
 }
 
@@ -103,7 +100,6 @@ function navigationStart(userId) {
         })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log("RESPONEJSON>>>", responseJson);
 
         })
         .catch((error) => {
@@ -114,7 +110,6 @@ function turnOnMaps(lat, lng) {
     var url = "https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&destination=" + lat + ',' + lng;
     Linking.canOpenURL(url).then(supported => {
         if (!supported) {
-            console.log('Can\'t handle url: ' + url);
         } else {
             return Linking.openURL(url);
         }
@@ -124,7 +119,6 @@ async function checkUploaded() {
     try {
         const value = await AsyncStorage.getItem('ODOMETER_UPLOADED')
         if (value !== 'UPLOADED') {
-            console.log("CheckUploaded>>", value)
             return false
         }
         else return true
@@ -168,7 +162,6 @@ function RenderContent(props) {
         fetch(BaseUrl.Url+'/driver/is-pay/' +user.uid)
         .then((res) => res.json())
         .then((resJson) => {
-            console.log("PAYED",resJson)
             if(resJson.isPaid){
                 setloading(true)
 
@@ -192,7 +185,6 @@ function RenderContent(props) {
                         removeUploaded()
                         setcurrentStage(currentStage + 1)
                         setloading(false)
-                        console.log("RESPONEJSON>>>", responseJson);
 
                     })
                     .catch((error) => {
@@ -204,7 +196,7 @@ function RenderContent(props) {
                 alert("Customer has not paid. Please check")
             }
         })
-        .catch((e) => console.log("error", e))
+        .catch((e) => {})
     }
     const getServiceList = () => {
         setmodalVisible(true)
@@ -212,9 +204,8 @@ function RenderContent(props) {
             .then((res) => res.json())
             .then((resJson) => {
                 setserviceList(resJson.services)
-                console.log(resJson)
             })
-            .catch((e) => console.log("error", e))
+            .catch((e) => {})
     }
 
     useEffect(() => {
@@ -222,9 +213,7 @@ function RenderContent(props) {
         if (currentStage == 3) props.setreturnToStation(true)
         else props.setreturnToStation(false)
         if (currentStage == 8) props.navigation.navigate("DriverHomeScreen")
-        console.log("CURRENTSTAGE", currentStage)
         if (!fetching && currentStage != 8) {
-            console.log("fetching")
             firebase.database().ref('location/' + user.uid).update({
                 currentStage
             });
@@ -279,7 +268,7 @@ function RenderContent(props) {
                                         {
                                             text: 'Yes', onPress: () => {
                                                 if(currentStage==7){
-                                                    console.log("ISPAID")
+                                                    
                                                     isUserPaid()
                                                 }
                                                 else{
@@ -305,7 +294,7 @@ function RenderContent(props) {
                                                         removeUploaded()
                                                         setcurrentStage(currentStage + 1)
                                                         setloading(false)
-                                                        console.log("RESPONEJSON>>>", responseJson);
+                                                        
 
                                                     })
                                                     .catch((error) => {
@@ -341,7 +330,7 @@ function RenderContent(props) {
                                     text: 'Yes', onPress: () => {
                                         const user = firebase.auth().currentUser;
                                         setloading(true)
-                                        console.log("STAGE", cases[currentStage])
+                                        
                                         fetch(BaseUrl.Url+'/driver/status',
                                             {
                                                 method: 'PUT',
@@ -362,7 +351,7 @@ function RenderContent(props) {
                                                 removeUploaded()
                                                 setcurrentStage(currentStage + 1)
                                                 setloading(false)
-                                                console.log("RESPONEJSON>>>", responseJson);
+                                                
 
                                             })
                                             .catch((error) => {
@@ -393,7 +382,7 @@ function DriverRequest({ navigation, route }) {
     const [returnToStation, setreturnToStation] = useState(false)
     const { userUid, userPickupLocation, stationLocation, status } = route.params;
     const location = !returnToStation ? userPickupLocation : stationLocation;
-    console.log("RETURN", status)
+    
     const [lat, setlat] = useState(null)
 
     const [lng, setlng] = useState(null)
@@ -420,12 +409,11 @@ function DriverRequest({ navigation, route }) {
             setaccepted(true)
             setstarted(true)
         }
-        console.log("accepted", accepted)
-        console.log("started", started)
+
 
         var hours = Math.floor(duration / 60);
         var minutes = Math.floor(duration % 60);
-        console.log("lat>>", lat, "lng>>", lng)
+
         if (minutes / 10 >= 1) setarrivalTime((hours).toString() + " h " + (minutes).toString() + " min");
         else setarrivalTime((hours).toString() + " h 0" + (minutes).toString() + " min");
         
@@ -433,11 +421,11 @@ function DriverRequest({ navigation, route }) {
         Geolocation.getCurrentPosition(info => {
             setlat(info.coords.latitude);
             setlng(info.coords.longitude);
-        }, e => console.log(e), { distanceFilter: 0 });
+        }, e => {}, { distanceFilter: 0 });
         Geolocation.watchPosition(info => {
             setlat(info.coords.latitude);
             setlng(info.coords.longitude);
-        }, e => console.log(e), { distanceFilter: 0 });
+        }, e => {}, { distanceFilter: 0 });
         
     },[]);
     useEffect(()=>{
@@ -651,7 +639,7 @@ const styles = StyleSheet.create({
     },
     completeButton: {
         backgroundColor: color.secondryBlue,
-        width: 300,
+        width: '90%',
         height: 50,
         borderRadius: 25,
         alignSelf: 'center',

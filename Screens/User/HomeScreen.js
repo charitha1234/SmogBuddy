@@ -6,8 +6,6 @@ import {
     TouchableOpacity
 } from "react-native";
 import Header from '../../Components/HeaderbarUser';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { color } from '../../Assets/color';
 import firebase from 'react-native-firebase';

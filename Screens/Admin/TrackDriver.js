@@ -9,7 +9,6 @@ import {
 import MapView, { Marker } from 'react-native-maps';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { color } from '../../Assets/color';
-import LinearGradient from 'react-native-linear-gradient';
 import firebase from 'react-native-firebase';
 import BottomSheet from 'reanimated-bottom-sheet'
 import Geolocation from '@react-native-community/geolocation';
@@ -50,7 +49,6 @@ const customStyles = {
 function RenderContent(props) {
     const [currentStage, setcurrentStage] = useState(0)
     useEffect(() => {
-        console.log("Called")
         setcurrentStage(props.currentStage);
     })
     return (

@@ -6,10 +6,12 @@ import {
     TouchableOpacity,
     ScrollView,
     Image,
-    Dimensions
+    TextInput,
+    Alert,
+    Dimensions,
+    ActivityIndicator
 } from "react-native";
 import { color } from '../../Assets/color';
-import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -22,29 +24,64 @@ const windowHeight = Dimensions.get('window').height;
 function Process({ navigation, route }) {
     const { details } = route.params;
     const [isModalVisible, setisModalVisible] = useState(false)
+    const [loading, setloading] = useState(false)
     const [userId, setuserId] = useState(null)
     const [Name, setName] = useState("")
     const [images, setimages] = useState(null)
     const [status, setstatus] = useState("")
     const [assignedDriver, setassignedDriver] = useState("")
     const [estimatedTime, setestimatedTime] = useState("")
+    const [deleteModal, setdeleteModal] = useState(false)
+    const [reason, setreason] = useState("")
     const [customerTelephoneNo, setcustomerTelephoneNo] = useState("")
     const [assignedTechnician, setassignedTechnician] = useState("")
-    console.log('details', details)
     const getImages = () => {
-        console.log("USERID",userId)
         fetch(BaseUrl.Url + '/user/images/' + details.userId)
             .then((res) => res.json())
             .then((resJson) => {
-                console.log("response", resJson)
                 setimages(resJson)
             })
-            .catch((e) => { console.log("errr", e) })
+            .catch((e) => {})
+    }
+    const DeleteProcess = () => {
+        
+        if (reason.trim()) {
+            setloading(true)
+            fetch(BaseUrl.Url + "/admin/process/" + details.userId + '?reason=' + reason,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                }
+            )
+                .then((res) => res.json())
+                .then((resJson) => {
+                    route.params.onRefresh()
+                    setloading(false)
+                    navigation.goBack()
+
+                }
+                )
+                .catch((e) => setloading(false))
+        }
+        else{
+            Alert.alert(
+                "Reason field is empty",
+                "Please give a reason to delete the Process",
+                [
+
+                  { text: "OK", onPress: () => {} }
+                ],
+                { cancelable: false }
+              );
+        }
+
     }
 
 
     useEffect(() => {
-        console.log(details)
         setName(details.user.firstName + " " + details.user.lastName);
         setstatus(details.status);
         if (details.driver) {
@@ -80,10 +117,38 @@ function Process({ navigation, route }) {
                     <TouchableOpacity onPress={() => setisModalVisible(true)} style={styles.button}>
                         <Text style={styles.buttonText}>IMAGES</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.button, { backgroundColor: color.failedRed }]}>
+                    <TouchableOpacity onPress={() => setdeleteModal(true)} style={[styles.button, { backgroundColor: color.failedRed }]}>
                         <Text style={[styles.buttonText]}>DELETE</Text>
                     </TouchableOpacity>
                 </View>
+                <Modal deviceHeight={windowHeight} deviceWidth={windowWidth} isVisible={deleteModal} onBackdropPress={() => setdeleteModal(false)} useNativeDriver={true}  >
+                    <View style={{ width: '90%', backgroundColor: color.primaryWhite, alignSelf: 'center', borderRadius: 10 }}>
+                        <Text style={[styles.rejectText, { textAlign: 'center', marginVertical: 10 }]} >Deleting Process</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 5, marginTop: 20 }}>
+                            <Text style={[styles.rejectReason, { marginVertical: 5, marginHorizontal: 15 }]}>Reason</Text>
+                            <Text style={[styles.rejectReason, { marginVertical: 5, marginHorizontal: 15 }]}>{reason?.length ? reason.length : "0"}/200</Text>
+                        </View>
+                        <View style={{ height: 100, marginHorizontal: 10, backgroundColor: '#e0e0e0', marginVertical: 20, borderRadius: 10 }}>
+                            <TextInput maxLength={200} value={reason} multiline={true} placeholder="Give Reason..." textAlignVertical="top" style={{ flex: 1 }} onChangeText={(text) => setreason(text)} />
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                            <TouchableOpacity disabled={loading} onPress={() => DeleteProcess()} style={{ alignSelf: 'center', marginTop: 10, elevation: 3, marginHorizontal: 10, marginBottom: 10, flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: color.failedRed, borderRadius: 25, height: 50 }}>
+                                {
+                                    loading ?
+                                        <ActivityIndicator size={30} color={color.primaryWhite} />
+                                        :
+                                        <Text style={[styles.buttonText]}>Reject</Text>
+                                }
+
+                            </TouchableOpacity>
+                            <TouchableOpacity disabled={loading} onPress={() => setdeleteModal(false)} style={{ alignSelf: 'center', marginTop: 10, elevation: 3, marginHorizontal: 10, marginBottom: 10, flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: color.gray, borderRadius: 25, height: 50 }}>
+                                <Text style={[styles.buttonText, { color: color.primaryBlack }]}>Cancel</Text>
+                            </TouchableOpacity>
+
+                        </View>
+                    </View>
+                </Modal>
+
                 <Modal style={{ margin: 0 }} deviceHeight={windowHeight} deviceWidth={windowWidth} isVisible={isModalVisible} onBackdropPress={() => setisModalVisible(false)} useNativeDriver={true} backdropOpacity={0.9} >
                     <View style={{ flex: 1 }}>
                         <View style={{ zIndex: 10, position: 'absolute', top: 0, width: '100%', height: 50, backgroundColor: 'rgba(0,0,0,0.5)' }}>
@@ -100,7 +165,7 @@ function Process({ navigation, route }) {
                                             return (
                                                 <View style={{ flex: 1 }}>
                                                     <Image source={{ uri: data.imageUrl }} resizeMode="contain" style={{ height: '100%', width: '100%' }} />
-                                                    <View style={{ position:'absolute',bottom:50, height: 100, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                                                    <View style={{ position: 'absolute', bottom: 50, height: 100, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                                                         <Text style={styles.statusText}>{data.status}</Text>
                                                         <Text style={styles.dateText}>{data.date}</Text>
                                                     </View>
@@ -173,6 +238,18 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Bold',
         color: color.primaryWhite,
         fontSize: 15,
+        letterSpacing: 2,
+    },
+    rejectText: {
+        fontFamily: 'Montserrat-Bold',
+        color: color.primaryBlack,
+        fontSize: 15,
+        letterSpacing: 2,
+    },
+    rejectReason: {
+        fontFamily: 'Montserrat-SemiBold',
+        color: color.primaryBlack,
+        fontSize: 11,
         letterSpacing: 2,
     },
     statusText: {

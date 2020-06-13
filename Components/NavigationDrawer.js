@@ -11,11 +11,10 @@ function turnOnMaps(lat, lng) {
     var url = "https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&destination=" + lat + ',' + lng;
     Linking.canOpenURL(url).then(supported => {
         if (!supported) {
-            console.log('Can\'t handle url: ' + url);
         } else {
             return Linking.openURL(url);
         }
-    }).catch(err => console.error('An error occurred', err));
+    }).catch(err =>{});
 }
 function NavigationDrawer({navigation},props){
 

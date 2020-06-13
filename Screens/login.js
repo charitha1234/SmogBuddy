@@ -14,7 +14,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../Assets/color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Logo from '../Assets/logo';
-import GradientButton from '../Components/longButton';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import TextBox from '../Components/textboxLogin';
 import firebase from 'react-native-firebase';
@@ -109,10 +108,12 @@ function Login({ navigation }) {
                             </TouchableOpacity>
                         </View>
 
+
                         {
                             isKeyboardVisible ?
                                 null :
-                                <TouchableOpacity style={{margin:20}} onPress={() => { navigation.navigate("NewUser") }}>
+                                <View style={{margin:20,flexDirection:'row',justifyContent:'space-between'}}>
+                                <TouchableOpacity style={{flex:1}}  onPress={() => { navigation.navigate("NewUser") }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Text style={styles.bottomText}>NEW ACCOUNT</Text>
                                         <Ionicons name="ios-play" size={20} color={color.primaryWhite} />
@@ -121,6 +122,10 @@ function Login({ navigation }) {
 
 
                                 </TouchableOpacity>
+                                <TouchableOpacity style={{flex:0.7,alignItems:'flex-end'}}  onPress={() => { navigation.navigate("ForgotPassword") }}>
+                                        <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                                </TouchableOpacity>
+                                </View>
                         }
 
                     </KeyboardAwareScrollView>
@@ -152,9 +157,14 @@ const styles = StyleSheet.create({
     bottomText: {
         fontFamily: 'Montserrat-Bold',
         fontSize: 12,
-        letterSpacing: 6,
+        letterSpacing: 3,
         color: color.primaryWhite,
         marginRight:10
+    },
+    forgotPasswordText: {
+        fontFamily: 'Montserrat-Bold',
+        fontSize: 11,
+        color: color.primaryWhite,
     },
     watermarkText: {
         height: 20,
@@ -208,7 +218,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         backgroundColor: 'white',
         borderRadius: 25,
-        width: 300,
+        width: '90%',
         height: 200,
         shadowColor: "#000",
         shadowOffset: {
@@ -225,7 +235,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         alignItems: 'stretch',
         justifyContent: 'flex-end',
-        width: 300,
+        width: '90%',
         height: 80,
     },
     middleLine: {

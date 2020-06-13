@@ -11,14 +11,12 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.8.1",
-    "@react-native-community/checkbox": "^0.2.2",
     "@react-native-community/datetimepicker": "^2.2.3",
     "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/masked-view": "^0.1.6",
     "@react-navigation/drawer": "^5.0.5",
     "@react-navigation/native": "^5.0.1",
     "@react-navigation/stack": "^5.0.1",
-    "native-base": "^2.13.8",
     "react": "16.9.0",
     "react-native": "^0.62.0",
     "react-native-android-location-enabler": "^1.2.1",
@@ -51,7 +49,6 @@
     "reanimated-bottom-sheet": "^1.0.0-alpha.19",
     "reinput": "^3.7.1",
     "rn-fetch-blob": "^0.12.0",
-    "time-convert": "0.0.2",
     "uuid": "^3.4.0"
   },
   "devDependencies": {

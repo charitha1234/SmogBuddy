@@ -35,7 +35,6 @@ function turnOnMaps(lat, lng) {
     var url = "https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&destination=" + lat + ',' + lng;
     Linking.canOpenURL(url).then(supported => {
         if (!supported) {
-            console.log('Can\'t handle url: ' + url);
         } else {
             return Linking.openURL(url);
         }
@@ -63,7 +62,7 @@ function DriverTrack({ navigation, route }) {
         Geolocation.watchPosition(info => {
             setlat(info.coords.latitude);
             setlng(info.coords.longitude);
-        }, e => console.log(e), { distanceFilter: 0 });
+        }, e => {}, { distanceFilter: 0 });
         firebase.database().ref('location/' + uid).update({
             lat,
             lng,

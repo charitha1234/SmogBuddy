@@ -40,7 +40,7 @@ class PaypalScreen extends Component {
             .catch((e) => { })
     }
     handlepayment(data) {
-        console.log("DATA", data)
+      
 
         if (data.title == "success" || data.title == "failed") {
             this.setState({
@@ -64,7 +64,7 @@ class PaypalScreen extends Component {
                                     <WebView
                                         onLoadStart={() => this.setState({ loading: true })}
                                         onLoadEnd={() => {
-                                            console.log("LOADING FINISHED")
+                                           
                                             this.setState({ loading: false })
                                         }}
                                         source={{ uri: BaseUrl.Url + '/admin/pay?amount=' + this.state.amount.toString() + '&uid=' + this.state.uid.toString() }}

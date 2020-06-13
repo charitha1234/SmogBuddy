@@ -4,14 +4,11 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    ScrollView,
     ActivityIndicator,
-    TouchableHighlight
 } from "react-native";
 import firebase from 'react-native-firebase';
 import { color } from '../../Assets/color';
 import Header from '../../Components/HeaderBarTechnician';
-import StepIndicator from 'react-native-step-indicator';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -97,11 +94,11 @@ class SmogTests extends Component {
         ImagePicker.showImagePicker(options, response => {
 
             if (response.didCancel) {
-                console.log('User cancelled image picker');
+ 
             } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
+
             } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
+
                 alert(response.customButton);
             } else {
                 let source = response;
@@ -109,14 +106,14 @@ class SmogTests extends Component {
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
                 this.setState({ filePath: source });
                 const user = firebase.auth().currentUser
-                console.log(source.uri)
+
                 this.setState({ isFetching: true })
                 firebase
                     .storage()
                     .ref(this.formatDate() + '/' + user.uid + '/' + uuidv1() + '.jpeg')
                     .putFile(source.uri)
                     .then((res) => {
-                        console.log("SENDING", res)
+
                         this.setState({ imageUrl: res.downloadURL })
                         this.sendpart("FAIL", this.state.currentServiceId, this.state.imageUrl)
                         this.setState({ failedPart: null })
@@ -140,11 +137,11 @@ class SmogTests extends Component {
         ImagePicker.showImagePicker(options, response => {
 
             if (response.didCancel) {
-                console.log('User cancelled image picker');
+
             } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
+
             } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
+
                 alert(response.customButton);
             } else {
                 let source = response;
@@ -157,7 +154,7 @@ class SmogTests extends Component {
                     .ref(this.formatDate() + '/' + user.uid + '/' + uuidv1() + '.jpeg')
                     .putFile(source.uri)
                     .then((res) => {
-                        console.log("SENDING", res)
+
                         this.sendCap(res.downloadURL)
                     })
                     .catch((e) => alert(e));
@@ -179,28 +176,28 @@ class SmogTests extends Component {
             .then((res) => res.json())
             .then((resJson) => {
                 if (resJson.statusCode == 500) {
-                    console.log("ERR", resJson)
+
                     alert("Complete All Checks")
                 }
                 else {
                     this.setState({Completed:true})
-                    console.log("RESPONSEE", resJson)
+
                 }
 
             })
-            .catch((e) => console.log(e))
+            .catch((e) => {})
     }
     getApiData() {
         this.setState({ capLoading: true })
         const user = firebase.auth().currentUser
-        console.log("JHJH", this.state.failedPart)
+
         fetch(BaseUrl.Url+"/technician/assign/service/" + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
-                console.log(resJson)
+
                 this.setState({ capLoading: false, serviceList: resJson.services, isFetching: false, fuelcapApporved: resJson.isNeedToAddFuelCap == "YES", fuelCapRequested: resJson.isFuelCapRequested })
             })
-            .catch((e) => console.log(e))
+            .catch((e) => {})
     }
 
     onRefresh() {
@@ -274,7 +271,7 @@ class SmogTests extends Component {
 
     }
     onRowDidOpen(rowKey) {
-        console.log('This row opened', rowKey);
+ 
     };
 
 

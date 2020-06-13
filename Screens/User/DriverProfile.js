@@ -23,7 +23,6 @@ function Profile({ navigation }) {
     const [imageUrl, setimageUrl] = useState("")
     useEffect(() => {
         const user = firebase.auth().currentUser;
-        console.log(user.uid)
         fetch(BaseUrl.Url+'/user/assign/driver/' + user.uid)
             .then((res) => res.json())
             .then((responseJson) => {
@@ -100,7 +99,7 @@ const styles = StyleSheet.create({
     formContainer: {
         marginTop: 30,
         height: 400,
-        width: 300,
+        width: '90%',
         justifyContent: 'center',
         backgroundColor: color.primaryWhite,
         shadowColor: "#000",

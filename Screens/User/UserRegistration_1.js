@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     selection: {
         alignSelf: 'center',
         backgroundColor: 'white',
-        width: 300,
+        width: '90%',
         borderRadius:20,
         
         shadowColor: "#000",

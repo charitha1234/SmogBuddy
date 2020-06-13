@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
     View,
-    Text,
     StyleSheet,
     TouchableOpacity,
     ActivityIndicator,
@@ -10,16 +9,12 @@ import {
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
 import TextBox from '../../Components/textBox';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import GradientButton from '../../Components/longButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BaseUrl from '../../Config'
 import Header from '../../Components/NormalHeader'
-function deleteProfile() {
 
-}
 function Assign(pickUp, technician, driver, userId, setloading, navigation) {
-    console.log(pickUp, ":", technician, ":", driver, ":", userId, ":", setloading)
     fetch(BaseUrl.Url + '/admin/assign/driver', {
         method: 'POST',
         headers: {
@@ -63,14 +58,12 @@ function AssignEmployees({ navigation, route }) {
         fetch(BaseUrl.Url + '/driver/available-list')
             .then((res) => res.json())
             .then((resJson) => {
-                console.log("RESJSON>>", resJson)
                 setemployeeList(resJson);
                 setfetching(false);
                 setloading(false);
                 setName(details.user.firstName + " " + details.user.lastName);
             })
             .catch((e) => {
-                console.log("EMPLOYEE ERR", e)
                 alert(e)
             })
     }
@@ -172,7 +165,7 @@ const styles = StyleSheet.create({
     formContainer: {
         marginTop: 30,
         height: 400,
-        width: 300,
+        width: '90%',
         alignSelf: 'center',
         justifyContent: 'center',
         backgroundColor: color.primaryWhite,

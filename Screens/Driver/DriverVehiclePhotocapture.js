@@ -8,10 +8,8 @@ import {
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import { RNCamera } from 'react-native-camera';
-import TextBox from '../../Components/textBox';
 import { color } from '../../Assets/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import GradientButton from '../../Components/CustomButton';
 import Video from 'react-native-video';
 import firebase from 'react-native-firebase';
 const uuidv1 = require('uuid/v1');

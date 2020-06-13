@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     formContainer: {
         marginTop: 30,
         height: 200,
-        width: 300,
+        width: '90%',
         justifyContent: 'center',
         backgroundColor: color.primaryWhite,
         shadowColor: "#000",

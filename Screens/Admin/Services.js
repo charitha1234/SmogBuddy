@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { color } from '../../Assets/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import Header from '../../Components/TwoButtonHeader'
 import BaseUrl from '../../Config'
 function Service(props) {
@@ -99,7 +98,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 10,
         height: 100,
-        width: '100%',
+        marginHorizontal:5,
         justifyContent: 'center',
         backgroundColor: color.primaryWhite,
         shadowColor: "#000",
@@ -118,8 +117,8 @@ const styles = StyleSheet.create({
 
     },
     NameLabel: {
-        fontFamily: 'Montserrat-Regular',
-        fontSize: 20,
+        fontFamily: 'Montserrat-SemiBold',
+        fontSize: 15,
         letterSpacing: 2,
     },
     statusContainer: {
@@ -133,7 +132,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     YearRangeLabel: {
-        fontFamily: 'Montserrat-Regular',
+        fontFamily: 'Montserrat-SemiBold',
         fontSize: 15,
         marginRight: 5,
     },

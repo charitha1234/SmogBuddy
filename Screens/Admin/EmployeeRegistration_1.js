@@ -18,7 +18,6 @@ import TextBox from '../../Components/textBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import GradientButton from '../../Components/longButton';
 function EmployeeRegistration({ navigation, route }) {
-    console.log("ROUTE>>", route)
     const { role } = route.params
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
@@ -41,14 +40,10 @@ function EmployeeRegistration({ navigation, route }) {
             },
         };
         ImagePicker.showImagePicker(options, response => {
-            console.log('Response = ', response);
 
             if (response.didCancel) {
-                console.log('User cancelled image picker');
             } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
             } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
                 alert(response.customButton);
             } else {
                 let source = response;

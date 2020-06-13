@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import {
     View,
     StyleSheet,
-    TouchableOpacity
 } from "react-native";
-import { Label, Item, Input } from 'native-base';
 import Reinput from 'reinput'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { color } from '../Assets/color'

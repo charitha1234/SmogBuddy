@@ -53,6 +53,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import PdfViewer from '../Screens/Admin/checkDetails';
 import AdminUserProfile from '../Screens/Admin/UserProfile';
 import Settings from '../Screens/Admin/Settings';
+import ForgotPassword from '../Screens/forgotPassword'
 import BaseUrl from '../Config'
 import { Platform } from 'react-native';
 import { PERMISSIONS, request } from 'react-native-permissions';
@@ -64,7 +65,7 @@ request(
     }),
 );
 request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then((result) => {
-    console.log("RESPONSE RESULT", result)
+
     // …
 });
 
@@ -108,9 +109,9 @@ function UserHomeScreen() {
             .then((res) => res.json())
             .then((resJson) => {
                 if (resJson.isDriverAssigned) {
-                    console.log("DRIVER", resJson.assignedDriver)
+                    
                     firebase.database().ref('location/' + resJson.assignedDriver + '/currentStage').on('value', snapshot => {
-                        console.log("current state:", snapshot.val())
+                        
                         setcurrentState(snapshot.val())
                     })
                 }
@@ -121,11 +122,9 @@ function UserHomeScreen() {
     }, [])
     useEffect(() => {
         if (currentState == 7) {
-            console.log("CURRENT STAGE USERRRRRRRR", currentState)
             fetch(BaseUrl.Url + '/user/amount/' + user.uid)
                 .then((res) => res.json())
                 .then((resJson) => {
-                    console.log("ISPAID>>", resJson)
                     if (!resJson.isPaid) setpayable(true)
                     else if (resJson.isPaid) setpayable(false)
                 })
@@ -256,7 +255,6 @@ function WelcomeScreen() {
     const [initializing, setinitializing] = useState(true)
     const [role, setrole] = useState(null)
     const setUid = async (user) => {
-        console.log("SETUSER", user)
         try {
             await AsyncStorage.setItem('userId', user.uid)
         } catch (e) {
@@ -266,7 +264,6 @@ function WelcomeScreen() {
 
     const datafetch = async (user) => {
         let fcmToken = await AsyncStorage.getItem('fcmToken');
-        console.log("BASEURL", BaseUrl.Url)
 
         fetch(BaseUrl.Url + `/user/${user.uid}`)
             .then((response) => response.json())
@@ -305,7 +302,6 @@ function WelcomeScreen() {
 
             })
             .catch((e) => {
-                console.log("INDEX ERROR", e)
                 alert("Something has wrong")
                 firebase.auth().signOut();
                 setappOpened(true);
@@ -318,14 +314,12 @@ function WelcomeScreen() {
             .then(data => {
                 
                 firebase.auth().onAuthStateChanged(user => {
-                    console.log("Init", initializing)
                     if (!user) {
                         setLoggedIn(false);
                         setappOpened(true);
 
                     }
                     else {
-                        console.log("ENABLE", data)
                         datafetch(user)
                     }
 
@@ -356,6 +350,7 @@ function WelcomeScreen() {
                     !LoggedIn ? (
                         <>
                             <Stack.Screen name="Login" component={Login} />
+                            <Stack.Screen name="ForgotPassword" component={ForgotPassword}/>
                             <Stack.Screen name="NewUser" component={NewUser} />
                         </>
                     ) :

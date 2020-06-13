@@ -56,7 +56,6 @@ function EmployeeProfile({ navigation, route }) {
         fetch(BaseUrl.Url + '/user/' + userId)
         .then((res) => res.json())
         .then((resJson) => {
-            console.log(resJson)
             setloading(false);
             setimageUri(resJson.imageUrl)
             setphoneNo(resJson.phoneNumber)
@@ -87,11 +86,8 @@ function EmployeeProfile({ navigation, route }) {
         ImagePicker.showImagePicker(options, (response) => {
 
             if (response.didCancel) {
-                console.log('User cancelled image picker');
             } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
             } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
             } else {
                 const source = { uri: response.uri };
                 setloading(true)
@@ -123,9 +119,8 @@ function EmployeeProfile({ navigation, route }) {
         }).then((res) => res.json())
             .then((resJson) => {
                 navigation.goBack()
-                console.log("resdele", resJson)
             })
-            .catch((e) => console.log("deete error", e))
+            .catch((e) => {})
         setloading(false)
     }
     const sendMessage = () => {
@@ -142,7 +137,7 @@ function EmployeeProfile({ navigation, route }) {
             }),
         })
             .then((res) => res.json())
-            .then((resJson) => console.log("RES", resJson))
+            .then((resJson) => {})
             .catch((e) => alert(e))
     }
     const saveDetails = () => {
@@ -170,7 +165,6 @@ function EmployeeProfile({ navigation, route }) {
             .then((resJson) => { 
                 setediting(false)
                 getApiData()
-                console.log("reeeeee",resJson)
                 setloading(false) })
             .catch((e) => {
                 setloading(false)

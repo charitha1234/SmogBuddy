@@ -53,7 +53,6 @@ const customStyles = {
 function RenderContent(props) {
     const [currentStage, setcurrentStage] = useState(0)
     useEffect(() => {
-        console.log("Called")
         setcurrentStage(props.currentStage);
         if (currentStage == 8) props.navigation.navigate("UserReview")
     })
@@ -99,32 +98,34 @@ function DriverTrack({ navigation }, props) {
     const destination = { latitude: customerLat, longitude: customerLng }
 
     const getApiData = () => {
-        if (fetching) {
-            const user = firebase.auth().currentUser;
-            fetch(BaseUrl.Url+'/user/assign/driver/' + user.uid)
-                .then((res) => res.json())
-                .then((responseJson) => {
-                    console.log("RESSSSS", responseJson)
-                    setfetching(false)
-                    if (responseJson.isDriverAssigned) {
-                        setdriverAssigned(true);
+        const user = firebase.auth().currentUser;
+        console.log("USER",user.uid)
+        fetch(BaseUrl.Url + '/user/assign/driver/' + user.uid)
+            .then((res) => res.json())
+            .then((responseJson) => {
+                setfetching(false)
 
-                    }
-                    if (!responseJson.isDriverAssigned) setdriverAssigned(false);
-                    if (responseJson.isDriverStarted) {
-                        setstartGiven(true);
-                        setDriverUid(responseJson.assignedDriver)
-                        setcustomerLat(responseJson.userPickupLocation.lat)
-                        setcustomerLng(responseJson.userPickupLocation.lng)
-                    }
-                    if (!responseJson.isDriverStarted) setstartGiven(false);
-                    setloading(false)
-                    if (responseJson.isDriverAssigned && !responseJson.isDriverStarted) {
-                        alert("Driver Will Depart in 8 minutes")
-                    }
-                })
-                .catch((e) => alert(e))
-        }
+                if (responseJson.isDriverAssigned) {
+                    setdriverAssigned(true);
+
+                }
+                if (!responseJson.isDriverAssigned) setdriverAssigned(false);
+                if (responseJson.isDriverStarted) {
+                    setstartGiven(true);
+                    setDriverUid(responseJson.assignedDriver)
+                    setcustomerLat(responseJson.userPickupLocation.lat)
+                    setcustomerLng(responseJson.userPickupLocation.lng)
+                }
+                if (!responseJson.isDriverStarted) setstartGiven(false);
+
+                if (responseJson.isDriverAssigned && !responseJson.isDriverStarted) {
+                    alert("Driver Will Depart in 8 minutes")
+                }
+                console.log("res", responseJson)
+                setloading(false)
+            })
+            .catch((e) => alert(e))
+
     }
     useEffect(() => {
         getApiData()
@@ -132,15 +133,15 @@ function DriverTrack({ navigation }, props) {
     useEffect(() => {
 
 
-        console.log("USEEFFECT", DriverUid)
+
         Geolocation.getCurrentPosition(info => {
             setownLat(info.coords.latitude);
             setownLng(info.coords.longitude);
-        }, e => console.log(e), { distanceFilter: 0 });
+            console.log("midlat", info)
+        }, e => { }, { distanceFilter: 0 });
         if (startGiven) {
 
             firebase.database().ref('location/' + DriverUid).on('value', snapshot => {
-                console.log("snp", snapshot.val())
                 if (snapshot.val()) {
 
 
@@ -197,9 +198,8 @@ function DriverTrack({ navigation }, props) {
                                                 strokeWidth={3}
                                                 strokeColor={color.primaryBlack}
                                                 resetOnChange={false}
-                                                onStart={(info) => console.log("Starting", info)}
+                                                onStart={(info) => { }}
                                                 onReady={(info) => {
-                                                    console.log("READY", info)
                                                     setdistance(info.distance);
                                                     setduration(info.duration);
                                                 }}
@@ -236,8 +236,8 @@ function DriverTrack({ navigation }, props) {
                         </>
                         :
                         <View style={styles.container}>
-                                <Text style={styles.subText}>Driver Is Not Assigned yet</Text>
-                            </View>
+                            <Text style={styles.subText}>Driver Is Not Assigned yet</Text>
+                        </View>
                 }
             </LinearGradient>
         </SafeAreaView>
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Regular',
         fontSize: 20,
         letterSpacing: 2,
-        textAlign:'center'
+        textAlign: 'center'
     },
     label: {
         marginHorizontal: 10,
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
         backgroundColor: color.primaryWhite
     },
     headerContainer: {
-        height:66,
+        height: 66,
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',

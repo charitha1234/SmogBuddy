@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     ratingContainer: {
-        width: 300,
+        width: '90%',
         height: 150,
         alignSelf: 'center',
         backgroundColor: color.primaryWhite,

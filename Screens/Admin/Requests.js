@@ -8,8 +8,6 @@ import {
 } from "react-native";
 import { color } from '../../Assets/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import OngoingProcessList from '../../data/OngoingProcesses';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import Header from '../../Components/NormalHeader'
 import BaseUrl from '../../Config'
 function Request(props) {
@@ -41,7 +39,6 @@ class Requests extends Component {
         .then((resJson) => {
             this.setState({processList:resJson})
             this.setState({ isFetching: false });
-            console.log("PROCESS LIST",resJson)
             
         }
         

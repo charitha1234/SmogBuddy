@@ -5,7 +5,6 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { color } from '../Assets/color';
 import Logo from '../Assets/logo';
-import firebase from 'react-native-firebase';
 
 function Splash({ navigation }) {
     useEffect(() => {

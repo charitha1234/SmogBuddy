@@ -29,7 +29,6 @@ function Home({ navigation }, props) {
         fetch(BaseUrl.Url+'/driver/status/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
-                console.log("driver res", resJson)
                 if (resJson.isDriverAssign) {
 
                     navigation.navigate("DriverRequest", { userUid: resJson.userUid, userPickupLocation: resJson.pickupLocation, status: resJson.status, stationLocation: resJson.shopLocation });
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
     process: {
         backgroundColor: color.primaryWhite,
         height: 100,
-        width: 300,
+        width: '90%',
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

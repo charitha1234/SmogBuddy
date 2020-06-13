@@ -60,8 +60,8 @@ class OdometerRead extends Component {
                 }),
             }).then((res) => {
                 this.setUploaded()
-                console.log("responseeeeeee", res)})
-                .catch((e) => console.log("ERRR", e))
+                })
+                .catch((e) =>{} )
         }
     }
 
@@ -93,11 +93,8 @@ class OdometerRead extends Component {
                 if (this.state.images.length == 0) this.state.images.push({ imageUrl: res.downloadURL,isOdometer: true,status:this.props.route.params.case })
                 else this.state.images.push({ imageUrl: res.downloadURL,isOdometer: false ,status:this.props.route.params.case})
                 this.setState({  loading: false, picture: null });
-                console.log("CASE",this.props.route.params.case)
                 if(this.props.route.params.case!='PICKED_UP'){
-                    console.log("FINISHED")
                     this.setState({finished:true})}
-                console.log("IMAGE ARRAY",this.state.images)
             })
             .catch((e) => {
                 this.setState({ loading: false, picture: null });
@@ -305,7 +302,7 @@ const styles = StyleSheet.create({
     formContainer: {
         marginTop: 30,
         height: 200,
-        width: 300,
+        width: '90%',
         justifyContent: 'center',
         backgroundColor: color.primaryWhite,
         shadowColor: "#000",

@@ -3,7 +3,7 @@ import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity, ScrollView, KeyboardAvoidingView,
+    TouchableOpacity,
     ActivityIndicator,
     Dimensions
 } from "react-native";
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     selection: {
         alignSelf: 'center',
         backgroundColor: 'white',
-        width: 300,
+        width: '90%',
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

@@ -4,7 +4,6 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    ActivityIndicator
 } from "react-native";
 import { color } from '../../Assets/color';
 import LinearGradient from 'react-native-linear-gradient';
@@ -25,7 +24,6 @@ function deleteService(serviceID, setloading, navigation) {
     )
         .then((res) => res.json())
         .then((resJson) => {
-            console.log("RES", resJson)
             setloading(false)
 
         }
@@ -89,7 +87,8 @@ const styles = StyleSheet.create({
     formContainer: {
         marginTop: 30,
         height: 400,
-        width: 300,
+        width: '90%',
+        borderRadius:10,
         alignSelf:'center',
         justifyContent: 'center',
         backgroundColor: color.primaryWhite,

@@ -43,7 +43,7 @@ function Settings({ navigation }) {
                 '',
                 'Are you sure you want to delete?', 
                 [
-                   {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                   {text: 'NO', onPress: () => {}, style: 'cancel'},
                    {text: 'OK', onPress: () => {
                     fetch(BaseUrl.Url + "/admin/storage", {
                         method: 'DELETE',
@@ -65,11 +65,11 @@ function Settings({ navigation }) {
                                 'SUCCESS',
                                 'Succesfuly deleted ', // <- this part is optional, you can pass an empty string
                                 [
-                                  {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                  {text: 'OK', onPress: () => {}},
                                 ],
                                 {cancelable: false},
                               );
-                            console.log(resJson)})
+                           })
                         .catch(()=>alert("Something has wrong"))
 
 
@@ -101,7 +101,6 @@ function Settings({ navigation }) {
             }),
         }).then((res) => res.json())
             .then((resJson) => {
-                console.log("RES", resJson)
                 Alert.alert(
                     "Success",
                     "Successfuly saved your settings",
@@ -115,7 +114,6 @@ function Settings({ navigation }) {
             })
             .catch((e) => {
                 setloading(false)
-                console.log(e)
                 alert("something has wrong")
             })
     }
@@ -124,7 +122,6 @@ function Settings({ navigation }) {
         fetch(BaseUrl.Url + '/admin/shop/price/' + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
-                console.log("settings", resJson)
                 setloading(false);
                 settaxPercentage(resJson.tax)
                 setfuelCapPrice(resJson.fuelCapPrice)

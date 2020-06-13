@@ -10,10 +10,9 @@ import {
     ImageBackground
 } from "react-native";
 import { color } from '../../Assets/color';
-import LinearGradient from 'react-native-linear-gradient';
 import Geolocation from '@react-native-community/geolocation';
 import TextBox from '../../Components/textBox';
-import MapView, { Marker } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
@@ -74,11 +73,8 @@ function ShopProfile({ navigation }) {
         ImagePicker.showImagePicker(options, (response) => {
 
             if (response.didCancel) {
-                console.log('User cancelled image picker');
             } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
             } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
             } else {
                 const source = { uri: response.uri };
                 setloading(true)
@@ -108,7 +104,6 @@ function ShopProfile({ navigation }) {
         fetch(BaseUrl.Url + "/admin/shop?adminUid=" + user.uid)
             .then((res) => res.json())
             .then((resJson) => {
-                console.log("detais.....", resJson)
                 if (!resJson[0].location.lat == 0 && !resJson[0].location.lng == 0) {
                     setmidlat(resJson[0].location.lat)
                     setmidlng(resJson[0].location.lng)
