@@ -4,6 +4,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     ActivityIndicator,
+    Alert,
     Picker,
 } from "react-native";
 import { color } from '../../Assets/color';
@@ -124,13 +125,23 @@ function AssignEmployees({ navigation, route }) {
                         {
                             !loading ?
                                 <TouchableOpacity onPress={() => {
-
-                                    if (technician == null || driver == null) alert("Please Select Driver And Technician")
-                                    else {
-                                        setloading(true);
-
-                                        Assign(details.pickupLocation, technician, driver, details.userId, setloading, navigation);
-                                    }
+                                    Alert.alert(
+                                        '',
+                                        'Are you sure you want to assign?',  
+                                        [
+                                           {text: 'No', onPress: () => {}, style: 'cancel'},
+                                           {text: 'Yes', onPress: () => {
+                                            if (technician == null || driver == null) alert("Please Select Driver And Technician")
+                                            else {
+                                                setloading(true);
+        
+                                                Assign(details.pickupLocation, technician, driver, details.userId, setloading, navigation);
+                                            }
+                                           }},
+                                        ],
+                                        { cancelable: false }
+                                   )
+                                    
                                 }
                                 } style={styles.buttonContainer}><GradientButton title="SUBMIT" style={styles.button} /></TouchableOpacity>
                                 :

@@ -237,7 +237,7 @@ function RenderContent(props) {
                     </TouchableOpacity>
                 </View>
                 <Modal visible={modalVisible} onRequestClose={() => setmodalVisible(false)}>
-                    <View style={styles.headerContainer}><TouchableOpacity onPress={() => setmodalVisible(false)} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity><Text style={styles.headerText}>CHECK LIST</Text><View /></View>
+                    <View style={styles.headerContainer}><TouchableOpacity onPress={() => setmodalVisible(false)} style={styles.icon}><Ionicons name="ios-close" size={30} /></TouchableOpacity><Text style={styles.headerText}>CHECK LIST</Text><View /></View>
                     <FlatList data={serviceList} renderItem={({ item, index }) => (
                         <Service serviceName={item.serviceName} number={index} serviceYear={item.yearRange} />
                     )} keyExtractor={item => item.serviceID} />

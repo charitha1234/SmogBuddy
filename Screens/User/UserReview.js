@@ -40,7 +40,7 @@ function Review(props) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.headerContainer}><TouchableOpacity onPress={() => props.navigation.navigate("Home")} style={styles.icon}><Ionicons name="ios-close" size={40} /></TouchableOpacity></View>
+            <View style={styles.headerContainer}><TouchableOpacity onPress={() => props.navigation.navigate("Home")} style={styles.icon}><Ionicons name="ios-close" size={30} /></TouchableOpacity></View>
             <View style={styles.ratingContainer}>
 
                 <Text style={styles.headerText}>HOW WAS THE SERVICE?</Text>

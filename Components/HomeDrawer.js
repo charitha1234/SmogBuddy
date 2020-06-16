@@ -30,15 +30,20 @@ function HomeDrawer({ navigation }, props) {
 
                 <View style={{ flex: 0.5 }} />
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate("Profile")} style={styles.content}><Ionicons name="md-person" size={20} /><Text style={styles.contentText}>PROFILE</Text></TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("DriverProfile")} style={styles.content}><Ionicons name="md-car" size={20} /><Text style={styles.contentText}>YOUR DRIVER</Text></TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("DriverTrack")} style={styles.content}><Ionicons name="md-navigate" size={20} /><Text style={styles.contentText}>TRACK CAR</Text></TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("ContactUs")} style={styles.content}><Ionicons name="md-contacts" size={20} /><Text style={styles.contentText}>CONTACT US</Text></TouchableOpacity>
-            <View style={{ height: 70, width: 150 }} />
-            <TouchableOpacity onPress={() => {
-                firebase.auth().signOut();
-            }}
-                style={styles.logout}><Text style={styles.logoutText}>LOGOUT</Text></TouchableOpacity>
+            <View style={{ flex: 2 }}>
+                <TouchableOpacity onPress={() => navigation.navigate("Profile")} style={styles.content}><Ionicons name="md-person" size={20} /><Text style={styles.contentText}>PROFILE</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("DriverProfile")} style={styles.content}><Ionicons name="md-car" size={20} /><Text style={styles.contentText}>YOUR DRIVER</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("DriverTrack")} style={styles.content}><Ionicons name="md-navigate" size={20} /><Text style={styles.contentText}>TRACK CAR</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("ContactUs")} style={styles.content}><Ionicons name="md-contacts" size={20} /><Text style={styles.contentText}>CONTACT US</Text></TouchableOpacity>
+                <View style={{ height: 70, width: 150 }} />
+            </View>
+            <View style={{ flex: 1 }}>
+                <TouchableOpacity onPress={() => {
+                    firebase.auth().signOut();
+                }}
+                    style={styles.logout}><Text style={styles.logoutText}>LOGOUT</Text></TouchableOpacity>
+            </View>
+
         </View>
 
     );
@@ -71,12 +76,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center'
     },
-    contentText:{
+    contentText: {
         fontFamily: 'Montserrat-Regular',
         fontSize: 12,
         letterSpacing: 2,
-        opacity:0.6,
-        marginLeft:20,
+        opacity: 0.6,
+        marginLeft: 20,
 
 
     },

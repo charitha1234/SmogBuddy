@@ -24,7 +24,7 @@ class PaypalScreen extends Component {
             status: 'pending',
             amount: null,
             uid: null,
-            loading: false
+            loading: true
         }
     }
     componentDidMount() {
@@ -62,7 +62,6 @@ class PaypalScreen extends Component {
                             this.state.amount && this.state.uid ?
                                 <>
                                     <WebView
-                                        onLoadStart={() => this.setState({ loading: true })}
                                         onLoadEnd={() => {
                                            
                                             this.setState({ loading: false })
@@ -71,7 +70,7 @@ class PaypalScreen extends Component {
                                         onNavigationStateChange={(data) => this.handlepayment(data)}
                                     />
                                     {this.state.loading && (
-                                        <ActivityIndicator size={30} style={{ position: "absolute", top: '50%', left: '50%'}} color={color.primaryBlack} />
+                                        <ActivityIndicator size={30} style={{ position: "absolute", top: '50%',alignSelf:'center'}} color={color.primaryBlack} />
                                     )}
                                 </>
                                 : null
@@ -96,7 +95,7 @@ class PaypalScreen extends Component {
                                         <Text style={styles.headerText}>Thank You</Text>
                                     </View>
                                     <VerifiedsSvg />
-                                    <TouchableOpacity style={styles.PayButton} onPress={() => this.props.navigation.navigate("Home")}><Text style={[styles.headerText, { fontSize: 15 }]}>GO BACK TO HOME</Text></TouchableOpacity>
+                                    <TouchableOpacity style={styles.PayButton} onPress={() => this.props.route.params.setpayable(false)}><Text style={[styles.headerText, { fontSize: 15 }]}>GO BACK TO HOME</Text></TouchableOpacity>
                                 </View>
                                 :
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

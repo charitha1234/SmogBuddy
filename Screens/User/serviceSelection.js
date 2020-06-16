@@ -21,12 +21,12 @@ import Header from '../../Components/NormalHeader'
 
 function Service(props) {
     return (
-        <View style={styles.serviceContainer}>
+        <View style={[styles.serviceContainer,{borderBottomWidth:1,borderColor:'rgba(0,0,0,0.3)'}]}>
             <View style={{ flex: 2 }}>
                 <Text style={[styles.serviceNameText, { fontFamily: 'Montserrat-SemiBold' }]}>{props.serviceName}</Text>
                 <Text style={styles.serviceNameText}>{props.serviceYear}</Text>
             </View>
-            <View style={{ flex: 0.25 }}>
+            <View style={{ flex: 0.25,alignItems:'flex-end' }}>
                 <CheckBox onClick={props.onChange} isChecked={props.Checked} />
             </View>
         </View>
@@ -146,7 +146,7 @@ class ServiceSelection extends Component {
                                         <View style={{ flex: 2 }}>
                                             <Text style={styles.selectAllText}>SELECT ALL</Text>
                                         </View>
-                                        <View style={{ flex: 0.25 }}>
+                                        <View style={{ flex: 0.25,alignItems:'flex-end' }}>
                                             <CheckBox isChecked={this.state.checkAll} onClick={this.CheckAll} />
                                         </View>
                                     </View>
@@ -202,8 +202,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        margin: 10,
+        height:50,
         marginHorizontal: 30,
+        
 
     },
     imageContainer: {

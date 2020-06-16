@@ -10,6 +10,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { color } from '../../Assets/color';
 import Dialog from "react-native-dialog";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Modal from 'react-native-modal';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Header from '../../Components/NormalHeader';
@@ -26,7 +27,10 @@ function Settings({ navigation }) {
     const [endingDate, setendingDate] = useState(null)
     const [showCalendar, setshowCalendar] = useState(false)
     const [shopId, setshopId] = useState(null)
+    const [paypalAccountId, setpaypalAccountId] = useState(null)
+    const [paypalEmail, setpaypalEmail] = useState(null)
     const [date, setdate] = useState(new Date())
+    const [paypalEmailChangeModalVisible, setpaypalEmailChangeModalVisible] = useState(false)
     const [isStartingSelection, setisStartingSelection] = useState(false)
     const user = firebase.auth().currentUser
     const onChange = (event, selectedDate) => {
@@ -83,6 +87,18 @@ function Settings({ navigation }) {
             alert("Please select starting date and ending date")
         }
     }
+    const savePaypalEmail=()=>{
+        firebase.database().ref('admin/account').update({
+            accountId:paypalAccountId,
+            email:paypalEmail,
+        });
+    }
+    const getPaypalDetails=()=>{
+        firebase.database().ref('admin/account').once('value', snapshot => {
+            setpaypalAccountId(snapshot.val().accountId)
+            setpaypalEmail(snapshot.val().email)
+        })
+    }
     const saveSettings = () => {
         fetch(BaseUrl.Url + "/admin/shop/price", {
             method: 'PUT',
@@ -133,10 +149,11 @@ function Settings({ navigation }) {
 
     useEffect(() => {
         getApiData()
+        getPaypalDetails()
     }, [])
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Header title='Settings' navigation={navigation} />
             {
                 loading ?
@@ -155,10 +172,15 @@ function Settings({ navigation }) {
                             <Text style={styles.settingText}>{taxPercentage}%</Text>
                             <Ionicons name="ios-arrow-forward" size={20} />
                         </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setpaypalEmailChangeModalVisible(true)} style={styles.setting}>
+                            <Text style={[styles.settingText, { color: color.failedRed }]}>Change Paypal Business account</Text>
+                            <Ionicons name="ios-arrow-forward" size={20} />
+                        </TouchableOpacity>
                         <TouchableOpacity onPress={() => setisModalVisible(true)} style={styles.setting}>
                             <Text style={[styles.settingText, { color: color.failedRed }]}>Delete Storage</Text>
                             <Ionicons name="ios-arrow-forward" size={20} />
                         </TouchableOpacity>
+                        
 
                     </>
             }
@@ -186,6 +208,18 @@ function Settings({ navigation }) {
                 <Dialog.Button label="Save" onPress={() => {
                     setisTaxChangerVisible(false)
                     saveSettings()
+                }} />
+            </Dialog.Container>
+            <Dialog.Container visible={paypalEmailChangeModalVisible}>
+                <Dialog.Title>Change Paypal Email</Dialog.Title>
+                <Dialog.Input label="Paypal Email"  placeholder="Enter Paypal Email"  onChangeText={(text) => setpaypalEmail(text)} value={paypalEmail} />
+                <Dialog.Input label="Paypal account Id" placeholder="Enter Account Id"  onChangeText={(text) => setpaypalAccountId(text)} value={paypalAccountId} />
+                <Dialog.Button label="Cancel" onPress={() => {
+                    setpaypalEmailChangeModalVisible(false)
+                }} />
+                <Dialog.Button label="Save" onPress={() => {
+                    setpaypalEmailChangeModalVisible(false)
+                    savePaypalEmail()
                 }} />
             </Dialog.Container>
             <Modal isVisible={isModalVisible} onBackdropPress={() => setisModalVisible(false)} useNativeDriver={true}>
@@ -231,7 +265,7 @@ function Settings({ navigation }) {
                     onChange={onChange}
                 />
             )}
-        </View>
+        </SafeAreaView>
     );
 
 }

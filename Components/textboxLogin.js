@@ -18,7 +18,7 @@ function TextBox(props) {
                 autoCapitalize="none"
                 value={props.value}
                 marginBottom={0}
-                style={{ flex: 1 }}
+                style={{ flex: 1,color:color.primaryBlack }}
                 fontFamily='Montserrat-Bold'
                 fontSize={15}
                 onChangeText={props.onChangeText}

@@ -135,10 +135,10 @@ function UserHomeScreen() {
         <Drawer.Navigator initialRouteName="Home" screenOptions={{ animationEnabled: false, headerShown: false }} drawerContent={props => <HomeDrawerContent {...props} />}>
             {
                 payable ?
-                    <Drawer.Screen name="PaypalScreen" component={PaypalScreen} options={{ gestureEnabled: false }} />
+                    <Drawer.Screen name="PaypalScreen" component={PaypalScreen} initialParams={{setpayable:setpayable}} options={{ gestureEnabled: false }} />
                     :
                     <>
-                        <Drawer.Screen name="Home" component={Home} />
+                        <Drawer.Screen name="Home" component={Home}  />
                         <Drawer.Screen name="Profile" component={Profile} options={{ gestureEnabled: false }} />
                         <Drawer.Screen name="ContactUs" component={ContactUs} options={{ gestureEnabled: false }} />
                         <Drawer.Screen name="DriverTrack" component={DriverTrack} options={{ gestureEnabled: false }} />

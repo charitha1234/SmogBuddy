@@ -45,6 +45,7 @@ function EmployeeProfile({ navigation, route }) {
     const [position, setposition] = useState("")
     const [employeeNo, setemployeeNo] = useState("")
     const [licenceNo, setlicenceNo] = useState("")
+    const [email, setemail] = useState("")
     const [loading, setloading] = useState(true)
     const [dateOfHire, setdateOfHire] = useState(null)
     const [title, settitle] = useState("")
@@ -75,7 +76,7 @@ function EmployeeProfile({ navigation, route }) {
         fetch(BaseUrl.Url + '/user/' + userId)
             .then((res) => res.json())
             .then((resJson) => {
-                setloading(false);
+                setemail(resJson.email)
                 setimageUri(resJson.imageUrl)
                 setdateOfHire(resJson.dateOfHire)
                 setfirstName(resJson.firstName);
@@ -85,6 +86,7 @@ function EmployeeProfile({ navigation, route }) {
                 setposition(resJson.position);
                 setlicenceNo(resJson.licenseNumber)
                 setrole(resJson.role);
+                setloading(false);
 
             })
     }, [])
@@ -199,6 +201,20 @@ function EmployeeProfile({ navigation, route }) {
                                                 </ImageBackground>
                                             </TouchableOpacity>
                                         </View>
+                                        <TouchableOpacity activeOpacity={1} onPress={()=>{
+                                            Alert.alert(
+                                                "Unable to Change",
+                                                "Email can not be change",
+                                                [
+  
+                                                  { text: "OK", onPress: () => {} }
+                                                ],
+                                                { cancelable: false }
+                                              );
+                                          
+                                        }} disabled={editing ? false : true}>
+                                            <TextBox title="EMAIL" value={email} disabled={true} />
+                                        </TouchableOpacity>
                                         <TextBox title="FIRST NAME" value={firstName} disabled={editing ? false : true} onChangeText={(text) => setfirstName(text)} />
                                         <TextBox title="LAST NAME" value={lastName} disabled={editing ? false : true} onChangeText={(text) => setlastName(text)} />
                                         {

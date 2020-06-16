@@ -13,10 +13,10 @@ function Header(props) {
 
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.headergreen, color.lightBlue]} style={styles.headerContainer}>
-             <TouchableOpacity onPress={() => props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={40} color={color.primaryWhite} /></TouchableOpacity>
+             <TouchableOpacity onPress={() => props.navigation.goBack()} style={styles.icon}><Ionicons name="ios-close" size={30} color={color.primaryWhite} /></TouchableOpacity>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text style={[styles.headerText, props.letterSize ? { fontSize: props.letterSize } : null,{color:color.primaryWhite}]}>{props.title}</Text></View>
 
-            <TouchableOpacity style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }} onPress={props.onPress}><Ionicons name={props.icon} size={40} color={color.primaryWhite} /></TouchableOpacity>
+            <TouchableOpacity disabled={!props.icon} style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }} onPress={props.onPress}><Ionicons name={props.icon} size={30} color={color.primaryWhite} /></TouchableOpacity>
         </LinearGradient>
     );
 
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontFamily: 'Montserrat-Bold',
-        fontSize: 20,
+        fontSize: 15,
         letterSpacing: 2,
     },
     icon: {

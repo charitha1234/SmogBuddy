@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         flex:2,
         textAlign: 'center',
-        fontSize: 20,
+        fontSize: 15,
         fontFamily: 'Montserrat-Bold',
         letterSpacing: 3,
         color: color.primaryWhite,

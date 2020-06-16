@@ -13,7 +13,7 @@ function Header(props) {
 
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.headergreen, color.lightBlue]} style={styles.headerContainer}>
-            <TouchableOpacity onPress={props.onPress} style={styles.icon}><Ionicons name={props.leftIcon?props.leftIcon:"ios-close"} size={40} color={color.primaryWhite} /></TouchableOpacity>
+            <TouchableOpacity onPress={props.onPress} style={styles.icon}><Ionicons name={props.leftIcon?props.leftIcon:"ios-close"} size={30} color={color.primaryWhite} /></TouchableOpacity>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text style={[styles.headerText, props.letterSize ? { fontSize: props.letterSize } : null,{color:color.primaryWhite}]}>{props.title}</Text></View>
 
             <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }} />
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontFamily: 'Montserrat-Bold',
-        fontSize: 20,
+        fontSize: 15,
         letterSpacing: 2,
         textAlign: 'center'
     },

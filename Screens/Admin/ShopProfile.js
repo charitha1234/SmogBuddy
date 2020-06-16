@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     ScrollView,
+    Alert,
     Dimensions,
     ImageBackground
 } from "react-native";
@@ -129,6 +130,7 @@ function ShopProfile({ navigation }) {
     }, [])
     const saveDetails = () => {
         setloading(true)
+        setediting(false)
         fetch(BaseUrl.Url + "/admin/shop", {
             method: 'PUT',
             headers: {
@@ -166,7 +168,7 @@ function ShopProfile({ navigation }) {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.container}>
-                <Header title="SHOP PROFILE" navigation={navigation} letterSize={20} />
+                <Header title="SHOP PROFILE" navigation={navigation} />
                 <ScrollView style={styles.container}>
                     <View style={styles.WhiteContainer}>
                         <View style={styles.formContainer}>
@@ -187,7 +189,20 @@ function ShopProfile({ navigation }) {
                                     <TextBox title="STATION TYPE" value={stationType} disabled={editing ? false : true} onChangeText={(text) => setstationType(text)} />
                                     <TextBox title="OPTIONAL EPA" value={epa} disabled={editing ? false : true} onChangeText={(text) => setepa(text)} />
                                     <TextBox title="TELEPHONE NUMBER" value={phone} disabled={editing ? false : true} onChangeText={(text) => setphone(text)} />
-                                    <TextBox title="EMAIL" value={email} disabled={editing ? false : true} onChangeText={(text) => setemail(text)} />
+                                    <TouchableOpacity activeOpacity={1} onPress={()=>{
+                                            Alert.alert(
+                                                "Unable to Change",
+                                                "Email can not be change",
+                                                [
+  
+                                                  { text: "OK", onPress: () => {} }
+                                                ],
+                                                { cancelable: false }
+                                              );
+                                          
+                                        }} disabled={editing ? false : true}>
+                                            <TextBox title="EMAIL" value={email} disabled={true} />
+                                        </TouchableOpacity>
                                 </>
                             }
                         </View>

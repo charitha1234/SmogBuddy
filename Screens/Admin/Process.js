@@ -41,10 +41,10 @@ function Process({ navigation, route }) {
             .then((resJson) => {
                 setimages(resJson)
             })
-            .catch((e) => {})
+            .catch((e) => { })
     }
     const DeleteProcess = () => {
-        
+
         if (reason.trim()) {
             setloading(true)
             fetch(BaseUrl.Url + "/admin/process/" + details.userId + '?reason=' + reason,
@@ -66,16 +66,16 @@ function Process({ navigation, route }) {
                 )
                 .catch((e) => setloading(false))
         }
-        else{
+        else {
             Alert.alert(
                 "Reason field is empty",
                 "Please give a reason to delete the Process",
                 [
 
-                  { text: "OK", onPress: () => {} }
+                    { text: "OK", onPress: () => { } }
                 ],
                 { cancelable: false }
-              );
+            );
         }
 
     }
@@ -150,7 +150,7 @@ function Process({ navigation, route }) {
                 </Modal>
 
                 <Modal style={{ margin: 0 }} deviceHeight={windowHeight} deviceWidth={windowWidth} isVisible={isModalVisible} onBackdropPress={() => setisModalVisible(false)} useNativeDriver={true} backdropOpacity={0.9} >
-                    <View style={{ flex: 1 }}>
+                    <SafeAreaView style={{ flex: 1 }}>
                         <View style={{ zIndex: 10, position: 'absolute', top: 0, width: '100%', height: 50, backgroundColor: 'rgba(0,0,0,0.5)' }}>
                             <TouchableOpacity onPress={() => setisModalVisible(false)} style={{ height: 50, width: 50, alignItems: 'center', justifyContent: 'center' }}>
                                 <Ionicons name="ios-close" color={color.primaryWhite} size={30} />
@@ -179,7 +179,7 @@ function Process({ navigation, route }) {
                                 null
                         }
 
-                    </View>
+                    </SafeAreaView>
                 </Modal>
             </ScrollView>
         </SafeAreaView>

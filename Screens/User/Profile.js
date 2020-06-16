@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import {
     View,
     Text,
@@ -16,7 +16,6 @@ import TextBox from '../../Components/textBox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BaseUrl from '../../Config'
-import Dialog from "react-native-dialog";
 import ImagePicker from 'react-native-image-picker';
 import Header from '../../Components/NormalHeader'
 import firebase from 'react-native-firebase';
@@ -45,20 +44,23 @@ function EmployeeProfile({ navigation, route }) {
     const [state, setstate] = useState("")
     const [zipCode, setzipCode] = useState("")
     const [loading, setloading] = useState(true)
+    const [email, setemail] = useState("")
     const [title, settitle] = useState("")
     const [body, setbody] = useState("")
     const [phoneNo, setphoneNo] = useState("")
     const [imageUri, setimageUri] = useState(" ")
     const [editing, setediting] = useState(false)
     const [dialogboxVisible, setdialogboxVisible] = useState(false)
-    const userId=firebase.auth().currentUser.uid
-    const getApiData=()=>{
+    const userId = firebase.auth().currentUser.uid
+    
+    const getApiData = () => {
         fetch(BaseUrl.Url + '/user/' + userId)
             .then((res) => res.json())
             .then((resJson) => {
-                
-                
+
+
                 setloading(false);
+                setemail(resJson.email)
                 setimageUri(resJson.imageUrl)
                 setphoneNo(resJson.phoneNumber)
                 setfirstName(resJson.firstName);
@@ -90,7 +92,7 @@ function EmployeeProfile({ navigation, route }) {
             if (response.didCancel) {
 
             } else if (response.error) {
-  
+
             } else if (response.customButton) {
 
             } else {
@@ -113,7 +115,7 @@ function EmployeeProfile({ navigation, route }) {
             }
         });
     }
-    
+
     const saveDetails = () => {
         setloading(true)
         fetch(BaseUrl.Url + "/user", {
@@ -125,21 +127,22 @@ function EmployeeProfile({ navigation, route }) {
             body: JSON.stringify({
                 firstName: firstName,
                 lastName: lastName,
-                address:address,
-                phoneNumber:phoneNo,
-                state:state,
+                address: address,
+                phoneNumber: phoneNo,
+                state: state,
                 imageUrl: imageUri,
-                zipCode:zipCode,
+                zipCode: zipCode,
                 uid: userId
 
 
 
             }),
         }).then((res) => res.json())
-            .then((resJson) => { 
+            .then((resJson) => {
                 setediting(false)
                 getApiData()
-                setloading(false) })
+                setloading(false)
+            })
             .catch((e) => {
                 setloading(false)
 
@@ -150,7 +153,7 @@ function EmployeeProfile({ navigation, route }) {
     return (
         <SafeAreaView style={styles.container}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={[color.lightGreen, color.lightBlue]} style={styles.container}>
-                <Header title="PROFILE"  navigation={navigation} />
+                <Header title="PROFILE" navigation={navigation} />
                 <ScrollView style={styles.container}>
                     <View style={styles.WhiteContainer}>
                         <View style={styles.formContainer}>
@@ -164,14 +167,28 @@ function EmployeeProfile({ navigation, route }) {
                                             <TouchableOpacity onPress={() => ImagePick()} disabled={editing ? false : true} style={{ borderWidth: 1, borderRadius: (windowWidth - 60) / 3 }}>
                                                 <ImageBackground source={{ uri: imageUri }} style={styles.logoContainer} imageStyle={{ borderRadius: (windowWidth - 60) / 3 }}>
                                                     {
-                                                        editing?
-                                                        <Ionicons name="ios-add-circle" style={{ position: 'absolute', top: Math.sqrt(2) * (windowWidth - 60) / 6 - (windowWidth - 60) / 6 - 20, right: Math.sqrt(2) * (windowWidth - 60) / 6 - (windowWidth - 60) / 6 - 20 }} size={30} color={color.failedRed} />
-                                                        :null
+                                                        editing ?
+                                                            <Ionicons name="ios-add-circle" style={{ position: 'absolute', top: Math.sqrt(2) * (windowWidth - 60) / 6 - (windowWidth - 60) / 6 - 20, right: Math.sqrt(2) * (windowWidth - 60) / 6 - (windowWidth - 60) / 6 - 20 }} size={30} color={color.failedRed} />
+                                                            : null
                                                     }
-                                                    
+
                                                 </ImageBackground>
                                             </TouchableOpacity>
                                         </View>
+                                        <TouchableOpacity activeOpacity={1} onPress={()=>{
+                                            Alert.alert(
+                                                "Unable to Change",
+                                                "Email can not be change",
+                                                [
+  
+                                                  { text: "OK", onPress: () =>{}}
+                                                ],
+                                                { cancelable: false }
+                                              );
+                                          
+                                        }} disabled={editing ? false : true}>
+                                            <TextBox title="EMAIL" value={email} disabled={true} />
+                                        </TouchableOpacity>
                                         <TextBox title="FIRST NAME" value={firstName} disabled={editing ? false : true} onChangeText={(text) => setfirstName(text)} />
                                         <TextBox title="LAST NAME" value={lastName} disabled={editing ? false : true} onChangeText={(text) => setlastName(text)} />
                                         <TextBox title="ADDRESS" value={address} disabled={editing ? false : true} onChangeText={(text) => setaddress(text)} />

@@ -5,7 +5,8 @@ import {
     StyleSheet,
     TouchableOpacity,
     FlatList,
-    Image
+    Image,
+    Dimensions
 } from "react-native";
 import { color } from '../../Assets/color';
 import { useIsFocused, useFocusEffect } from '@react-navigation/native';
@@ -13,18 +14,20 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import UsersList from '../../data/Users';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SearchBar } from 'react-native-elements';
-import Header from '../../Components/NormalHeader';
+import Modal from 'react-native-modal';
+import Header from '../../Components/TwoButtonHeader';
 import BaseUrl from '../../Config'
+const windowWidth = Dimensions.get('window').width
 function Users(props) {
     return (
         <TouchableOpacity onPress={props.onPress} style={styles.UserContainer}>
             {
-                props.image?
-                <Image style={{ width: 100, height: 100, borderTopLeftRadius: 30, borderBottomLeftRadius: 30 }} source={{ uri: props.image }} />
-                :
-                <View style={{ width: 100, height: 100, borderTopLeftRadius: 30, borderBottomLeftRadius: 30 }} />
+                props.image ?
+                    <Image style={{ width: 100, height: 100, borderTopLeftRadius: 30, borderBottomLeftRadius: 30 }} source={{ uri: props.image }} />
+                    :
+                    <View style={{ width: 100, height: 100, borderTopLeftRadius: 30, borderBottomLeftRadius: 30 }} />
             }
-            
+
             <View style={styles.statusContainer}>
                 <Text style={styles.NameLabel}>NAME</Text>
                 <Text style={styles.NameText}>{props.Fname} {props.Lname}</Text>
@@ -41,12 +44,12 @@ function ManageUsers({ navigation }) {
     const [search, setsearch] = useState(null)
     const [data, setdata] = useState([])
     const [filteredList, setfilteredList] = useState([])
+    const [isVisible, setisVisible] = useState(false)
+    const [filterValue, setfilterValue] = useState("")
     const getApidata = (adjust) => {
         fetch(BaseUrl.Url + '/admin/users')
             .then((res) => res.json())
             .then((resJson) => {
-
-
                 setdata(resJson)
             })
             .catch((e) => { })
@@ -64,14 +67,17 @@ function ManageUsers({ navigation }) {
             let tempFilteredList = []
             for (user of data) {
                 if (user.keyword.toLowerCase().includes(search.toLowerCase())) {
-                    tempFilteredList.push(user)
+                    if (filterValue) {
+                        if(user.role==filterValue)tempFilteredList.push(user)
+                    }
+                    else {
+                        tempFilteredList.push(user)
+                    }
                 }
             }
             setfilteredList(tempFilteredList)
         }
-
-
-    }, [search, data])
+    }, [search, data,filterValue])
 
 
     const updateSearch = search => {
@@ -81,7 +87,7 @@ function ManageUsers({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Header title="Manage Users" navigation={navigation} />
+            <Header title="Manage Users" navigation={navigation} icon="ios-funnel" onPress={() => setisVisible(true)} />
             <SearchBar
                 placeholder="Type Here..."
                 onChangeText={updateSearch}
@@ -98,6 +104,42 @@ function ManageUsers({ navigation }) {
 
 
             }
+            <Modal style={{ margin: 0 }} isVisible={isVisible} useNativeDriver={true} onBackdropPress={() => setisVisible(false)} onBackButtonPress={() => isVisible(false)} >
+
+                <View style={{ position: 'absolute', bottom: 0, width: '100%' }}>
+                    <View style={{ alignItems: 'flex-end', marginBottom: 10 }}>
+                        <TouchableOpacity onPress={() => setisVisible(false)} style={{ marginRight: 20, backgroundColor: color.primaryWhite, height: 40, width: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' }}>
+                            <Ionicons name="ios-close" size={30} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ borderTopLeftRadius: 30, borderTopRightRadius: 30, backgroundColor: color.primaryWhite, width: '100%' }}>
+                        <View style={{ margin: 20 }}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+                                <Text style={styles.NameLabel} >Filter</Text>
+                                <TouchableOpacity onPress={() => {
+                                    setfilterValue("")
+                                    setisVisible(false)
+                                }} style={{ height: 30, borderRadius: 15, backgroundColor: color.failedRed, alignItems: 'center', justifyContent: 'center' }}>
+                                    <Text style={[styles.NameLabel, { color: color.primaryWhite, marginHorizontal: 20 }]}>Clear</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+                                <TouchableOpacity onPress={() => setfilterValue("DRIVER")} style={[{ backgroundColor: color.primaryWhite, height: 40, borderRadius: 20, width: (windowWidth - 90) / 3, borderWidth: 1, justifyContent: 'center', alignItems: 'center' }, filterValue == "DRIVER" ? { borderColor: color.primaryBlue } : { borderColor: color.gray }]}>
+                                    <Text style={[styles.NameText, { textAlign: 'center' }]}>Drivers</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => setfilterValue("TECHNICIAN")} style={[{ backgroundColor: color.primaryWhite, height: 40, borderRadius: 20, width: (windowWidth - 90) / 3, borderWidth: 1, justifyContent: 'center', alignItems: 'center' }, filterValue == "TECHNICIAN" ? { borderColor: color.primaryBlue } : { borderColor: color.gray }]}>
+                                    <Text style={[styles.NameText, { textAlign: 'center' }]}>Technicians</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => setfilterValue("CUSTOMER")} style={[{ backgroundColor: color.primaryWhite, height: 40, borderRadius: 20, width: (windowWidth - 90) / 3, borderWidth: 1, justifyContent: 'center', alignItems: 'center' }, filterValue == "CUSTOMER" ? { borderColor: color.primaryBlue } : { borderColor: color.gray }]}>
+                                    <Text style={[styles.NameText, { textAlign: 'center' }]}>Customers</Text>
+                                </TouchableOpacity>
+                            </View>
+
+
+                        </View>
+                    </View>
+                </View>
+            </Modal>
 
         </SafeAreaView>
     );
@@ -151,13 +193,12 @@ const styles = StyleSheet.create({
     },
     NameText: {
         fontFamily: 'Montserrat-Light',
-        fontSize: 15,
+        fontSize: 12,
 
     },
     NameLabel: {
         fontFamily: 'Montserrat-SemiBold',
         fontSize: 15,
-        letterSpacing: 2,
     },
     statusContainer: {
         flex: 2,

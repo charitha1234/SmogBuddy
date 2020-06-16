@@ -27,10 +27,10 @@ function Services(props) {
                     <Text style={styles.serviceName}>{props.yearRange}</Text>
                     {
                         props.failed ?
-                            <Ionicons style={{ marginLeft: 20, marginRight: -20 }} name="ios-close" size={40} color={color.failedRed} />
+                            <Ionicons style={{ marginLeft: 20, marginRight: -20 }} name="ios-close" size={30} color={color.failedRed} />
                             :
                             props.passed ?
-                                <Ionicons style={{ marginLeft: 20, marginRight: -20 }} name="ios-checkmark" size={40} color={color.primaryBlue} />
+                                <Ionicons style={{ marginLeft: 20, marginRight: -20 }} name="ios-checkmark" size={30} color={color.primaryBlue} />
                                 : null
                     }
                 </View>
